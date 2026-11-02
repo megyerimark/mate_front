@@ -58,15 +58,11 @@ export class Hero {
 
     const hero: HTMLElement = this.host.nativeElement;
     const onScroll = () => scene.setScatter(window.scrollY / Math.max(hero.offsetHeight * 0.8, 1));
-    const onMove = (e: PointerEvent) => scene.setPointer(e.clientX, e.clientY);
-    const onLeave = () => scene.clearPointer();
     const onResize = () => scene.resize();
     const onVisibility = () => (document.hidden || canvas.style.visibility ? scene.pause() : scene.play());
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
-    hero.addEventListener('pointermove', onMove);
-    hero.addEventListener('pointerleave', onLeave);
     document.addEventListener('visibilitychange', onVisibility);
 
     // Ha a hős szakasz nem látszik, ne fogyassza a gépet.
@@ -82,8 +78,6 @@ export class Hero {
       io.disconnect();
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
-      hero.removeEventListener('pointermove', onMove);
-      hero.removeEventListener('pointerleave', onLeave);
       document.removeEventListener('visibilitychange', onVisibility);
       scene.dispose();
     };

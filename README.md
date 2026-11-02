@@ -79,7 +79,7 @@ majd `npm run build`, és a `dist/frontend/browser` mappát töltsd fel. A backe
 
 ## Effektek
 
-- **Nyitóképernyő**: több ezer részecske (three.js / WebGL), amik sorban kirajzolják a „fordítás” szót különböző nyelveken, mögöttük lassan forgó ív. Az egér közelében szétrebbennek, görgetéskor szétrepülnek.
+- **Nyitóképernyő**: több ezer részecske (three.js / WebGL), amik sorban kirajzolják a „fordítás” szót különböző nyelveken, mögöttük lassan forgó ív. Görgetéskor szétrepülnek, az egérre nem reagálnak.
 - **Élő fordítás**: rögzített szakasz, ahol görgetésre betűnként fordítódik egy mondat magyarról angolra, majd németre (GSAP ScrollTrigger).
 - **Lépések**: asztali gépen vízszintesen görgetett panelek.
 - Soronként becsúszó címsorok, felpörgő számlálók, 3D-ben dönthető kártyák, mágneses gombok, egyedi kurzor, nyelvi szalag.

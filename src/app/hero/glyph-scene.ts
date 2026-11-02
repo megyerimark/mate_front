@@ -63,7 +63,7 @@ const FRAGMENT = /* glsl */ `
 
 /**
  * Részecskefelhő, ami sorban a megadott szavak alakját veszi fel.
- * Egér közelében szétrebben, görgetéskor (setScatter) szétszóródik.
+ * Görgetéskor (setScatter) szétszóródik. Az egérre szándékosan nem reagál.
  */
 export class GlyphScene {
   private readonly renderer: WebGLRenderer;
@@ -86,8 +86,6 @@ export class GlyphScene {
   private frame = 0;
   private running = false;
   private scatter = 0;
-  private readonly mouse = { x: 9999, y: 9999, active: false };
-  private readonly parallax = { x: 0, y: 0 };
   private viewW = 1;
   private viewH = 1;
   private readonly start = performance.now();
@@ -208,21 +206,6 @@ export class GlyphScene {
     this.scatter = Math.min(Math.max(value, 0), 1);
   }
 
-  setPointer(clientX: number, clientY: number): void {
-    const rect = this.canvas.getBoundingClientRect();
-    const nx = ((clientX - rect.left) / rect.width) * 2 - 1;
-    const ny = -(((clientY - rect.top) / rect.height) * 2 - 1);
-    this.mouse.x = (nx * this.viewW) / 2;
-    this.mouse.y = (ny * this.viewH) / 2;
-    this.mouse.active = true;
-    this.parallax.x = nx;
-    this.parallax.y = ny;
-  }
-
-  clearPointer(): void {
-    this.mouse.active = false;
-  }
-
   resize(): void {
     const { clientWidth: w, clientHeight: h } = this.canvas;
     if (!w || !h) return;
@@ -327,8 +310,6 @@ export class GlyphScene {
     const v = this.velocities;
     const tg = this.targets;
     const s = this.scatter;
-    const radius = 1.6;
-    const r2 = radius * radius;
 
     for (let i = 0; i < this.count; i++) {
       const ix = i * 3;
@@ -341,18 +322,6 @@ export class GlyphScene {
       v[ix] += (tx - p[ix]) * 0.012;
       v[ix + 1] += (ty - p[ix + 1]) * 0.012;
       v[ix + 2] += (tz - p[ix + 2]) * 0.012;
-
-      if (this.mouse.active) {
-        const dx = p[ix] - this.mouse.x;
-        const dy = p[ix + 1] - this.mouse.y;
-        const d2 = dx * dx + dy * dy;
-        if (d2 < r2) {
-          const f = (1 - d2 / r2) * 0.08;
-          v[ix] += dx * f;
-          v[ix + 1] += dy * f;
-          v[ix + 2] += f * 2;
-        }
-      }
 
       v[ix] *= 0.9;
       v[ix + 1] *= 0.9;
@@ -372,11 +341,7 @@ export class GlyphScene {
     arcMat.uniforms['uTime'].value = t;
     arcMat.uniforms['uFade'].value = 0.6 * (1 - s);
     this.arc.rotation.z = t * 0.08;
-    this.arc.rotation.x = 1.12 + this.parallax.y * 0.06 + s * 0.4;
-
-    this.camera.position.x += (this.parallax.x * 0.6 - this.camera.position.x) * 0.04;
-    this.camera.position.y += (this.parallax.y * 0.4 - this.camera.position.y) * 0.04;
-    this.camera.lookAt(0, 0, 0);
+    this.arc.rotation.x = 1.12 + s * 0.4;
 
     this.renderer.render(this.scene, this.camera);
   }
