@@ -114,7 +114,7 @@ export const PRICES = [
     title: 'Expressz',
     price: '+[X]%',
     unit: 'felár',
-    features: ['Akár 24 órán belül', 'Hétvégén is', 'Sürgős ügyintézéshez'],
+    features: ['Akár aznapra', 'Hétvégén is', 'Sürgős ügyintézéshez'],
     featured: false,
   },
 ];
@@ -146,7 +146,7 @@ export const TESTIMONIALS = [
 export const FAQ = [
   {
     q: 'Mennyi idő alatt készül el a fordítás?',
-    a: 'Egy 1–2 oldalas hivatalos irat általában 1–3 munkanap alatt, de expressz fordítást akár 24 órán belül is vállalunk. A pontos határidőt az ajánlatban megadjuk.',
+    a: 'Egy 1–2 oldalas hivatalos irat általában 1–3 munkanap alatt, de expressz fordítást akár aznapra is vállalunk. A pontos határidőt az ajánlatban megadjuk.',
   },
   {
     q: 'Mi a különbség a hiteles és a záradékolt fordítás között?',
@@ -169,7 +169,7 @@ export const FAQ = [
 export const DEADLINES = [
   { value: 'normal', label: 'Normál (2–5 munkanap)' },
   { value: 'urgent', label: 'Sürgős (1–2 munkanap)' },
-  { value: 'express', label: 'Expressz (24 órán belül)' },
+  { value: 'express', label: 'Expressz (akár aznapra)' },
 ];
 
 export const MAX_FILE_MB = 8;
