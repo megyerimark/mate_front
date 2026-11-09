@@ -5,7 +5,7 @@ A hozzá tartozó backend (Laravel): [mate_back](https://github.com/megyerimark/
 
 ## Fejlesztés
 
-Kell hozzá: Node.js 22 (legalább 22.12) vagy újabb, PHP 8.3+ és Composer. **Két terminál kell**: az egyikben a Laravel, a másikban az Angular fut.
+Kell hozzá: Node.js 22 (legalább 22.12) vagy újabb, PHP 8.3+, Composer és MySQL (vagy MariaDB). **Két terminál kell**: az egyikben a Laravel, a másikban az Angular fut.
 
 **1. terminál – backend** (`mate_back` mappa), első alkalommal:
 
@@ -13,7 +13,8 @@ Kell hozzá: Node.js 22 (legalább 22.12) vagy újabb, PHP 8.3+ és Composer. **
 composer install
 cp .env.example .env
 php artisan key:generate
-touch database/database.sqlite
+# MySQL: hozd létre az adatbázist, és írd be a .env DB_ soraiba (részletek a mate_back README-ben):
+#   CREATE DATABASE done_translations CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 php artisan migrate
 php artisan admin:create admin@donetranslations.hu --generate   # kiírja a jelszót
 ```
