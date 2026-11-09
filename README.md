@@ -5,9 +5,9 @@ A hozzá tartozó backend (Laravel): [mate_back](https://github.com/megyerimark/
 
 ## Fejlesztés
 
-Kell hozzá: Node.js 22 (legalább 22.12) vagy újabb, PHP 8.3+, Composer és MySQL (vagy MariaDB). **Két terminál kell**: az egyikben a Laravel, a másikban az Angular fut.
+Kell hozzá: Node.js 22 (legalább 22.12) vagy újabb, PHP 8.3+, Composer és MySQL (vagy MariaDB). A mappák egymás mellett legyenek: `mate_front` és `mate_back`.
 
-**1. terminál – backend** (`mate_back` mappa), első alkalommal:
+**Első alkalommal** a `mate_back` mappában:
 
 ```bash
 composer install
@@ -19,22 +19,23 @@ php artisan migrate
 php artisan admin:create admin@donetranslations.hu --generate   # kiírja a jelszót
 ```
 
-Utána mindig csak:
+Utána **elég egyetlen parancs** a `mate_front` mappában:
 
 ```bash
-php artisan serve        # http://127.0.0.1:8000
+npm install      # első alkalommal
+npm start        # http://localhost:4200, admin: http://localhost:4200/admin
 ```
 
-**2. terminál – frontend** (`mate_front` mappa):
+Az `npm start` megnézi, fut-e a Laravel (`http://127.0.0.1:8000/api/health`). Ha nem, **magától elindítja** a szomszédos
+`mate_back` mappából (`php artisan serve`), majd elindítja az Angulart; Ctrl+C mindkettőt leállítja.
+Az `/api` hívásokat az Angular fejlesztői szerver továbbítja a Laravelnek (`proxy.conf.mjs`).
 
-```bash
-npm install
-npm start                # http://localhost:4200, admin: http://localhost:4200/admin
-```
+- Más helyen van a backend mappa: `BACKEND_DIR=/út/a/mate_back npm start`
+- Más porton fut a Laravel (pl. 8001, mert a 8000 foglalt): `API_TARGET=http://127.0.0.1:8001 npm start`
+- Csak az Angular: `npm run start:front`
 
-Az `/api` hívásokat a fejlesztői szerver a `127.0.0.1:8000`-en futó Laravelhez továbbítja (`proxy.conf.json`).
-Ha a bejelentkezésnél „A Laravel backend nem érhető el” üzenet (vagy a konzolban `404 /api/admin/login`) jelenik meg:
-nem fut a Laravel, vagy más program foglalja a 8000-es portot (`lsof -i :8000`). Indítsd el az 1. terminálban a `php artisan serve`-t.
+Ha a konzolban `404 /api/...` hibát látsz: nem fut a backend, vagy más program van a 8000-es porton (`lsof -i :8000`).
+Az `npm start` ezt kiírja a terminálba is.
 
 ## Tartalom és SEO
 

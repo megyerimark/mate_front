@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node scripts/dev.mjs",
     "build": "node scripts/generate-sitemap.mjs && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:backend": "npm run build && node scripts/copy-to-backend.mjs"
+    "build:backend": "npm run build && node scripts/copy-to-backend.mjs",
+    "start:front": "ng serve"
   },
   "private": true,
   "packageManager": "npm@10.9.4",

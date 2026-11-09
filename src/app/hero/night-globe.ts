@@ -46,6 +46,7 @@ export class NightGlobe {
   resize(): void {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     this.W = this.canvas.clientWidth; this.H = this.canvas.clientHeight; this.mobile = this.W < 900;
+    if (this.W < 10 || this.H < 10) return;
     this.canvas.width = this.W * dpr; this.canvas.height = this.H * dpr;
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // városfények: a város köré szórt fénypontok (mobilon kevesebb)
@@ -113,6 +114,8 @@ export class NightGlobe {
 
   private draw(now: number): void {
     const { ctx, W, H, mobile } = this;
+    // Rejtett vagy épp átméretezett vászon (0 széles): nincs mit rajzolni, és a számítás nullával osztana.
+    if (W < 10 || H < 10) return;
     const dt = Math.min(64, now - this.last); this.last = now;
     const m = this.progress, G = this.geo(), e = ease(m);
     if (this.animate) this.spin += dt * 0.004 * (0.15 + m);

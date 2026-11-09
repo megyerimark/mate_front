@@ -29,12 +29,13 @@ export class Hero {
       const { NightGlobe } = await import('./night-globe');
       const globe: NightGlobe = new NightGlobe(this.canvas().nativeElement, !this.scroll.reducedMotion);
       const hero = this.heroEl().nativeElement;
-      const onResize = () => globe.resize();
-      addEventListener('resize', onResize, { passive: true });
+      // A vászon saját méretét figyeli (ablakméret, mobil elforgatás, rejtett → látható is).
+      const ro = new ResizeObserver(() => globe.resize());
+      ro.observe(this.canvas().nativeElement);
       // Csak akkor rajzol, ha a szakasz látszik (akkumulátor, processzor).
       const io = new IntersectionObserver(([e]) => (e.isIntersecting ? globe.start() : globe.stop()));
       io.observe(hero);
-      destroyRef.onDestroy(() => { io.disconnect(); globe.stop(); removeEventListener('resize', onResize); });
+      destroyRef.onDestroy(() => { io.disconnect(); ro.disconnect(); globe.stop(); });
     });
   }
 }
