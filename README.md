@@ -47,6 +47,9 @@ A **`/admin`** címen érhető el (pl. `https://donetranslations.hu/admin`). Adm
   és hogy a magyar vagy az angol oldalról jött (EN jelölés; az ügyfél angolul kapta a visszaigazolást)
 - Állapotok: **Új → Folyamatban → Ajánlat elküldve → Megrendelve / Elmaradt**
 - Belső jegyzet (az ügyfél nem látja), törlés megerősítéssel
+- Szűrés dátum szerint (ettől–eddig), **Excel letöltése** a szűrésnek megfelelő összes ajánlatkéréssel
+- **Statisztika** (`/admin/statisztika`): utolsó 12 hónap / idén / teljes időszak; ajánlatkérések és megrendelések száma,
+  megrendelési arány, havi oszlopdiagram (táblázatként is), bontás szolgáltatás, állapot, célnyelv, határidő és oldal szerint
 - Külön töltődik be, a nyilvános oldalt nem lassítja. A bejelentkezés 12 óráig érvényes.
 
 Kód: `src/app/admin/`, megjelenés: `src/admin.css`.

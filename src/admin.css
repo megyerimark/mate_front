@@ -51,7 +51,7 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
 .adm-pill { display: inline-block; padding: .25em .75em; border-radius: 999px; font-size: .8rem; font-weight: 500; white-space: nowrap; background: color-mix(in srgb, var(--st) 16%, transparent); color: var(--st-ink); border: 1px solid color-mix(in srgb, var(--st) 35%, transparent); }
 .adm-pill[data-status="won"] { background: var(--st); }
 
-.adm-toolbar { display: flex; gap: 12px; }
+.adm-toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .adm-search { max-width: 520px; }
 
 .adm-table-wrap { overflow-x: auto; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: opacity .2s; }
@@ -118,3 +118,79 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
   .adm-stat { transition: none; }
 }
 .adm-lang { margin-left: 6px; padding: .1em .5em; border-radius: 6px; font-size: .7rem; font-weight: 600; background: rgba(var(--warm-rgb), .2); color: var(--warm-ink); }
+
+/* Menü a fejlécben */
+.adm-nav { display: flex; gap: 4px; margin-right: auto; margin-left: 24px; }
+.adm-nav a { padding: .45em .95em; border-radius: 999px; color: var(--muted); font-size: .92rem; text-decoration: none; }
+.adm-nav a:hover { color: var(--text); background: rgba(var(--tint), .04); }
+.adm-nav a.active { color: var(--text); background: rgba(var(--accent-rgb), .1); font-weight: 500; }
+
+/* Szűrés dátum szerint, export */
+.adm-date-field { display: flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--muted); }
+.adm-date-field input { font: inherit; font-size: .92rem; color: var(--text); padding: .6em .8em; border-radius: 12px; background: rgba(var(--tint), .03); border: 1px solid var(--border); }
+.adm-date-field input:focus { outline: none; border-color: var(--accent); }
+.adm-hint { margin: -10px 0 0; font-size: .85rem; color: var(--muted); }
+.adm-head .btn app-icon { width: 1em; height: 1em; }
+
+/* Statisztika */
+.adm-seg { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
+.adm-seg button { font: inherit; font-size: .88rem; padding: .5em 1.1em; border-radius: 999px; border: 0; background: none; color: var(--muted); cursor: pointer; }
+.adm-seg button.active { background: var(--accent); color: #fff; }
+.adm-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; transition: opacity .2s; }
+.adm-kpi { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.adm-kpi span { font-size: .82rem; color: var(--muted); }
+.adm-kpi b { font-family: var(--display); font-weight: 300; font-size: 2.2rem; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--text); }
+.adm-kpi small { font-size: .8rem; color: var(--muted); }
+.adm-card { padding: 20px 22px; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: grid; gap: 14px; align-content: start; min-width: 0; transition: opacity .2s; }
+.adm-card h2 { margin: 0; font-family: var(--body); font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.adm-card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.adm-card .adm-table-wrap { box-shadow: none; }
+.is-loading.adm-kpis, .is-loading.adm-card { opacity: .55; }
+.adm-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+
+.adm-chart { position: relative; width: 100%; }
+.adm-chart svg { display: block; overflow: visible; }
+.adm-chart .grid { stroke: var(--border); stroke-width: 1; }
+.adm-chart .grid.base { stroke: rgba(var(--tint), .25); }
+.adm-chart .tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.adm-chart .val { fill: var(--text); font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.adm-chart .bar { fill: var(--accent); transition: opacity .15s; }
+.adm-chart .col.dim .bar { opacity: .35; }
+.adm-chart .hit { fill: transparent; cursor: default; outline: none; }
+.adm-chart .hit:focus-visible { stroke: var(--accent); stroke-width: 2; }
+.adm-tip { position: absolute; transform: translate(-50%, -100%); pointer-events: none; display: grid; gap: 2px; padding: 8px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-md); font-size: .82rem; color: var(--muted); white-space: nowrap; }
+.adm-tip b { color: var(--text); font-weight: 600; }
+.adm-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.adm-table-compact td, .adm-table-compact th { padding: 10px 16px; }
+.adm-table-compact tbody tr { cursor: default; }
+
+.adm-hbars { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.adm-hbars li { display: grid; grid-template-columns: minmax(110px, 38%) 1fr auto; align-items: center; gap: 12px; font-size: .92rem; }
+.adm-hbars .lbl { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adm-hbars .track { height: 14px; }
+.adm-hbars .fill { display: block; height: 100%; min-width: 2px; border-radius: 0 4px 4px 0; background: var(--accent); }
+.adm-hbars .fill.status { background: var(--st); }
+.adm-hbars .val { min-width: 4.5em; text-align: right; font-variant-numeric: tabular-nums; color: var(--text); }
+.adm-hbars .val small { color: var(--muted); margin-left: 4px; }
+
+@media (max-width: 960px) {
+  .adm-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .adm-grid { grid-template-columns: 1fr; }
+  .adm-nav { margin-left: 8px; }
+}
+@media (max-width: 560px) {
+  .adm-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .adm-top { flex-wrap: wrap; }
+  .adm-nav { order: 3; width: 100%; margin: 0; }
+  .adm-seg { width: 100%; }
+  .adm-seg button { flex: 1; padding-inline: .5em; }
+  .adm-hbars li { grid-template-columns: minmax(90px, 34%) 1fr auto; }
+}
+@media (max-width: 560px) {
+  .adm-seg button { white-space: nowrap; font-size: .82rem; }
+  .adm-hbars { gap: 12px; }
+  .adm-hbars li { grid-template-columns: 1fr auto; grid-template-areas: "lbl lbl" "track val"; row-gap: 4px; }
+  .adm-hbars .lbl { grid-area: lbl; white-space: normal; }
+  .adm-hbars .track { grid-area: track; }
+  .adm-hbars .val { grid-area: val; }
+}

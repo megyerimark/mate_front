@@ -1,0 +1,134 @@
+<div class="adm">
+  <app-admin-header />
+
+  <main class="adm-main">
+    <div class="adm-head">
+      <div>
+        <h1>Statisztika</h1>
+        <p class="adm-sub">
+          A weboldalon beérkezett ajánlatkérések alapján.
+          @if (data(); as d) { {{ range(d) }}. }
+        </p>
+      </div>
+      <div class="adm-seg" role="radiogroup" aria-label="Időszak">
+        @for (p of periods; track p.value) {
+          <button type="button" role="radio" [attr.aria-checked]="period() === p.value" [class.active]="period() === p.value" (click)="setPeriod(p.value)">{{ p.label }}</button>
+        }
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="adm-error" role="alert">{{ error() }} <button type="button" class="adm-link" (click)="load()">Újra</button></p>
+    }
+
+    @if (data(); as d) {
+      <div class="adm-kpis" [class.is-loading]="loading()">
+        <div class="adm-kpi">
+          <span>Ajánlatkérés</span><b>{{ d.totals.total }}</b>
+          <small>a kiválasztott időszakban</small>
+        </div>
+        <div class="adm-kpi">
+          <span>Megrendelve</span><b>{{ d.totals.won }}</b>
+          <small>{{ d.totals.open }} még nyitott, {{ d.totals.lost }} elmaradt</small>
+        </div>
+        <div class="adm-kpi">
+          <span>Megrendelési arány</span><b>{{ d.totals.conversion === null ? '–' : d.totals.conversion + '%' }}</b>
+          <small>a lezárt ajánlatkérésekből</small>
+        </div>
+        <div class="adm-kpi">
+          <span>Ebben a hónapban</span><b>{{ d.this_month }}</b>
+          <small>{{ monthDelta() }}</small>
+        </div>
+        <div class="adm-kpi">
+          <span>Angol oldalról</span><b>{{ d.totals.english }}</b>
+          <small>külföldi ügyfél vagy angolul író</small>
+        </div>
+      </div>
+
+      <section class="adm-card" [class.is-loading]="loading()">
+        <div class="adm-card-head">
+          <h2>Ajánlatkérések havonta</h2>
+          <button type="button" class="adm-link" (click)="showTable.set(!showTable())" [attr.aria-pressed]="showTable()">
+            {{ showTable() ? 'Grafikon' : 'Táblázat' }}
+          </button>
+        </div>
+
+        @if (!showTable()) {
+          <div class="adm-chart" #chartBox (mouseleave)="hover.set(null)">
+            <svg [attr.width]="width()" [attr.height]="height" [attr.viewBox]="'0 0 ' + width() + ' ' + height" role="img"
+              [attr.aria-label]="'Havi ajánlatkérések oszlopdiagramja, ' + d.monthly.length + ' hónap'">
+              @for (t of yTicks(); track t) {
+                <line class="grid" [attr.x1]="pad.left" [attr.x2]="width() - pad.right" [attr.y1]="yOf(t)" [attr.y2]="yOf(t)" [class.base]="t === 0" />
+                <text class="tick" [attr.x]="pad.left - 8" [attr.y]="yOf(t) + 4" text-anchor="end">{{ t }}</text>
+              }
+              @for (c of columns(); track c.label; let i = $index) {
+                <g class="col" [class.dim]="hover() !== null && hover() !== i">
+                  @if (c.path) { <path class="bar" [attr.d]="c.path" /> }
+                  @if (showValueLabels() && c.total > 0) {
+                    <text class="val" [attr.x]="c.barX + c.barW / 2" [attr.y]="c.y - 6" text-anchor="middle">{{ c.total }}</text>
+                  }
+                  @if (c.showTick) {
+                    <text class="tick" [attr.x]="c.x + c.slot / 2" [attr.y]="height - 10" text-anchor="middle">{{ c.label }}</text>
+                  }
+                  <rect class="hit" [attr.x]="c.x" [attr.y]="pad.top" [attr.width]="c.slot" [attr.height]="height - pad.top - pad.bottom"
+                    tabindex="0" (mouseenter)="hover.set(i)" (focus)="hover.set(i)" (blur)="hover.set(null)">
+                    <title>{{ c.label }}: {{ c.total }} ajánlatkérés, {{ c.won }} megrendelve</title>
+                  </rect>
+                </g>
+              }
+            </svg>
+            @if (hover() !== null) {
+              @if (columns()[hover()!]; as c) {
+                <div class="adm-tip" [style.left.px]="tooltipLeft(c)" [style.top.px]="c.y - 24" aria-hidden="true">
+                  <b>{{ c.label }}</b>
+                  <span>{{ c.total }} ajánlatkérés</span>
+                  <span>{{ c.won }} megrendelve</span>
+                </div>
+              }
+            }
+          </div>
+        } @else {
+          <div class="adm-table-wrap">
+            <table class="adm-table adm-table-compact">
+              <thead><tr><th>Hónap</th><th class="num">Ajánlatkérés</th><th class="num">Megrendelve</th></tr></thead>
+              <tbody>
+                @for (m of d.monthly; track m.month) {
+                  <tr><td>{{ m.label }}</td><td class="num">{{ m.total }}</td><td class="num">{{ m.won }}</td></tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+
+      <div class="adm-grid">
+        <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Szolgáltatás', rows: d.by_service }" />
+        <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Állapot', rows: d.by_status, status: true }" />
+        <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Leggyakoribb célnyelvek', rows: d.top_languages }" />
+        <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Határidő', rows: d.by_deadline }" />
+        <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Melyik oldalról érkezett', rows: d.by_locale }" />
+      </div>
+    } @else if (loading()) {
+      <p class="adm-sub">Betöltés…</p>
+    }
+  </main>
+</div>
+
+<ng-template #breakdown let-title="title" let-rows="rows" let-status="status">
+  <section class="adm-card">
+    <h2>{{ title }}</h2>
+    @if (rowsSum(rows) === 0) {
+      <p class="adm-sub">Ebben az időszakban nincs adat.</p>
+    } @else {
+      <ul class="adm-hbars">
+        @for (r of rows; track r.label) {
+          <li [attr.data-status]="status ? r.key : null" [attr.title]="r.label + ': ' + r.total + ' (' + share(r, rows) + ')'">
+            <span class="lbl">{{ r.label }}</span>
+            <span class="track"><span class="fill" [class.status]="status" [style.width.%]="(r.total / rowsMax(rows)) * 100"></span></span>
+            <span class="val">{{ r.total }} <small>{{ share(r, rows) }}</small></span>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</ng-template>

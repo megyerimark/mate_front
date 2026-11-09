@@ -2,22 +2,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 import { Icon } from '../components/icon';
 import { AdminApiService, AdminQuote, AdminStats, QuotePage, QuoteStatus, STATUSES } from './admin-api.service';
-import { AdminAuthService } from './admin-auth.service';
+import { AdminHeader } from './admin-header';
 
 const dateFmt = new Intl.DateTimeFormat('hu-HU', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [FormsModule, Icon],
+  imports: [FormsModule, Icon, AdminHeader],
   templateUrl: './admin-dashboard.html',
 })
 export class AdminDashboard implements OnInit {
   private readonly api = inject(AdminApiService);
-  protected readonly auth = inject(AdminAuthService);
-  private readonly router = inject(Router);
 
   protected readonly statuses = STATUSES;
   protected readonly stats = signal<AdminStats | null>(null);
@@ -28,6 +25,14 @@ export class AdminDashboard implements OnInit {
   protected readonly filterStatus = signal<QuoteStatus | ''>('');
   protected readonly search = signal('');
   protected readonly currentPage = signal(1);
+  protected readonly from = signal('');
+  protected readonly to = signal('');
+  protected readonly exporting = signal(false);
+  protected readonly exportError = signal('');
+  protected readonly exportScope = computed(() => {
+    const total = this.page()?.meta.total;
+    return total === undefined ? '' : ` (${total} db)`;
+  });
 
   protected readonly selected = signal<AdminQuote | null>(null);
   protected readonly note = signal('');
@@ -52,7 +57,7 @@ export class AdminDashboard implements OnInit {
   protected load(): void {
     this.loading.set(true);
     this.listError.set('');
-    this.api.list({ page: this.currentPage(), status: this.filterStatus(), search: this.search() }).subscribe({
+    this.api.list({ page: this.currentPage(), ...this.filters() }).subscribe({
       next: (page) => {
         this.page.set(page);
         this.loading.set(false);
@@ -70,9 +75,41 @@ export class AdminDashboard implements OnInit {
     return found ? String(found.total) : '–';
   }
 
-  protected logout(): void {
-    this.auth.logout();
-    this.router.navigateByUrl('/admin/login');
+  private filters() {
+    return { status: this.filterStatus(), search: this.search(), from: this.from(), to: this.to() };
+  }
+
+  protected setDate(which: 'from' | 'to', value: string): void {
+    (which === 'from' ? this.from : this.to).set(value ?? '');
+    this.currentPage.set(1);
+    this.load();
+  }
+
+  protected clearDates(): void {
+    this.from.set('');
+    this.to.set('');
+    this.currentPage.set(1);
+    this.load();
+  }
+
+  protected exportExcel(): void {
+    this.exporting.set(true);
+    this.exportError.set('');
+    this.api.export(this.filters()).subscribe({
+      next: (blob) => {
+        this.exporting.set(false);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ajanlatkeresek-${new Date().toLocaleDateString('sv-SE')}.xlsx`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      },
+      error: () => {
+        this.exporting.set(false);
+        this.exportError.set('Az Excel-fájl nem készült el. Próbálja újra.');
+      },
+    });
   }
 
   protected setStatusFilter(status: QuoteStatus | ''): void {

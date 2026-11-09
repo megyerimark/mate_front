@@ -1,12 +1,5 @@
 <div class="adm">
-  <header class="adm-top">
-    <div class="adm-brand"><span class="logo-mark" aria-hidden="true">✓</span><span>Done<strong>Translations</strong></span> <span class="adm-tag">Admin</span></div>
-    <div class="adm-top-right">
-      <a href="/" target="_blank" rel="noopener" class="adm-link">Weboldal ↗</a>
-      <span class="adm-user">{{ auth.user()?.email }}</span>
-      <button type="button" class="btn btn-ghost btn-sm" (click)="logout()">Kilépés</button>
-    </div>
-  </header>
+  <app-admin-header />
 
   <main class="adm-main">
     <div class="adm-head">
@@ -21,7 +14,12 @@
           @if (stats(); as s) { Ebben a hónapban {{ s.this_month }} érkezett. }
         </p>
       </div>
-      <button type="button" class="btn btn-ghost btn-sm" (click)="load()">Frissítés</button>
+      <div class="adm-row">
+        <button type="button" class="btn btn-ghost btn-sm" (click)="load()">Frissítés</button>
+        <button type="button" class="btn btn-sm" [disabled]="exporting()" (click)="exportExcel()">
+          <app-icon name="document" /> {{ exporting() ? 'Készül…' : 'Excel letöltése' }}
+        </button>
+      </div>
     </div>
 
     <!-- Összesítő: kattintásra szűr -->
@@ -40,7 +38,12 @@
     <div class="adm-toolbar">
       <input class="adm-search" type="search" placeholder="Keresés név, e-mail, telefon vagy megjegyzés alapján…"
         [ngModel]="search()" (ngModelChange)="onSearch($event)" aria-label="Keresés" />
+      <label class="adm-date-field">Ettől <input type="date" [ngModel]="from()" (ngModelChange)="setDate('from', $event)" [max]="to() || null" /></label>
+      <label class="adm-date-field">Eddig <input type="date" [ngModel]="to()" (ngModelChange)="setDate('to', $event)" [min]="from() || null" /></label>
+      @if (from() || to()) { <button type="button" class="adm-link" (click)="clearDates()">Dátum törlése</button> }
     </div>
+    <p class="adm-hint">Az Excel a fenti szűrésnek megfelelő összes ajánlatkérést tartalmazza{{ exportScope() }}.</p>
+    @if (exportError()) { <p class="adm-error" role="alert">{{ exportError() }}</p> }
 
     @if (listError()) {
       <p class="adm-error" role="alert">{{ listError() }} <button type="button" class="adm-link" (click)="load()">Újra</button></p>
@@ -65,7 +68,7 @@
           } @empty {
             @if (!loading()) {
               <tr class="adm-empty"><td colspan="7">
-                @if (search() || filterStatus()) { Nincs találat a szűrésre. } @else { Még nincs ajánlatkérés. Amint valaki kitölti az űrlapot a weboldalon, itt jelenik meg. }
+                @if (search() || filterStatus() || from() || to()) { Nincs találat a szűrésre. } @else { Még nincs ajánlatkérés. Amint valaki kitölti az űrlapot a weboldalon, itt jelenik meg. }
               </td></tr>
             }
           }

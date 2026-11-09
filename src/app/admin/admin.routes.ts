@@ -25,4 +25,10 @@ export default [
     title: 'Ajánlatkérések – Done Translations admin',
     loadComponent: () => import('./admin-dashboard').then((m) => m.AdminDashboard),
   },
+  {
+    path: 'statisztika',
+    canActivate: [requireLogin],
+    title: 'Statisztika – Done Translations admin',
+    loadComponent: () => import('./admin-stats').then((m) => m.AdminStats),
+  },
 ] satisfies Routes;

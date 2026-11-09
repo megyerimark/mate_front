@@ -38,6 +38,32 @@ export interface AdminStats {
   by_status: { status: QuoteStatus; label: string; total: number }[];
 }
 
+export type StatsPeriod = '12m' | 'year' | 'all';
+
+export interface StatRow { key?: string; label: string; total: number }
+
+export interface StatsOverview {
+  period: StatsPeriod;
+  from: string;
+  to: string;
+  totals: { total: number; won: number; lost: number; open: number; conversion: number | null; english: number };
+  this_month: number;
+  last_month: number;
+  monthly: { month: string; label: string; total: number; won: number }[];
+  by_service: StatRow[];
+  by_status: StatRow[];
+  by_locale: StatRow[];
+  by_deadline: StatRow[];
+  top_languages: StatRow[];
+}
+
+export interface QuoteFilters {
+  status: QuoteStatus | '';
+  search: string;
+  from: string;
+  to: string;
+}
+
 /** Az admin felület sorrendje és címkéi; a backend ugyanezeket a kulcsokat fogadja el. */
 export const STATUSES: { value: QuoteStatus; label: string }[] = [
   { value: 'new', label: 'Új' },
@@ -52,11 +78,27 @@ export class AdminApiService {
   private readonly http = inject(HttpClient);
   private readonly base = `${environment.apiUrl}/api/admin`;
 
-  list(filters: { page: number; status: QuoteStatus | ''; search: string }): Observable<QuotePage> {
-    let params = new HttpParams().set('page', filters.page);
+  list(filters: QuoteFilters & { page: number }): Observable<QuotePage> {
+    const params = this.filterParams(filters).set('page', filters.page);
+    return this.http.get<QuotePage>(`${this.base}/quote-requests`, { params });
+  }
+
+  /** Excel-fájl a szűrésnek megfelelő ajánlatkérésekkel. */
+  export(filters: QuoteFilters): Observable<Blob> {
+    return this.http.get(`${this.base}/quote-requests/export`, { params: this.filterParams(filters), responseType: 'blob' });
+  }
+
+  overview(period: StatsPeriod): Observable<StatsOverview> {
+    return this.http.get<StatsOverview>(`${this.base}/stats/overview`, { params: { period } });
+  }
+
+  private filterParams(filters: QuoteFilters): HttpParams {
+    let params = new HttpParams();
     if (filters.status) params = params.set('status', filters.status);
     if (filters.search.trim()) params = params.set('search', filters.search.trim());
-    return this.http.get<QuotePage>(`${this.base}/quote-requests`, { params });
+    if (filters.from) params = params.set('from', filters.from);
+    if (filters.to) params = params.set('to', filters.to);
+    return params;
   }
 
   stats(): Observable<AdminStats> {
