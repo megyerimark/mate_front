@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ServiceKey } from '../content/types';
 import { QuoteService, ValidationErrorResponse } from '../services/quote.service';
 import { SiteService } from '../services/site.service';
+import { RecaptchaService } from '../services/recaptcha.service';
 import { ACCEPTED_FILES, MAX_FILE_MB } from '../site.config';
 
 /** quote: ajánlatkérés dokumentummal; interpreting: tolmácsolás; spelling: ingyenes helyesírási tanácsadás. */
@@ -24,6 +25,7 @@ export class QuoteForm implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly quotes = inject(QuoteService);
   private readonly router = inject(Router);
+  private readonly recaptcha = inject(RecaptchaService);
   protected readonly site = inject(SiteService);
   protected readonly ui = computed(() => this.site.ui().form);
 
@@ -85,7 +87,11 @@ export class QuoteForm implements OnInit {
     return (control.invalid && control.touched) || !!this.serverErrors()[name];
   }
 
-  protected submit(): void {
+  protected preloadRecaptcha(): void {
+    this.recaptcha.preload();
+  }
+
+  protected async submit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -96,6 +102,7 @@ export class QuoteForm implements OnInit {
 
     const value = this.form.getRawValue();
     const interpreting = value.service === 'interpreting';
+    const token = await this.recaptcha.token('quote');
     this.quotes
       .send(
         {
@@ -103,6 +110,7 @@ export class QuoteForm implements OnInit {
           interpreting_type: interpreting ? value.interpreting_type : '',
           deadline: this.mode() === 'spelling' ? 'normal' : value.deadline,
           locale: this.site.lang(),
+          ...(token ? { recaptcha_token: token } : {}),
         },
         this.mode() === 'spelling' || interpreting ? null : this.file(),
       )
@@ -116,6 +124,8 @@ export class QuoteForm implements OnInit {
             const flat: Record<string, string> = {};
             for (const [key, messages] of Object.entries(body.errors ?? {})) flat[key] = messages[0];
             this.serverErrors.set(flat);
+            // A reCAPTCHA hibának nincs saját mezője: általános hibaként jelenik meg.
+            if (flat['recaptcha_token']) this.generalError.set(flat['recaptcha_token']);
           } else if (err.status === 429) {
             this.generalError.set(errors.tooMany);
           } else {

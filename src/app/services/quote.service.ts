@@ -16,6 +16,7 @@ export interface QuoteRequestPayload {
   locale: string;
   privacy_accepted: boolean;
   website: string; // honeypot, embernek üres marad
+  recaptcha_token?: string;
 }
 
 /** Laravel validációs hiba válasza (422). */
@@ -31,6 +32,7 @@ export class QuoteService {
   send(payload: QuoteRequestPayload, file: File | null): Observable<{ message: string }> {
     const body = new FormData();
     for (const [key, value] of Object.entries(payload)) {
+      if (value === undefined) continue;
       body.append(key, typeof value === 'boolean' ? (value ? '1' : '0') : value);
     }
     if (file) body.append('document', file);

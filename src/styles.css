@@ -450,3 +450,8 @@ details p { color: var(--muted); margin: 16px 0 0; max-width: 46em; }
   .hero-badge { line-height: 1.3; align-items: flex-start; }
   .hero-badge i { display: none; }
 }
+
+/* reCAPTCHA: a lebegő jelvény helyett az űrlap alatti szöveg jelzi (a Google ezt megengedi) */
+.grecaptcha-badge { visibility: hidden; }
+.recaptcha-note { font-size: .76rem; }
+.recaptcha-note a { color: inherit; }

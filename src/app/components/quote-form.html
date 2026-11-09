@@ -1,5 +1,5 @@
 @let t = ui();
-<form class="quote-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+<form class="quote-form" [formGroup]="form" (ngSubmit)="submit()" (focusin)="preloadRecaptcha()" novalidate>
   <p class="hidden" aria-hidden="true">
     <label>Website <input formControlName="website" tabindex="-1" autocomplete="off" /></label>
   </p>
@@ -105,4 +105,5 @@
     {{ sending() ? t.sending : t.submit }}
   </button>
   <p class="form-note">{{ t.note }}</p>
+  <p class="form-note recaptcha-note">{{ t.recaptchaBefore }} <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ t.recaptchaPrivacy }}</a> {{ t.recaptchaAnd }} <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ t.recaptchaTerms }}</a> {{ t.recaptchaAfter }}</p>
 </form>
