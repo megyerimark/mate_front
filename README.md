@@ -104,10 +104,11 @@ a webszervernek kell kezelnie, ezért az A) változatot javasoljuk.
 
 ## Effektek
 
-- **Nyitóképernyő**: balra a régi oldal szövegei (SEO), jobbra a csapat fotója két kis kártyával
-  („Két szakfordító minden fordításon”, „Akár aznapra kész”). Az egérre semmi nem reagál.
-  A fotó: `public/images/done-translations-csapat.{jpg,webp}` (+ `-640.webp` mobilra). Ha lesz saját fotó,
-  ezeket a fájlokat kell lecserélni (fekvő, kb. 3:2, legalább 1000 px széles); a kártyák szövege a `src/app/content/ui.ts` `hero` részében van.
+- **Nyitóképernyő – éjszakai Föld**: a teljes világtérkép, rajta a nagyvárosok arany fényei és Miskolcról induló ívek;
+  görgetésre kivilágított, forgó földgömbbé formálódik (a szakasz addig a helyén marad, a görgetést nem veszi át).
+  Saját canvas-rajzoló, könyvtár nélkül: `src/app/hero/night-globe.ts` (külön, kb. 3,5 KB-os csomag, csak a böngészőben),
+  a városok listája: `src/app/hero/cities.ts`. Csökkentett mozgásnál álló térkép. A prototípusok: `docs/hero-otletek/`.
+- **Éjszakai téma**: a nyilvános oldal fekete–elefántcsont–arany (`html.theme-night`, a `styles.css` végén); az admin világos marad.
 - Nincs rögzített vagy a görgetéshez kötött effekt: a kártyák egyszer, finoman beúsznak, a számlálók felpörögnek,
   a nyelvi szalag lassan, magától úszik. (GSAP nélkül, saját ~40 sor kóddal.)
 

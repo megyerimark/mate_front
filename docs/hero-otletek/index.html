@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero ötletek – DONE Translations</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f5ef;--bg2:#efece3;--text:#202a26;--muted:#5e6b64;--accent:#245b48;--deep:#16392d;--warm:#c29b4a;--warm-ink:#8c6420;--border:rgba(32,42,38,.12);--display:'Inter Tight',Inter,sans-serif;--body:Inter,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--text);background:var(--bg)}
+.c{width:min(1240px,100% - 32px);margin:0 auto}
+.label{position:sticky;top:0;z-index:50;display:flex;justify-content:center;gap:8px;padding:10px;background:rgba(247,245,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);font-size:.85rem}
+.label a{color:var(--text);text-decoration:none;padding:.4em 1em;border-radius:999px;border:1px solid var(--border)}
+.label a:hover{background:#fff}
+.tag{display:inline-block;margin:0 0 18px;padding:.4em 1em;border-radius:999px;font:600 .72rem var(--body);letter-spacing:.16em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:.9em;padding:.55em .55em .55em 1.6em;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:500;font-size:1.05rem}
+.btn i{display:grid;place-items:center;width:2.3em;height:2.3em;border-radius:50%;background:#fff;color:var(--accent);font-style:normal;transition:transform .35s}
+.btn:hover i{transform:translateX(4px)}
+.link{color:inherit;font-weight:500;text-decoration:underline;text-underline-offset:5px}
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:34px}
+.sep{height:80px;display:grid;place-items:center;color:var(--muted);font-size:.85rem;background:var(--bg2)}
+
+/* ============ A) Dokumentum, ami lefordítódik ============ */
+.a{position:relative;height:240vh;background:radial-gradient(ellipse 60% 60% at 80% 30%,rgba(36,91,72,.09),transparent 60%),var(--bg)}
+.a-stick{position:sticky;top:44px;height:calc(100vh - 44px);display:flex;align-items:center;overflow:hidden}
+.a-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.a h2{font-family:var(--display);font-weight:200;font-size:clamp(3rem,7vw,6.6rem);line-height:.92;letter-spacing:-.045em;margin:0 0 .4em;color:var(--accent)}
+.a h2 b{font-weight:500;position:relative;display:inline-block}
+.a h2 b::after{content:'';position:absolute;left:0;right:0;bottom:-.06em;height:.09em;border-radius:9px;background:var(--warm);transform-origin:left;transform:scaleX(var(--u,0))}
+.a p.lead{font-size:1.15rem;color:var(--muted);max-width:30em;line-height:1.6;margin:0}
+.a .tag{border:1px solid var(--border);color:var(--muted)}
+.stage{position:relative;height:560px;perspective:1600px}
+.sheet{position:absolute;left:50%;top:50%;width:360px;height:480px;margin:-240px 0 0 -180px;transform-style:preserve-3d;transform:rotateY(calc(var(--flip,0)*180deg)) rotateX(6deg) rotateZ(calc(-4deg + var(--flip,0)*6deg));transition:transform .08s linear}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;background:#fff;padding:34px 32px;box-shadow:0 50px 90px -40px rgba(22,57,45,.5),0 2px 6px rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.05);font-size:.82rem;color:#4b5651;line-height:1.75}
+.face.back{transform:rotateY(180deg)}
+.face h4{margin:0 0 4px;font:600 .66rem var(--body);letter-spacing:.18em;color:var(--warm-ink);text-transform:uppercase}
+.face h3{margin:0 0 18px;font-family:var(--display);font-weight:400;font-size:1.35rem;color:var(--text)}
+.face p{margin:0 0 12px}
+.face .hl{background:linear-gradient(transparent 55%,rgba(194,155,74,.35) 55%)}
+.stamp{position:absolute;right:22px;bottom:26px;width:118px;height:118px;border-radius:50%;border:2.5px solid var(--accent);color:var(--accent);display:grid;place-items:center;text-align:center;font:700 .64rem/1.3 var(--body);letter-spacing:.12em;text-transform:uppercase;transform:rotate(-14deg) scale(calc(2.4 - var(--st,0)*1.4));opacity:var(--st,0);background:rgba(255,255,255,.85)}
+.stamp b{display:block;font-size:1.7rem;letter-spacing:0}
+.chip{position:absolute;padding:12px 16px;border-radius:16px;background:#fff;box-shadow:0 20px 40px -20px rgba(22,57,45,.4);font-size:.88rem;display:flex;gap:10px;align-items:center;opacity:var(--o,0);transform:translateY(calc((1 - var(--o,0))*20px))}
+.chip i{width:10px;height:10px;border-radius:50%;background:#3f8a6e;box-shadow:0 0 0 5px rgba(63,138,110,.18)}
+.chip.c1{left:0;top:40px}.chip.c2{right:-10px;bottom:30px}
+.lang-pill{position:absolute;left:50%;top:6px;transform:translateX(-50%);display:flex;gap:6px;font:600 .75rem var(--body);letter-spacing:.1em}
+.lang-pill span{padding:.4em .9em;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--muted);transition:all .3s}
+.lang-pill span.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);font-size:.78rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+
+/* ============ B) Mozi: sötétzöld, világtérkép ============ */
+.b{position:relative;min-height:100vh;overflow:hidden;background:radial-gradient(ellipse 70% 70% at 70% 40%,#1f5240 0%,#16392d 55%,#0f2a21 100%);color:#eef2ee;display:flex;align-items:center}
+.b-map{position:absolute;inset:-5% -10% 0 10%;opacity:.95;transform:translateY(calc(var(--by,0)*1px)) scale(calc(1 + var(--bs,0)))}
+.b-map svg{width:100%;height:100%}
+.land{fill:none;stroke:rgba(238,242,238,.2);stroke-width:1.05;stroke-linecap:round}
+.arc{fill:none;stroke:url(#g);stroke-width:.7;stroke-linecap:round;stroke-dasharray:180;stroke-dashoffset:180;animation:arc 5.5s cubic-bezier(.6,0,.2,1) infinite}
+@keyframes arc{0%{stroke-dashoffset:180;opacity:0}10%{opacity:1}55%{stroke-dashoffset:0;opacity:1}85%,100%{stroke-dashoffset:0;opacity:0}}
+.dot{fill:var(--warm)}
+.home{fill:#fff}.ring{fill:none;stroke:#fff;stroke-width:.5;transform-box:fill-box;transform-origin:center;animation:ring 2.4s ease-out infinite}
+@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(4);opacity:0}}
+.b-veil{position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,42,33,.92) 0%,rgba(15,42,33,.55) 45%,transparent 75%)}
+.b .c{position:relative;z-index:2;transform:translateY(calc(var(--ty,0)*1px));opacity:var(--to,1)}
+.b .tag{border:1px solid rgba(255,255,255,.2);color:var(--warm)}
+.b h2{font-family:var(--display);font-weight:200;font-size:clamp(3.2rem,8vw,7.6rem);line-height:.9;letter-spacing:-.05em;margin:0 0 .35em;max-width:9ch}
+.b h2 span{display:block;overflow:hidden}
+.b h2 span>em{display:block;font-style:normal;animation:rise 1.2s cubic-bezier(.2,.8,.2,1) both}
+.b h2 span:nth-child(2)>em{animation-delay:.12s}.b h2 span:nth-child(3)>em{animation-delay:.24s;font-weight:500;background:linear-gradient(90deg,#e9d39c,var(--warm));-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes rise{from{transform:translateY(105%)}to{transform:none}}
+.b p.lead{font-size:1.18rem;line-height:1.6;color:rgba(238,242,238,.75);max-width:28em;margin:0;animation:fade 1s ease both .6s}
+.b .cta{animation:fade 1s ease both .8s}
+.b .btn{background:var(--warm);color:#1b1b14}.b .btn i{background:#16392d;color:var(--warm)}
+.b .link{color:#eef2ee}
+@keyframes fade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.b-facts{display:flex;gap:44px;margin-top:56px;animation:fade 1s ease both 1s}
+.b-facts div b{display:block;font-family:var(--display);font-weight:200;font-size:2.8rem;line-height:1;color:#fff}
+.b-facts div span{font-size:.85rem;color:rgba(238,242,238,.6)}
+
+/* ============ C) Szavak, amik átfordulnak ============ */
+.cc{position:relative;min-height:100vh;overflow:hidden;display:flex;align-items:center;background:radial-gradient(ellipse 50% 60% at 50% 40%,rgba(194,155,74,.12),transparent 70%),var(--bg)}
+.cc .c{position:relative;z-index:2;text-align:center}
+.cc .tag{border:1px solid var(--border);color:var(--muted)}
+.roll{display:block;height:1.02em;overflow:hidden;font-family:var(--display);font-weight:500;font-size:clamp(3.6rem,11vw,10rem);line-height:1;letter-spacing:-.05em;color:var(--accent)}
+.roll ul{list-style:none;margin:0;padding:0;animation:roll 14s cubic-bezier(.75,0,.25,1) infinite}
+.roll li{height:1.02em}
+@keyframes roll{0%,11%{transform:translateY(0)}14%,25%{transform:translateY(-1.02em)}28%,39%{transform:translateY(-2.04em)}42%,53%{transform:translateY(-3.06em)}56%,67%{transform:translateY(-4.08em)}70%,81%{transform:translateY(-5.1em)}84%,96%{transform:translateY(-6.12em)}100%{transform:translateY(-7.14em)}}
+.roll-lang{display:block;margin:10px 0 4px;font:600 .78rem var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--warm-ink)}
+.cc h2{margin:0;font-family:var(--display);font-weight:200;font-size:clamp(2rem,4.4vw,3.8rem);letter-spacing:-.03em;color:var(--text)}
+.cc h2 b{font-weight:500;color:var(--accent)}
+.cc p.lead{margin:22px auto 0;max-width:32em;font-size:1.15rem;color:var(--muted);line-height:1.6}
+.cc .cta{justify-content:center}
+.card{position:absolute;z-index:1;width:230px;padding:18px 20px;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,.05);box-shadow:0 30px 60px -30px rgba(22,57,45,.35);font-size:.82rem;color:#55605b;line-height:1.55;transform:translateY(calc(var(--sy,0)*var(--k)*1px)) rotate(var(--r))}
+.card small{display:block;margin-bottom:6px;font:600 .62rem var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--warm-ink)}
+.k1{left:4%;top:16%;--r:-7deg;--k:-.35}.k2{right:5%;top:12%;--r:6deg;--k:-.55}.k3{left:7%;bottom:12%;--r:5deg;--k:-.2}.k4{right:8%;bottom:16%;--r:-5deg;--k:-.45}
+
+@media(max-width:900px){
+ .a{height:auto}.a-stick{position:static;height:auto;padding:60px 0}.a-grid{grid-template-columns:1fr}.stage{height:520px}
+ .card{display:none}.b-facts{gap:24px;flex-wrap:wrap}.b-veil{background:linear-gradient(180deg,rgba(15,42,33,.85),rgba(15,42,33,.6))}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="label"><a href="#a">A · Lefordított dokumentum</a><a href="#b">B · Mozi, sötétzöld</a><a href="#c">C · Átforduló szavak</a></nav>
+
+<!-- A -->
+<section class="a" id="a">
+ <div class="a-stick"><div class="c a-grid">
+  <div>
+   <span class="tag">A · DONE Translations Fordítóiroda</span>
+   <h2>Fordítás<br>akár <b>aznapra</b></h2>
+   <p class="lead">Professzionális és precíz nyelvi szolgáltatások cégeknek és magánszemélyeknek egyaránt.</p>
+   <div class="cta"><a class="btn" href="#">Ajánlatkérés <i>→</i></a><a class="link" href="#">Ingyenes helyesírási tanácsadás</a></div>
+  </div>
+  <div class="stage">
+   <div class="lang-pill"><span class="hu on">MAGYAR</span><span class="en">ENGLISH</span></div>
+   <div class="sheet">
+    <div class="face front"><h4>Magyar · eredeti</h4><h3>Adásvételi szerződés</h3>
+     <p>Amely létrejött egyrészről a <span class="hl">Példa Kft.</span> mint eladó, másrészről mint vevő között az alulírott napon és helyen, az alábbi feltételekkel.</p>
+     <p>1. Az eladó kijelenti, hogy a szerződés tárgyát képező ingóság kizárólagos tulajdona.</p><p>2. A vételár megfizetése banki átutalással történik.</p></div>
+    <div class="face back"><h4>English · translation</h4><h3>Sales Contract</h3>
+     <p>Concluded between <span class="hl">Példa Kft.</span> as the seller on the one part and the buyer on the other part, on the date and at the place below, under the following terms.</p>
+     <p>1. The seller declares that the movable property subject to this contract is its exclusive property.</p><p>2. The purchase price shall be paid by bank transfer.</p>
+     <div class="stamp"><div>Lektorálva<b>✓</b>2 szakfordító</div></div></div>
+   </div>
+   <div class="chip c1"><i></i>Fordítás folyamatban…</div>
+   <div class="chip c2"><i></i>Elkészült · ma 16:30</div>
+  </div>
+ </div></div>
+ <div class="hint">Görgess lejjebb – a dokumentum lefordítódik</div>
+</section>
+<div class="sep">B változat ↓</div>
+
+<!-- B -->
+<section class="b" id="b">
+ <div class="b-map"><svg viewBox="0 0 360 136" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#c29b4a"/></linearGradient></defs><path class="land" id="land"/><g id="arcs"></g><circle class="home" cx="200.8" cy="29.9" r="1.6"/><circle class="ring" cx="200.8" cy="29.9" r="1.6"/></svg></div>
+ <div class="b-veil"></div>
+ <div class="c">
+  <span class="tag">B · DONE Translations Fordítóiroda</span>
+  <h2><span><em>Fordítás</em></span><span><em>akár</em></span><span><em>aznapra</em></span></h2>
+  <p class="lead">Professzionális és precíz nyelvi szolgáltatások cégeknek és magánszemélyeknek egyaránt.</p>
+  <div class="cta"><a class="btn" href="#">Ajánlatkérés <i>→</i></a><a class="link" href="#">Ingyenes helyesírási tanácsadás</a></div>
+  <div class="b-facts"><div><b>86</b><span>nyelv</span></div><div><b>2018</b><span>óta</span></div><div><b>1200+</b><span>projekt évente</span></div></div>
+ </div>
+</section>
+<div class="sep">C változat ↓</div>
+
+<!-- C -->
+<section class="cc" id="c">
+ <div class="card k1"><small>Deutsch</small>Wir übersetzen Ihre Dokumente schnell und präzise.</div>
+ <div class="card k2"><small>Français</small>Nous traduisons vos documents rapidement et avec précision.</div>
+ <div class="card k3"><small>English</small>We translate your documents quickly and precisely.</div>
+ <div class="card k4"><small>Español</small>Traducimos sus documentos de forma rápida y precisa.</div>
+ <div class="c">
+  <span class="tag">C · DONE Translations Fordítóiroda</span>
+  <span class="roll"><ul><li>Fordítás</li><li>Translation</li><li>Übersetzung</li><li>Traduction</li><li>Traduzione</li><li>Traducción</li><li>Překlad</li><li>Fordítás</li></ul></span>
+  <span class="roll-lang" id="rl">magyar</span>
+  <h2>akár <b>aznapra</b>, 86 nyelven</h2>
+  <p class="lead">Professzionális és precíz nyelvi szolgáltatások cégeknek és magánszemélyeknek egyaránt.</p>
+  <div class="cta"><a class="btn" href="#">Ajánlatkérés <i>→</i></a><a class="link" href="#">Ingyenes helyesírási tanácsadás</a></div>
+ </div>
+</section>
+<div class="sep">Vége – melyik tetszik? (A, B vagy C, vagy keverve)</div>
+
+<script>
+const LAND = {"step": 2.0, "latTop": 76.0, "cols": 180, "rows": 67, "mask": "AAAABNGYAA///wAAAAAA4ABf4AGAAAAAAADwAQAAP//wAAAAAGAAf/gAAAAAAAAAHfzH+AP//AAAAAAMDd///8D4AAAH/gof8x3wH//gAAD4AADf//////wQgf///w59h4H/wAAAP/yf//////////e//////+B2H/AuAA/+P///////////AD/////5Q4D8AcAB9/f//////////+Af/////gHAB4AAAH5///////////78AP8f///gHkAAAAAH5H/////////+GAABgB///wH+AAAAEAw/////////8AYAACAA///8D/AAAAECh/////////4A4AAAABf///v/gAAAZD//////////8AwAAAAAP///n/wAAAXv///////////AgAAAAAL////4QAAAA///////////9AAAAAAAB////48AAAD///////////8AAAAAAAD////9AAAAB//4f///////4AAAAAAAD////kAAAAB9PwP///////xgAAAAAAD////gAAAAfyzxH//////+CAAAAAAAD///+AAAAAfCCf///////cCAAAAAAAB///8AAAAAPAxf//////+MAAAAAAAAB///8AAAAAA+AA///////GMAAAAAAAAf//4AAAAAP+AA///////BgAAAAAAAAP//wAAAAAf/zB///////hAAAAAAAAAL/5gAAAAAf////f/////gAAAAAAAAAH/AQAAAAA///+/P/////gAAAAAAAAAB+AQAAAAB///+/h/////AAAAAAAAAAA+AAAAAAD////f+D///+gAAAAAAAAAAeAIAAAAD////P/B/7/4AAAAAAAAAAAfEGAAAAD////v+A/j+AAAAAAAAAAAAH8EIAAAD////n8AfB+AgAAAAAAAAAABcAAAAAD////3wAcBfAgAAAAAAAAAAAPAAAAAD////7AAcAfgwAAAAAAAAAAABAAAAAD////8QAMAXgIAAAAAAAAAAABD+AAAB/////gAMASBQAAAAAAAAAAAAX/AAAB/////gACAQAYAAAAAAAAAAAAH/oAAAfv///AAAAICIAAAAAAAAAAAAH/8AAAAD///AAAAsGAAAAAAAAAAAAAH/+AAAAB//+AAAAcOAAAAAAAAAAAAAP/+AAAAB//4AAAAMeAAAAAAAAAAAAAP//wAAAB//4AAAAMcgsAAAAAAAAAAAf//+AAAA//wAAAAGEA/CAAAAAAAAAAf///AAAA//gAAAABAAH5AAAAAAAAAAP///gAAAf/wAAAAAYAHQQAAAAAAAAAH///AAAAf/wAAAAAAAAIAAAAAAAAAAH//+AAAAf/wAAAAAAAhAAAAAAAAAAAD//+AAAA//wgAAAAAFxAAAAAAAAAAAB//+AAAA//xgAAAAAP5gAAAAAAAAAAAf/8AAAA//DgAAAAAf/gAAAAAAAAAAAf/8AAAA/+DAAAAAA//wAAAAAAAAAAAf/4AAAAf/DAAAAAH//4AAAAAAAAAAAf/gAAAAf/DAAAAAH//8AAAAAAAAAAAf/AAAAAf8AAAAAAH//+AAAAAAAAAAA//AAAAAP8AAAAAAH//+AAAAAAAAAAA/+AAAAAH4AAAAAAH//+AAAAAAAAAAA/8AAAAAH4AAAAAAD8/8AAAAAAAAAAA/4AAAAAGAAAAAAADAH8AAAAAAAAAAA/gAAAAAAAAAAAAAAAD4AAAAAAAAAAB/gAAAAAAAAAAAAAAADQAGAAAAAAAAB+AAAAAAAAAAAAAAAAAAAEAAAAAAAAB8AAAAAAAAAAAAAAAAAQAIAAAAAAAAB4AAAAAAAAAAAAAAAAAAAwAAAAAAAABwAAAAAAAAAAAAAAAAAABgAAAAAAAAD4AAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAAAAADxgAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="};
+// B: térkép
+(function(){
+ const bytes = Uint8Array.from(atob(LAND.mask), c => c.charCodeAt(0)); let d = '';
+ for (let r = 0; r < LAND.rows; r++) for (let c = 0; c < LAND.cols; c++) { const i = r * LAND.cols + c; if (bytes[i >> 3] & (0x80 >> (i & 7))) d += `M${c*2+1} ${r*2+2}h0`; }
+ document.getElementById('land').setAttribute('d', d);
+ const X = l => l + 180, Y = l => 78 - l, hx = X(20.8), hy = Y(48.1);
+ const targets = [[-0.1,51.5],[2.3,48.9],[13.4,52.5],[-3.7,40.4],[12.5,41.9],[37.6,55.8],[139.7,35.7],[116.4,39.9],[77.2,28.6],[-74,40.7],[-46.6,-23.5],[28,-26.2],[151.2,-33.9],[46.7,24.7],[35.2,31.8],[-99.1,19.4],[103.8,1.35],[127,37.5]];
+ const g = document.getElementById('arcs'); let html = '';
+ targets.forEach(([lo, la], i) => { const tx = X(lo), ty = Y(la), mx = (hx + tx) / 2, dist = Math.hypot(tx - hx, ty - hy), my = (hy + ty) / 2 - Math.min(dist * .35, 38);
+  html += `<path class="arc" d="M${hx} ${hy}Q${mx} ${my} ${tx} ${ty}" style="animation-delay:${(i * .31).toFixed(2)}s"/><circle class="dot" cx="${tx}" cy="${ty}" r="1.1"/>`; });
+ g.innerHTML = html;
+})();
+// C: nyelv felirat
+(function(){ const n=['magyar','angol','német','francia','olasz','spanyol','cseh','magyar']; const el=document.getElementById('rl'); const stops=[0,14,28,42,56,70,84]; const t0=performance.now();
+ setInterval(()=>{const p=((performance.now()-t0)/14000*100)%100; let i=0; stops.forEach((s,k)=>{ if(p>=s+1.5) i=k; }); el.textContent=n[i];},200); })();
+// görgetés
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const a = document.querySelector('.a'), sheet = a.querySelector('.sheet'), st = a.querySelector('.stamp'), c1 = a.querySelector('.c1'), c2 = a.querySelector('.c2'), hu = a.querySelector('.lang-pill .hu'), en = a.querySelector('.lang-pill .en'), title = a.querySelector('h2');
+const b = document.querySelector('.b'), bmap = b.querySelector('.b-map'), bc = b.querySelector('.c');
+const cc = document.querySelector('.cc');
+const clamp = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
+let ticking = false;
+function frame(){
+ ticking = false;
+ const vh = innerHeight;
+ // A
+ const ra = a.getBoundingClientRect(); const pa = clamp(-ra.top / (ra.height - vh));
+ const flip = clamp((pa - .15) / .45), stamp = clamp((pa - .62) / .18);
+ sheet.style.setProperty('--flip', flip.toFixed(3));
+ st.style.setProperty('--st', stamp.toFixed(3));
+ c1.style.setProperty('--o', clamp(pa / .12) * (1 - clamp((pa - .55) / .1)));
+ c2.style.setProperty('--o', clamp((pa - .78) / .12));
+ title.style.setProperty('--u', clamp(pa / .3).toFixed(3));
+ hu.classList.toggle('on', flip < .5); en.classList.toggle('on', flip >= .5);
+ // B
+ const rb = b.getBoundingClientRect(); const pb = clamp(-rb.top / rb.height);
+ bmap.style.setProperty('--by', (pb * 120).toFixed(1)); bmap.style.setProperty('--bs', (pb * .12).toFixed(3));
+ bc.style.setProperty('--ty', (pb * -80).toFixed(1)); bc.style.setProperty('--to', (1 - pb * 1.3).toFixed(3));
+ // C
+ const rc = cc.getBoundingClientRect(); cc.style.setProperty('--sy', (-rc.top).toFixed(1));
+}
+if (!reduce) { addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, { passive: true }); frame(); }
+else { sheet.style.setProperty('--flip', 0); }
+</script>
+</body>
+</html>

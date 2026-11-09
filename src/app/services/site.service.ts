@@ -55,6 +55,8 @@ export class SiteService {
 
   private apply(key: RouteKey, lang: Lang): void {
     this.doc.documentElement.lang = lang;
+    // Éjszakai (sötét) téma a nyilvános oldalon; az admin világos marad.
+    this.doc.documentElement.classList.toggle('theme-night', key !== 'admin');
     if (key === 'admin') return;
 
     const ui = UI[lang];

@@ -46,6 +46,7 @@ export const UI = {
       /** A „Fordítás akár aznapra” cím sorokra bontva; a szöveg együtt pontosan a régi oldalé (SEO). */
       titleLines: [[{ t: 'Fordítás' }], [{ t: 'akár ' }, { t: 'aznapra', accent: true }]] as TitleLine[],
       facts: ['2018 óta', '86 nyelven', '1200+ projekt évente'],
+      caption: ['86 nyelv', 'Miskolcról a világ minden tájára'],
       photoAlt: 'A DONE Translations fordítóiroda csapata',
       badges: [
         { mark: '2×', title: 'Két szakfordító', text: 'minden fordításon' },
@@ -198,6 +199,7 @@ export const UI = {
     hero: {
       titleLines: [[{ t: 'Translation' }], [{ t: 'even on the ' }, { t: 'same day', accent: true }]] as TitleLine[],
       facts: ['Since 2018', '86 languages', '1,200+ projects a year'],
+      caption: ['86 languages', 'From Miskolc to every corner of the world'],
       photoAlt: 'The DONE Translations team',
       badges: [
         { mark: '2×', title: 'Two translators', text: 'on every translation' },

@@ -113,7 +113,7 @@
 <section class="section section-alt why-section">
   <div class="container">
     <h2 class="display">{{ h.whyHeading }}</h2>
-    <div class="why">
+    <div class="why-rows">
       @for (f of h.why; track f.title; let i = $index) {
         <div class="why-row" appReveal="clip" [revealDelay]="i * 120">
           <div class="why-head">
