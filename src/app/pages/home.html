@@ -3,14 +3,23 @@
 @let x = extra();
 <app-hero />
 
-<!-- NYELVI SZALAG: lassan, magától úszik (nem a görgetéshez kötve) -->
-<section class="marquee" aria-hidden="true">
-  <div class="marquee-row">
-    @for (round of [1, 2]; track round) {
-      @for (l of marquee(); track l) {
-        <span>{{ l }}</span><i>✦</i>
+<!-- PRÉMIUM ÍGÉRET: 110% -->
+<section class="premium" aria-labelledby="premium-title">
+  <div class="container">
+    <div class="premium-head" appReveal>
+      <p class="premium-kicker">{{ x.premium.kicker }}</p>
+      <h2 id="premium-title" class="premium-title">{{ x.premium.title[0] }} <span class="premium-110">{{ x.premium.title[1] }}</span></h2>
+      <p class="premium-text">{{ x.premium.text }}</p>
+    </div>
+    <ul class="premium-pillars">
+      @for (p of x.premium.pillars; track p.t; let i = $index) {
+        <li appReveal [revealDelay]="i * 90">
+          <span class="premium-k" aria-hidden="true"><app-icon [name]="p.k" /></span>
+          <b>{{ p.t }}</b>
+          <span>{{ p.d }}</span>
+        </li>
       }
-    }
+    </ul>
   </div>
 </section>
 
@@ -162,6 +171,7 @@
 <!-- ZÁRÓ FELHÍVÁS -->
 <section class="final-cta">
   <div class="container">
+    <p class="final-kicker">{{ x.premium.kicker }} · <span>110%</span></p>
     <p class="final-slogan">{{ h.subtitle }}.</p>
     <div class="hero-cta center">
       <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg">{{ ui.requestQuote }} <span aria-hidden="true">→</span></a>

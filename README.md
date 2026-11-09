@@ -104,11 +104,13 @@ a webszervernek kell kezelnie, ezért az A) változatot javasoljuk.
 
 ## Effektek
 
-- **Nyitóképernyő – éjszakai Föld**: a teljes világtérkép, rajta a nagyvárosok arany fényei és Miskolcról induló ívek;
-  görgetésre kivilágított, forgó földgömbbé formálódik (a szakasz addig a helyén marad, a görgetést nem veszi át).
-  Saját canvas-rajzoló, könyvtár nélkül: `src/app/hero/night-globe.ts` (külön, kb. 3,5 KB-os csomag, csak a böngészőben),
-  a városok listája: `src/app/hero/cities.ts`. Csökkentett mozgásnál álló térkép. A prototípusok: `docs/hero-otletek/`.
-- **Éjszakai téma**: a nyilvános oldal fekete–elefántcsont–arany (`html.theme-night`, a `styles.css` végén); az admin világos marad.
+- **Nyitóképernyő – éjszakai világtérkép**: a teljes világ a nagyvárosok arany fényeivel, Miskolcról folyamatosan
+  induló ívekkel és pulzáló Miskolccal. Nincs görgetési effekt. Saját canvas-rajzoló, könyvtár nélkül:
+  `src/app/hero/night-globe.ts` (külön, kb. 3,5 KB-os csomag, csak a böngészőben, csak ha látszik),
+  a városok listája: `src/app/hero/cities.ts`. Csökkentett mozgásnál álló kép. A korábbi prototípusok: `docs/hero-otletek/`.
+- **Prémium ígéret (110%)**: a hero alatti sáv és a hero infósora; a szövegek a `ui.ts` `HOME_EXTRA.premium` részében,
+  csak a régi oldalon is szereplő tényekkel (két szakfordító, szakterületi és anyanyelvi szakember, határidő-garancia, bizalmas kezelés).
+- **Éjszakai téma**: a nyilvános oldal grafit–elefántcsont–arany (`html.theme-night`, a `styles.css` végén); az admin világos marad.
 - Nincs rögzített vagy a görgetéshez kötött effekt: a kártyák egyszer, finoman beúsznak, a számlálók felpörögnek,
   a nyelvi szalag lassan, magától úszik. (GSAP nélkül, saját ~40 sor kóddal.)
 

@@ -1,8 +1,7 @@
 @let h = home();
 @let ui = site.ui();
-<!-- A szakasz magasabb a képernyőnél: a belső rész a helyén marad, a görgetés a térképet földgömbbé formálja (nem veszi át a görgetést). -->
 <section class="hero night" #heroEl>
-  <div class="hero-stick" [style.--p]="progress()">
+  <div class="hero-stick">
     <canvas #canvas class="hero-canvas" aria-hidden="true"></canvas>
     <div class="hero-veil" aria-hidden="true"></div>
     <div class="container hero-text">
@@ -26,6 +25,5 @@
         @for (f of ui.hero.facts; track f) { <li>{{ f }}</li> }
       </ul>
     </div>
-    <p class="hero-caption" aria-hidden="true"><b>{{ ui.hero.caption[0] }}</b><span>{{ ui.hero.caption[1] }}</span></p>
   </div>
 </section>

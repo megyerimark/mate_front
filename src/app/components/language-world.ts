@@ -1,29 +1,10 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, afterNextRender, computed, inject, isDevMode, signal } from '@angular/core';
+import { Component, PLATFORM_ID, computed, inject, isDevMode, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LAND, REGIONS, Region, WORLD_LANGUAGES, WorldLanguage } from '../content/languages-world';
+import { REGIONS, Region, WORLD_LANGUAGES } from '../content/languages-world';
 import { PAGES } from '../content/ui';
 import { Reveal } from '../motion/reveal.directive';
 import { SiteService } from '../services/site.service';
-
-/** Miskolc, ahonnan az ívek indulnak. */
-const HOME_POINT: [number, number] = [20.8, 48.1];
-const x = (lon: number) => +(lon + 180).toFixed(1);
-const y = (lat: number) => +(LAND.latTop - lat + 2).toFixed(1);
-
-/** A szárazföld pontjai egyetlen SVG útvonalként (kerek végű, nulla hosszú szakaszok = pöttyök). Egyszer számolódik. */
-let landPath: string | undefined;
-function buildLand(): string {
-  const bytes = Uint8Array.from(atob(LAND.mask), (c) => c.charCodeAt(0));
-  let d = '';
-  for (let r = 0; r < LAND.rows; r++) {
-    for (let c = 0; c < LAND.cols; c++) {
-      const i = r * LAND.cols + c;
-      if (bytes[i >> 3] & (0x80 >> (i & 7))) d += `M${c * LAND.step + 1} ${r * LAND.step + 2}h0`;
-    }
-  }
-  return d;
-}
 
 const COPY = {
   hu: {
@@ -56,14 +37,7 @@ export class LanguageWorld {
   protected readonly copy = computed(() => COPY[this.site.lang()]);
   protected readonly regions = REGIONS;
   protected readonly active = signal<Region>('europe');
-  protected readonly hovered = signal<(WorldLanguage & { x: number; y: number }) | null>(null);
-  /** A szárazföld pontjai csak a böngészőben rajzolódnak ki (díszítés, a hajtás alatt): így az előrenderelt HTML 33 KB-tal kisebb. */
-  protected readonly land = signal('');
-  protected readonly home = { x: x(HOME_POINT[0]), y: y(HOME_POINT[1]) };
   protected readonly total = WORLD_LANGUAGES.length;
-
-  /** Térképpontok (a klasszikus/mesterséges nyelveknek nincs). */
-  protected readonly points = WORLD_LANGUAGES.filter((l) => l.lon !== undefined).map((l) => ({ ...l, x: x(l.lon!), y: y(l.lat!) }));
 
   protected readonly regionLangs = computed(() => {
     const lang = this.site.lang();
@@ -78,21 +52,7 @@ export class LanguageWorld {
     Object.fromEntries(REGIONS.map((r) => [r.key, WORLD_LANGUAGES.filter((l) => l.region === r.key).length + (r.also?.length ?? 0)])),
   );
 
-  /** Ívek Miskolcról az aktív régió nyelveihez (a régióban is beszélt nyelvek a régió központjába mutatnak). */
-  protected readonly arcs = computed(() => {
-    const region = REGIONS.find((r) => r.key === this.active());
-    const targets = this.points.filter((p) => p.region === this.active() && p.hu !== 'magyar').map((p) => [p.x, p.y] as const);
-    if (region?.also && region.hub) targets.push([x(region.hub[0]), y(region.hub[1])]);
-    return targets.map(([tx, ty]) => {
-      const mx = (this.home.x + tx) / 2;
-      const dist = Math.hypot(tx - this.home.x, ty - this.home.y);
-      const my = (this.home.y + ty) / 2 - Math.min(dist * 0.35, 40);
-      return `M${this.home.x} ${this.home.y}Q${mx.toFixed(1)} ${my.toFixed(1)} ${tx} ${ty}`;
-    });
-  });
-
   constructor() {
-    afterNextRender(() => this.land.set((landPath ??= buildLand())));
     if (isDevMode() && isPlatformBrowser(inject(PLATFORM_ID))) {
       const block = PAGES.hu.languages.blocks.find((b) => b.kind === 'languages');
       const listed = block?.kind === 'languages' ? block.groups.flat() : [];

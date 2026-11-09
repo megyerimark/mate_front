@@ -2,8 +2,9 @@ import { LAND } from '../content/languages-world';
 import { CITIES } from './cities';
 
 /**
- * Éjszakai Föld vásznon (canvas 2D, könyvtár nélkül): a lapos világtérkép görgetésre kivilágított, forgó földgömbbé
- * hajlik; a városok fényei aranyban izzanak, Miskolcról ívek indulnak. Csak a böngészőben fut.
+ * Éjszakai világtérkép vásznon (canvas 2D, könyvtár nélkül): a városok fényei aranyban izzanak, Miskolcról
+ * folyamatosan ívek indulnak a világba, Miskolc pulzál. Csak a böngészőben fut.
+ * (A gömbbé formálódás – progress > 0 – megmaradt a kódban, de a nyitóképernyő nem használja.)
  */
 const RAD = Math.PI / 180;
 const HOME: [number, number] = [48.1, 20.8];
@@ -76,10 +77,10 @@ export class NightGlobe {
 
   private geo() {
     const { W, H, mobile } = this, short = H < 700;
-    const fw = mobile ? W * 0.98 : W * 0.66;
+    const fw = mobile ? W * 1.02 : Math.min(W * 0.7, H * 1.75);
     return {
       fw, fh: fw / 2.3,
-      fcx: mobile ? W / 2 : W * 0.63, fcy: mobile ? H * (short ? 0.23 : 0.27) : H * 0.5,
+      fcx: mobile ? W / 2 : W * 0.62, fcy: mobile ? H * (short ? 0.24 : 0.27) : H * 0.5,
       R: mobile ? Math.min(W * 0.36, H * (short ? 0.105 : 0.15)) : Math.min(H * 0.38, W * 0.26),
       gcx: mobile ? W / 2 : W * 0.7, gcy: mobile ? H * (short ? 0.235 : 0.29) : H * 0.52,
     };
@@ -144,7 +145,7 @@ export class NightGlobe {
     }
     for (let k = 0; k < LB; k++) {
       if (!lb[k].length) continue;
-      ctx.fillStyle = `rgba(170,175,185,${(0.07 + (0.09 * (k + 0.5)) / LB).toFixed(3)})`; ctx.beginPath();
+      ctx.fillStyle = `rgba(190,196,206,${(0.13 + (0.12 * (k + 0.5)) / LB).toFixed(3)})`; ctx.beginPath();
       const a = lb[k]; for (let i = 0; i < a.length; i += 2) ctx.rect(a[i], a[i + 1], ds, ds);
       ctx.fill();
     }
@@ -162,7 +163,7 @@ export class NightGlobe {
     for (let k = 0; k < QB; k++) {
       const b = qb[k]; if (!b.length) continue;
       const a = (k + 0.5) / QB;
-      ctx.fillStyle = `rgba(255,${Math.round(195 + 45 * a)},${Math.round(115 + 75 * a)},${(0.55 * a).toFixed(3)})`; ctx.beginPath();
+      ctx.fillStyle = `rgba(255,${Math.round(195 + 45 * a)},${Math.round(115 + 75 * a)},${(0.7 * a).toFixed(3)})`; ctx.beginPath();
       for (let i = 0; i < b.length; i += 3) { const sz = b[i + 2] ? 1.8 : 1.15; ctx.rect(b[i] - sz / 2, b[i + 1] - sz / 2, sz, sz); }
       ctx.fill();
     }

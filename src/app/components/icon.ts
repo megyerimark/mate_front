@@ -29,6 +29,10 @@ const ICONS: Record<string, string> = {
     <path d="M4 10v4a1 1 0 0 0 1 1h2l6 4V5L7 9H5a1 1 0 0 0-1 1z"/>
     <path d="M7 15l1 4.5"/>
     <path class="w" d="M17 9.5a3.5 3.5 0 0 1 0 5M19.5 7a7 7 0 0 1 0 10"/>`,
+  lock: `
+    <rect x="5" y="10.5" width="14" height="10" rx="2"/>
+    <path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/>
+    <circle class="w" cx="12" cy="15.5" r="1.4"/>`,
   web: `
     <circle cx="12" cy="12" r="9"/><path d="M12 3a13.5 13.5 0 0 1 0 18"/><path d="M12 3a13.5 13.5 0 0 0 0 18"/>
     <path class="w" d="M3.5 9h17M3.5 15h17"/>`,

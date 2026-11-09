@@ -45,7 +45,7 @@ export const UI = {
     hero: {
       /** A „Fordítás akár aznapra” cím sorokra bontva; a szöveg együtt pontosan a régi oldalé (SEO). */
       titleLines: [[{ t: 'Fordítás' }], [{ t: 'akár ' }, { t: 'aznapra', accent: true }]] as TitleLine[],
-      facts: ['2018 óta', '86 nyelven', '1200+ projekt évente'],
+      facts: ['110%-os odafigyelés', '2018 óta', '86 nyelven', '1200+ projekt évente'],
       caption: ['86 nyelv', 'Miskolcról a világ minden tájára'],
       photoAlt: 'A DONE Translations fordítóiroda csapata',
       badges: [
@@ -198,7 +198,7 @@ export const UI = {
     },
     hero: {
       titleLines: [[{ t: 'Translation' }], [{ t: 'even on the ' }, { t: 'same day', accent: true }]] as TitleLine[],
-      facts: ['Since 2018', '86 languages', '1,200+ projects a year'],
+      facts: ['110% attention', 'Since 2018', '86 languages', '1,200+ projects a year'],
       caption: ['86 languages', 'From Miskolc to every corner of the world'],
       photoAlt: 'The DONE Translations team',
       badges: [
@@ -337,6 +337,17 @@ export type Ui = (typeof UI)['hu'] | (typeof UI)['en'];
  */
 export const HOME_EXTRA = {
   hu: {
+    premium: {
+      kicker: 'Prémium fordítás',
+      title: ['Nálunk nem 100%-ot kap.', '110%-ot.'],
+      text: 'Nem elégszünk meg azzal, hogy a fordítás jó legyen. Két szakfordító dolgozik rajta, határidőre és bizalmasan készül el, hogy Ön gond nélkül továbbküldhesse.',
+      pillars: [
+        { k: 'quality', t: 'Két szakfordító', d: 'Minden fordításon legalább két szakfordító dolgozik: kettős minőség-ellenőrzés.' },
+        { k: 'award', t: 'Témájában jártas szakember', d: 'Minden szöveget az adott szakterületen jártas szakfordító készít, lektorálásnál anyanyelvi szakember.' },
+        { k: 'fast', t: 'Akár aznapra', d: 'Sürgős és expressz határidő; a minőség mellett a határidőre is garanciát vállalunk.' },
+        { k: 'lock', t: 'Bizalmasan', d: 'Személyes adatait és dokumentumait bizalmasan, az adatvédelmi törvényeknek megfelelően kezeljük.' },
+      ],
+    },
     fieldsHeading: 'Szakterületek',
     fieldsLead: 'Minden fordítást az adott szöveg témájában jártas szakfordító készít.',
     fields: [
@@ -382,6 +393,17 @@ export const HOME_EXTRA = {
     ],
   },
   en: {
+    premium: {
+      kicker: 'Premium translation',
+      title: ['With us, you don’t get 100%.', 'You get 110%.'],
+      text: 'A good translation is not enough for us. Two professional translators work on it, and it is delivered on time and confidentially, so you can simply send it on.',
+      pillars: [
+        { k: 'quality', t: 'Two translators', d: 'At least two professional translators work on every translation: a double quality check.' },
+        { k: 'award', t: 'Subject-matter experts', d: 'Every text is translated by a translator who knows the field; proofreading is done by a native speaker.' },
+        { k: 'fast', t: 'Even on the same day', d: 'Urgent and express deadlines; we guarantee our deadlines as well as our quality.' },
+        { k: 'lock', t: 'Confidential', d: 'We handle your personal data and documents confidentially, in accordance with data protection laws.' },
+      ],
+    },
     fieldsHeading: 'Fields',
     fieldsLead: 'Every translation is done by a professional translator who knows the subject of the text.',
     fields: [

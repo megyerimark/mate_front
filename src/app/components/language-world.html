@@ -16,26 +16,7 @@
       </div>
     </div>
 
-    <div class="world-map-wrap" appReveal="fade">
-      <svg class="world-map" viewBox="0 0 360 136" role="img" [attr.aria-label]="c.title">
-        <path class="world-land" [attr.d]="land()" />
-        @for (p of points; track p.hu) {
-          <circle class="world-pt" [class.on]="p.region === active()" [attr.cx]="p.x" [attr.cy]="p.y" [attr.r]="p.region === active() ? 1.9 : 1.2"
-            (mouseenter)="hovered.set(p)" (mouseleave)="hovered.set(null)" (click)="select(p.region)" />
-        }
-        <!-- Az ívek a régió váltásakor újrarajzolódnak -->
-        @for (region of [active()]; track region) {
-          <g class="world-arcs">
-            @for (d of arcs(); track $index) { <path [attr.d]="d" [style.--d]="$index" /> }
-          </g>
-        }
-        <circle class="world-home" [attr.cx]="home.x" [attr.cy]="home.y" r="2.4" />
-        <circle class="world-home-ring" [attr.cx]="home.x" [attr.cy]="home.y" r="2.4" />
-      </svg>
-      @if (hovered(); as h) {
-        <div class="world-tip" aria-hidden="true" [style.left.%]="(h.x / 360) * 100" [style.top.%]="(h.y / 136) * 100">{{ site.lang() === 'hu' ? h.hu : h.en }}</div>
-      }
-
+    <div class="world-side" appReveal="fade">
       <div class="world-panel" id="world-panel" role="tabpanel" aria-live="polite">
         @let langs = regionLangs();
         <p class="world-panel-head"><b>{{ regionName(active()) }}</b> · {{ langs.count }} {{ c.languages }}</p>

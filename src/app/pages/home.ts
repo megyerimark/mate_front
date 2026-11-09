@@ -8,7 +8,6 @@ import { HOME, HOME_EXTRA, PAGES, UI } from '../content/ui';
 import { Hero } from '../hero/hero';
 import { Reveal } from '../motion/reveal.directive';
 import { SiteService } from '../services/site.service';
-import { MARQUEE } from '../site.config';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +19,6 @@ export class Home {
   protected readonly site = inject(SiteService);
   protected readonly home = computed(() => HOME[this.site.lang()]);
   protected readonly extra = computed(() => HOME_EXTRA[this.site.lang()]);
-  protected readonly marquee = computed(() => MARQUEE[this.site.lang()]);
   /** A tolmácsolás típusai (az űrlap választható értékei). */
   protected readonly interpretingTypes = computed(() => Object.values(UI[this.site.lang()].form.interpretingTypes).slice(0, 4));
   /** Az épp a képernyő közepén lévő lépés (sticky storytelling). */
