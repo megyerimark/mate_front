@@ -18,6 +18,17 @@ const ICONS: Record<string, string> = {
     <circle cx="12" cy="12" r="3.2"/>
     <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>
     <circle class="w" cx="12" cy="12" r="1"/>`,
+  finance: `
+    <path d="M4 20V4"/><path d="M4 20h16"/>
+    <path d="M7.5 15.5l4-4.5 3 3 5-6"/>
+    <circle class="w" cx="19.5" cy="8" r="1.4"/>`,
+  medical: `
+    <rect x="3.5" y="3.5" width="17" height="17" rx="4"/>
+    <path class="w" d="M12 8v8M8 12h8"/>`,
+  marketing: `
+    <path d="M4 10v4a1 1 0 0 0 1 1h2l6 4V5L7 9H5a1 1 0 0 0-1 1z"/>
+    <path d="M7 15l1 4.5"/>
+    <path class="w" d="M17 9.5a3.5 3.5 0 0 1 0 5M19.5 7a7 7 0 0 1 0 10"/>`,
   web: `
     <circle cx="12" cy="12" r="9"/><path d="M12 3a13.5 13.5 0 0 1 0 18"/><path d="M12 3a13.5 13.5 0 0 0 0 18"/>
     <path class="w" d="M3.5 9h17M3.5 15h17"/>`,

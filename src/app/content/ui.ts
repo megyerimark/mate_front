@@ -214,7 +214,7 @@ export const UI = {
       recaptchaPrivacy: 'Privacy Policy',
       recaptchaAnd: 'and',
       recaptchaTerms: 'Terms of Service',
-      recaptchaAfter: 'apply.',
+      recaptchaAfter: ' apply.',
       placeholderSource: 'e.g. Hungarian',
       placeholderTarget: 'e.g. English',
       placeholderPairs: 'e.g. English–Hungarian',
@@ -265,3 +265,101 @@ export const UI = {
 } as const;
 
 export type Ui = (typeof UI)['hu'] | (typeof UI)['en'];
+
+/**
+ * A főoldal kiegészítő szakaszai (szakterületek, rólunk, árak, GYIK).
+ * Csak a régi oldalon is szereplő tények: 2018 óta, 86 nyelv, 3,0 Ft/karakter ártól, két szakfordító, határidők.
+ * A szakterületenkénti nyelvszám a szakterület oldalak szövegéből való.
+ */
+export const HOME_EXTRA = {
+  hu: {
+    fieldsHeading: 'Szakterületek',
+    fieldsLead: 'Minden fordítást az adott szöveg témájában jártas szakfordító készít.',
+    fields: [
+      { key: 'technical', icon: 'technical', title: 'Műszaki fordítás', languages: 34 },
+      { key: 'financial', icon: 'finance', title: 'Gazdasági fordítás', languages: 27 },
+      { key: 'legal', icon: 'legal', title: 'Jogi fordítás', languages: 24 },
+      { key: 'medical', icon: 'medical', title: 'Egészségügyi fordítás', languages: 16 },
+      { key: 'marketing', icon: 'marketing', title: 'Marketingfordítás', languages: 20 },
+    ] as { key: PageKey; icon: string; title: string; languages: number }[],
+    languagesLabel: (n: number) => `${n} nyelven`,
+    aboutKicker: '2018 óta',
+    aboutText: 'Csapatunk 2018 óta foglalkozik fordítással és tolmácsolással. Mára már 86 különböző nyelven, szinte minden szakterületen vállalunk fordítási és tolmácsolási megbízásokat.',
+    aboutLink: 'Rólunk',
+    pricesKicker: 'Árak',
+    pricesText: 'A fordítás ára függ a nyelvpártól, a szakterülettől, a határidőtől és a dokumentum formátumától. Az árajánlat ingyenes, és semmilyen kötelezettséggel nem jár.',
+    pricesLink: 'Részletek az árakról',
+    faqHeading: 'Gyakori kérdések',
+    faq: [
+      {
+        q: 'Mennyi idő alatt készül el a fordítás?',
+        a: 'Ez a szöveg terjedelmétől és a nyelvpártól függ. Normál határidővel 2–5 munkanap, sürgős megrendelésnél 1–2 munkanap, rövidebb dokumentumoknál akár aznapra is elkészülhet. A határidőre is garanciát vállalunk.',
+      },
+      {
+        q: 'Mennyibe kerül a fordítás?',
+        a: 'Szakfordítás 3,0 Ft/karakter ártól (szóközökkel együtt). A pontos ár a nyelvpártól, a szakterülettől, a határidőtől és a dokumentum formátumától függ, ezért minden esetben ingyenes, egyedi árajánlatot készítünk.',
+      },
+      {
+        q: 'Hogyan kérhetek árajánlatot?',
+        a: 'Töltse ki az ajánlatkérő űrlapot, és csatolja a dokumentumot (PDF, Word, Excel vagy kép, telefonos fotó is jó). A projektmenedzsereink a lehető leghamarabb felveszik Önnel a kapcsolatot.',
+      },
+      {
+        q: 'Milyen nyelveken fordítanak?',
+        a: '86 különböző nyelven, szinte minden szakterületen vállalunk fordítási és tolmácsolási megbízásokat. A teljes lista a Nyelvek oldalon található.',
+      },
+      {
+        q: 'Ki ellenőrzi a fordítást?',
+        a: 'Minden fordítási projekten legalább két szakfordító kolléga dolgozik. Ez a kettős minőség-ellenőrzés segít elkerülni a hibákat.',
+      },
+      {
+        q: 'Bizalmasan kezelik a dokumentumaimat?',
+        a: 'Igen. Személyes adatait és dokumentumait bizalmasan, az adatvédelmi törvényeknek megfelelően kezeljük.',
+      },
+    ],
+  },
+  en: {
+    fieldsHeading: 'Fields',
+    fieldsLead: 'Every translation is done by a professional translator who knows the subject of the text.',
+    fields: [
+      { key: 'technical', icon: 'technical', title: 'Technical translation', languages: 34 },
+      { key: 'financial', icon: 'finance', title: 'Financial translation', languages: 27 },
+      { key: 'legal', icon: 'legal', title: 'Legal translation', languages: 24 },
+      { key: 'medical', icon: 'medical', title: 'Medical translation', languages: 16 },
+      { key: 'marketing', icon: 'marketing', title: 'Marketing translation', languages: 20 },
+    ] as { key: PageKey; icon: string; title: string; languages: number }[],
+    languagesLabel: (n: number) => `in ${n} languages`,
+    aboutKicker: 'Since 2018',
+    aboutText: 'Our team has been working in translation and interpreting since 2018. Today we take on translation and interpreting projects in 86 languages and in almost every field.',
+    aboutLink: 'About us',
+    pricesKicker: 'Prices',
+    pricesText: 'The price of a translation depends on the language pair, the field, the deadline and the format of the document. The quote is free and comes with no obligation.',
+    pricesLink: 'More about prices',
+    faqHeading: 'Frequently asked questions',
+    faq: [
+      {
+        q: 'How long does a translation take?',
+        a: 'It depends on the length of the text and the language pair. With a standard deadline it takes 2–5 working days, urgent orders take 1–2 working days, and shorter documents can be ready even on the same day. We guarantee our deadlines.',
+      },
+      {
+        q: 'How much does a translation cost?',
+        a: 'Specialist translation starts from HUF 3.0 per character (including spaces). The exact price depends on the language pair, the field, the deadline and the format of the document, so we always prepare a free, custom quote.',
+      },
+      {
+        q: 'How do I request a quote?',
+        a: 'Fill in the quote request form and attach your document (PDF, Word, Excel or an image; a phone photo is fine). Our project managers will contact you as soon as possible.',
+      },
+      {
+        q: 'Which languages do you translate?',
+        a: 'We take on translation and interpreting projects in 86 languages and in almost every field. You can find the full list on the Languages page.',
+      },
+      {
+        q: 'Who checks the translation?',
+        a: 'At least two professional translators work on every translation project. This double quality check helps us avoid mistakes.',
+      },
+      {
+        q: 'Do you handle my documents confidentially?',
+        a: 'Yes. We handle your personal data and documents confidentially, in accordance with data protection laws.',
+      },
+    ],
+  },
+};

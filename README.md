@@ -95,9 +95,12 @@ a webszervernek kell kezelnie, ezért az A) változatot javasoljuk.
   („Két szakfordító minden fordításon”, „Akár aznapra kész”). Az egérre semmi nem reagál.
   A fotó: `public/images/done-translations-csapat.{jpg,webp}` (+ `-640.webp` mobilra). Ha lesz saját fotó,
   ezeket a fájlokat kell lecserélni (fekvő, kb. 3:2, legalább 1000 px széles); a kártyák szövege a `src/app/content/ui.ts` `hero` részében van.
-- **Élő fordítás**: rögzített szakasz, ahol görgetésre betűnként fordítódik a szlogen („Fordítás akár aznapra”) angolra, majd németre (GSAP ScrollTrigger).
-- **Lépések**: asztali gépen vízszintesen görgetett panelek.
-- Felpörgő számlálók (a régi oldal számai), beúszó kártyák, nyelvi szalag.
+- Nincs rögzített vagy a görgetéshez kötött effekt: a kártyák egyszer, finoman beúsznak, a számlálók felpörögnek,
+  a nyelvi szalag lassan, magától úszik. (GSAP nélkül, saját ~40 sor kóddal.)
+
+A főoldal szakaszai: nyitóképernyő → nyelvi szalag → szolgáltatások → szakterületek (nyelvszámmal) → lépések →
+rólunk + számok → miért mi → árak + gyakori kérdések → ajánlatkérő űrlap → záró felhívás.
+A kiegészítő szakaszok szövege a `src/app/content/ui.ts` `HOME_EXTRA` részében van; csak a régi oldalon is szereplő tényeket használ.
 
 Ha a látogató csökkentett mozgást kért, a beúsztatások elmaradnak.
 

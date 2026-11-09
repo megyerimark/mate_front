@@ -1,18 +1,12 @@
 @let h = home();
 @let ui = site.ui();
+@let x = extra();
 <app-hero />
 
-<!-- NYELVI SZALAG -->
+<!-- NYELVI SZALAG: lassan, magától úszik (nem a görgetéshez kötve) -->
 <section class="marquee" aria-hidden="true">
   <div class="marquee-row">
-    @for (round of [1, 2, 3]; track round) {
-      @for (l of marquee(); track l) {
-        <span>{{ l }}</span><i>✦</i>
-      }
-    }
-  </div>
-  <div class="marquee-row outline">
-    @for (round of [1, 2, 3]; track round) {
+    @for (round of [1, 2]; track round) {
       @for (l of marquee(); track l) {
         <span>{{ l }}</span><i>✦</i>
       }
@@ -37,42 +31,56 @@
   </div>
 </section>
 
-<!-- ÉLŐ FORDÍTÁS: a szlogen görgetésre fordítódik -->
-<section class="live" aria-hidden="true">
-  <div class="container live-inner">
-    <div class="live-head">
-      <span class="live-dot"></span>
-      <span class="live-lang">{{ live()[0].language }}</span>
+<!-- SZAKTERÜLETEK -->
+<section class="section section-alt fields-section">
+  <div class="container">
+    <div class="section-top">
+      <h2 class="display">{{ x.fieldsHeading }}</h2>
+      <p class="lead">{{ x.fieldsLead }}</p>
     </div>
-    <p class="live-text">{{ live()[0].text }}</p>
-    <div class="live-progress"><span></span></div>
-    <p class="live-caption">{{ liveCaption() }}</p>
+    <div class="fields">
+      @for (f of x.fields; track f.key) {
+        <a class="field" [routerLink]="site.link(f.key)" data-reveal>
+          <span class="icon"><app-icon [name]="f.icon" /></span>
+          <b>{{ f.title }}</b>
+          <span class="field-langs">{{ x.languagesLabel(f.languages) }}</span>
+          <span class="field-arrow" aria-hidden="true">→</span>
+        </a>
+      }
+    </div>
   </div>
 </section>
 
 <!-- LÉPÉSEK -->
-<section class="steps-pin">
-  <div class="steps-head container">
+<section class="section steps-section">
+  <div class="container">
     <h2 class="display">{{ h.stepsHeading }}</h2>
-  </div>
-  <div class="steps-track">
-    @for (step of h.steps; track $index) {
-      <article class="step-panel">
-        <span class="step-num">{{ step.title }}</span>
-        <div>
-          @for (p of step.text; track $index) { <p>{{ p }}</p> }
-        </div>
-      </article>
-    }
-    <article class="step-panel step-cta">
-      <h3>{{ h.subtitle }}</h3>
+    <ol class="steps">
+      @for (step of h.steps; track $index) {
+        <li class="step" data-reveal>
+          <span class="step-num">{{ $index + 1 }}</span>
+          <div>
+            @for (p of step.text; track $index) { <p>{{ p }}</p> }
+          </div>
+        </li>
+      }
+    </ol>
+    <div class="steps-cta" data-reveal>
+      <p>{{ h.subtitle }}</p>
       <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg">{{ ui.requestQuote }} <span aria-hidden="true">→</span></a>
-    </article>
+    </div>
   </div>
 </section>
 
-<!-- SZÁMOK -->
+<!-- RÓLUNK + SZÁMOK -->
 <section class="stats">
+  <div class="container about-band" data-reveal>
+    <p class="about-kicker">{{ x.aboutKicker }}</p>
+    <div>
+      <p class="about-text">{{ x.aboutText }}</p>
+      <a class="card-link" [routerLink]="site.link('about')">{{ x.aboutLink }} <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
   <div class="container stats-inner">
     @for (s of h.stats; track s.label) {
       <div data-reveal>
@@ -95,6 +103,32 @@
           @for (p of f.text; track $index) { <p>{{ p }}</p> }
         </div>
       }
+    </div>
+  </div>
+</section>
+
+<!-- ÁRAK + GYIK -->
+<section class="section faq-section">
+  <div class="container faq-grid">
+    <aside class="price-teaser" data-reveal>
+      <p class="about-kicker">{{ x.pricesKicker }}</p>
+      <p class="teaser-highlight">{{ priceHighlight() }}</p>
+      <p>{{ x.pricesText }}</p>
+      <div class="price-actions">
+        <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn">{{ ui.freeQuote }} <span aria-hidden="true">→</span></a>
+        <a class="card-link" [routerLink]="site.link('prices')">{{ x.pricesLink }} <span aria-hidden="true">→</span></a>
+      </div>
+    </aside>
+    <div>
+      <h2 class="display">{{ x.faqHeading }}</h2>
+      <div class="faq">
+        @for (item of x.faq; track item.q; let first = $first) {
+          <details [open]="first">
+            <summary>{{ item.q }}</summary>
+            <p>{{ item.a }}</p>
+          </details>
+        }
+      </div>
     </div>
   </div>
 </section>

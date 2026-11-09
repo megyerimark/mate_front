@@ -147,7 +147,6 @@ h1, h2, h3, h4 { line-height: 1.05; margin: 0 0 .5em; font-family: var(--display
 .marquee { padding: 40px 0; overflow: hidden; border-block: 1px solid var(--border); background: var(--bg-2); }
 .marquee-row { display: flex; gap: .6em; white-space: nowrap; font-family: var(--display); font-weight: 300; font-size: clamp(2.4rem, 7vw, 6rem); text-transform: uppercase; letter-spacing: -.01em; line-height: 1.1; width: max-content; }
 .marquee-row i { font-style: normal; color: var(--warm); font-size: .4em; align-self: center; }
-.marquee-row.outline { color: transparent; -webkit-text-stroke: 1px rgba(var(--tint), .3); margin-left: -30%; }
 
 /* Szakaszok */
 .section { padding: 140px 0; position: relative; }
@@ -173,31 +172,9 @@ h1, h2, h3, h4 { line-height: 1.05; margin: 0 0 .5em; font-family: var(--display
 .card h3 { font-size: 1.4rem; font-weight: 500; }
 .card p { color: var(--muted); margin: 0; }
 
-/* Élő fordítás */
-.live { min-height: 100svh; display: flex; align-items: center; background: radial-gradient(ellipse at 70% 50%, rgba(var(--accent-rgb), .07), transparent 60%), var(--bg); }
-.live-inner { padding: 100px 0; }
-.live-head { display: flex; align-items: center; gap: .7em; font-family: var(--display); color: var(--muted); text-transform: uppercase; letter-spacing: .12em; font-size: .9rem; }
-.live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--warm); box-shadow: 0 0 16px rgba(var(--warm-rgb), .8); animation: blink 1.2s infinite; }
-@keyframes blink { 50% { opacity: .3; } }
-.live-lang { color: var(--accent); }
-.live-text { font-family: var(--display); font-weight: 300; font-size: clamp(2rem, 5.4vw, 4.6rem); line-height: 1.12; letter-spacing: -.02em; margin: .5em 0 .7em; min-height: 3.4em; max-width: 22ch; }
-.live-progress { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; max-width: 520px; }
-.live-progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); transform: scaleX(0); transform-origin: left; }
-.live-caption { color: var(--muted); margin-top: 1.4em; max-width: 36em; }
 
-/* Lépések (vízszintes) */
-.steps-pin { padding: 140px 0 100px; overflow: hidden; background: var(--bg-2); min-height: 100svh; }
-.steps-head .display { margin-bottom: 56px; }
-.steps-track { display: flex; gap: 24px; padding-left: max(16px, calc((100vw - 1240px) / 2)); width: max-content; }
-.step-panel {
-  width: min(560px, 80vw); min-height: 340px; padding: 40px; border-radius: 28px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm);
-  display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
-}
-.step-num { font-family: var(--display); font-size: clamp(4rem, 9vw, 7.5rem); font-weight: 200; line-height: .9; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.step-panel h3 { font-size: 1.8rem; font-weight: 400; }
-.step-panel p { color: var(--muted); margin: 0; font-size: 1.05rem; }
-.step-cta { background: linear-gradient(135deg, rgba(var(--accent-rgb), .16), rgba(var(--accent-rgb), .03)); border-color: rgba(var(--accent-rgb), .35); align-items: flex-start; justify-content: center; }
-.step-cta h3 { font-size: clamp(2.4rem, 5vw, 3.6rem); font-weight: 300; }
+
+
 
 /* Számok */
 .stats { padding: 100px 0; border-block: 1px solid var(--border); }
@@ -340,9 +317,6 @@ details p { color: var(--muted); margin: 16px 0 0; max-width: 46em; }
   .section { padding: 96px 0; }
   .display { margin-bottom: 40px; }
   .cards, .pricing, .footer-inner, .quote-form .row { grid-template-columns: 1fr; }
-  .steps-pin { padding: 96px 0; min-height: 0; }
-  .steps-track { flex-direction: column; width: auto; padding: 0 16px; }
-  .step-panel { width: 100%; min-height: 0; padding: 28px; }
   .quote-form { padding: 22px; }
   .final-cta { padding: 110px 0; }
 
@@ -455,3 +429,86 @@ details p { color: var(--muted); margin: 16px 0 0; max-width: 46em; }
 .grecaptcha-badge { visibility: hidden; }
 .recaptcha-note { font-size: .76rem; }
 .recaptcha-note a { color: inherit; }
+
+
+/* Nyelvi szalag: lassan, magától úszik */
+.marquee { padding: 34px 0; }
+.marquee-row { animation: marquee 60s linear infinite; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Beúszás: egyszer, finoman */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+.section-top { display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; margin-bottom: 48px; }
+.section-top .display { margin-bottom: 0; }
+.section-top .lead { margin: 0; max-width: 30em; }
+
+/* Szakterületek */
+.fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.field { position: relative; display: grid; gap: 6px; align-content: start; padding: 26px 24px 24px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); color: var(--text); text-decoration: none; transition: border-color .2s, box-shadow .2s; }
+.field:hover { border-color: rgba(var(--accent-rgb), .45); box-shadow: var(--shadow-md); }
+.field .icon { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 18px; border-radius: 14px; background: rgba(var(--accent-rgb), .07); border: 1px solid rgba(var(--accent-rgb), .14); color: var(--accent); }
+.field .icon svg { width: 24px; height: 24px; }
+.field .w { stroke: var(--warm); }
+.field b { font-family: var(--display); font-weight: 500; font-size: 1.15rem; }
+.field-langs { color: var(--muted); font-size: .92rem; }
+.field-arrow { position: absolute; right: 22px; top: 26px; color: var(--accent); transition: transform .2s; }
+.field:hover .field-arrow { transform: translateX(3px); }
+
+/* Lépések: egyszerű, számozott sor */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; counter-reset: none; }
+.step { position: relative; display: grid; gap: 18px; align-content: start; padding: 28px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.step-num { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-family: var(--display); font-size: 1.3rem; font-weight: 500; }
+.step p { margin: 0 0 .7em; color: var(--muted); }
+.step p:last-child { margin-bottom: 0; }
+.steps-cta { margin-top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; padding: 28px 32px; border-radius: var(--radius); background: linear-gradient(135deg, rgba(var(--accent-rgb), .12), rgba(var(--accent-rgb), .03)); border: 1px solid rgba(var(--accent-rgb), .25); }
+.steps-cta p { margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(1.8rem, 3.4vw, 2.6rem); letter-spacing: -.02em; color: var(--accent); }
+
+/* Rólunk sáv a számok fölött */
+.about-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; align-items: start; padding-bottom: 64px; margin-bottom: 64px; border-bottom: 1px solid var(--border); }
+.about-kicker { margin: 0; font-family: var(--display); font-weight: 200; font-size: clamp(2.4rem, 5vw, 4.2rem); letter-spacing: -.03em; line-height: 1; color: var(--warm-ink); }
+.about-text { margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(1.3rem, 2.2vw, 1.75rem); line-height: 1.4; letter-spacing: -.01em; }
+.about-band .card-link { margin-top: 18px; }
+
+/* Árak + GYIK */
+.faq-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: start; }
+.faq-grid .display { margin-bottom: 32px; }
+.price-teaser { display: grid; gap: 14px; padding: 34px 32px; border-radius: 24px; background: var(--accent); color: rgba(255, 255, 255, .82); box-shadow: var(--shadow-md); }
+.price-teaser .about-kicker { color: var(--warm); font-size: 1rem; font-family: var(--body); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.teaser-highlight { margin: 0; font-family: var(--display); font-weight: 300; font-size: clamp(1.7rem, 2.8vw, 2.3rem); line-height: 1.15; letter-spacing: -.02em; color: #fff; }
+.price-teaser p { margin: 0; }
+.price-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
+.price-teaser .btn { background: #fff; color: var(--accent); border-color: #fff; }
+.price-teaser .card-link { margin: 0; color: #fff; }
+.faq { display: grid; border-top: 1px solid var(--border); }
+.faq details { border-bottom: 1px solid var(--border); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 20px; padding: 22px 0; font-family: var(--display); font-size: 1.2rem; font-weight: 400; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); color: var(--accent); font-family: var(--body); transition: transform .2s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+.faq details p { margin: 0 0 22px; color: var(--muted); max-width: 44em; }
+
+@media (max-width: 1100px) {
+  .fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .faq-grid { grid-template-columns: 1fr; gap: 48px; }
+  .price-teaser { order: 2; }
+}
+@media (max-width: 760px) {
+  .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about-band { grid-template-columns: 1fr; gap: 16px; padding-bottom: 48px; margin-bottom: 48px; }
+  .steps-cta { padding: 24px; }
+  .steps-cta .btn { flex: 1 1 100%; justify-content: center; }
+}
+@media (max-width: 560px) {
+  .fields { grid-template-columns: 1fr; gap: 10px; }
+  .field { grid-template-columns: 44px 1fr; column-gap: 14px; row-gap: 0; align-items: center; padding: 14px 44px 14px 14px; }
+  .field .icon { grid-row: span 2; width: 44px; height: 44px; margin: 0; }
+  .field-arrow { top: 50%; transform: translateY(-50%); }
+  .field:hover .field-arrow { transform: translate(3px, -50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-row { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
