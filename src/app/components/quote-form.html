@@ -1,109 +1,184 @@
 @let t = ui();
-<form class="quote-form" [formGroup]="form" (ngSubmit)="submit()" (focusin)="preloadRecaptcha()" novalidate>
+<form class="quote-form" [class.qf-steps]="mode() !== 'spelling'" [formGroup]="form" (ngSubmit)="step() === stepCount - 1 || mode() === 'spelling' ? submit() : next()"
+  (focusin)="preloadRecaptcha()" novalidate>
   <p class="hidden" aria-hidden="true">
     <label>Website <input formControlName="website" tabindex="-1" autocomplete="off" /></label>
   </p>
 
-  <div class="row">
-    <label [for]="id('name')" [class.has-error]="invalid('name')">
-      {{ t.name }}*
-      <input [id]="id('name')" type="text" formControlName="name" autocomplete="name" />
-      @if (invalid('name')) {
-        <small class="error">{{ serverErrors()['name'] || t.errors.name }}</small>
-      }
-    </label>
-    <label [for]="id('email')" [class.has-error]="invalid('email')">
-      {{ t.email }}*
-      <input [id]="id('email')" type="email" formControlName="email" autocomplete="email" />
-      @if (invalid('email')) {
-        <small class="error">{{ serverErrors()['email'] || t.errors.email }}</small>
-      }
-    </label>
-  </div>
-
-  @if (mode() !== 'spelling') {
+  @if (mode() === 'spelling') {
+    <!-- Helyesírási kérdés: egyetlen rövid lépés -->
     <div class="row">
-      <label [for]="id('phone')">
-        {{ t.phone }}
-        <input [id]="id('phone')" type="tel" formControlName="phone" autocomplete="tel" />
+      <label [for]="id('name')" [class.has-error]="invalid('name')">
+        {{ t.name }}*
+        <input [id]="id('name')" type="text" formControlName="name" autocomplete="name" />
+        @if (invalid('name')) { <small class="error">{{ serverErrors()['name'] || t.errors.name }}</small> }
       </label>
-      <label [for]="id('service')">
-        {{ t.service }}
-        <select [id]="id('service')" formControlName="service">
-          @for (key of serviceKeys; track key) {
-            <option [value]="key">{{ t.services[key] }}</option>
-          }
-        </select>
+      <label [for]="id('email')" [class.has-error]="invalid('email')">
+        {{ t.email }}*
+        <input [id]="id('email')" type="email" formControlName="email" autocomplete="email" />
+        @if (invalid('email')) { <small class="error">{{ serverErrors()['email'] || t.errors.email }}</small> }
       </label>
     </div>
+    <label [for]="id('message')" [class.has-error]="invalid('message')">
+      {{ t.question }}*
+      <textarea [id]="id('message')" formControlName="message" rows="3" [placeholder]="t.placeholderQuestion"></textarea>
+      @if (invalid('message')) { <small class="error">{{ serverErrors()['message'] || t.errors.question }}</small> }
+    </label>
+    <ng-container *ngTemplateOutlet="privacy" />
+    <ng-container *ngTemplateOutlet="footer" />
+  } @else {
+    <!-- Folyamatjelző -->
+    <ol class="qf-progress" [attr.aria-label]="t.stepOf(step() + 1, stepCount)">
+      @for (label of t.steps; track label; let i = $index) {
+        <li [class.done]="i < step()" [class.current]="i === step()" [attr.aria-current]="i === step() ? 'step' : null">
+          @if (i < step()) {
+            <button type="button" (click)="goTo(i)"><span class="qf-dot">✓</span><span class="qf-label">{{ label }}</span></button>
+          } @else {
+            <span class="qf-dot">{{ i + 1 }}</span><span class="qf-label">{{ label }}</span>
+          }
+        </li>
+      }
+    </ol>
+    <div class="qf-bar" aria-hidden="true"><span [style.--p]="(step() + 1) / stepCount"></span></div>
 
-    @if (selectedService() === 'interpreting') {
-      <div class="row">
-        <label [for]="id('pairs')">
-          {{ t.languagePairs }}
-          <input [id]="id('pairs')" type="text" formControlName="target_language" [placeholder]="t.placeholderPairs" />
-        </label>
-        <label [for]="id('itype')">
-          {{ t.interpretingType }}
-          <select [id]="id('itype')" formControlName="interpreting_type">
-            @for (key of interpretingKeys; track key) {
-              <option [value]="key">{{ t.interpretingTypes[key] }}</option>
+    <div class="qf-panel" tabindex="-1" [attr.aria-label]="t.stepOf(step() + 1, stepCount) + ': ' + t.steps[step()]">
+      @switch (step()) {
+        @case (0) {
+          <fieldset class="qf-services">
+            <legend class="qf-title">{{ t.chooseService }}</legend>
+            @for (key of serviceKeys; track key) {
+              <label class="qf-choice" [class.on]="selectedService() === key">
+                <input type="radio" [value]="key" formControlName="service" />
+                <b>{{ t.services[key] }}</b>
+                <small>{{ t.serviceHints[key] }}</small>
+              </label>
             }
-          </select>
-        </label>
-      </div>
-    } @else {
-      <div class="row">
-        <label [for]="id('target')">
-          {{ t.targetLanguage }}
-          <input [id]="id('target')" type="text" formControlName="target_language" [placeholder]="t.placeholderTarget" />
-        </label>
-        <label [for]="id('deadline')">
-          {{ t.deadline }}
-          <select [id]="id('deadline')" formControlName="deadline">
-            @for (key of deadlineKeys; track key) {
-              <option [value]="key">{{ t.deadlines[key] }}</option>
-            }
-          </select>
-        </label>
-      </div>
-
-      <label [for]="id('file')" [class.has-error]="fileError() || serverErrors()['document']">
-        {{ t.document }}
-        <input [id]="id('file')" type="file" [accept]="accept" (change)="onFile($event)" />
-        @if (fileError() || serverErrors()['document']) {
-          <small class="error">{{ fileError() || serverErrors()['document'] }}</small>
-        } @else {
-          <small>{{ t.documentHint(maxMb) }}</small>
+          </fieldset>
         }
-      </label>
-    }
+        @case (1) {
+          @if (interpreting()) {
+            <p class="qf-title">{{ t.interpretingTitle }}</p>
+            <label [for]="id('pairs')">
+              {{ t.languagePairs }}
+              <input [id]="id('pairs')" type="text" formControlName="target_language" [placeholder]="t.placeholderPairs" />
+            </label>
+            <fieldset class="qf-chips">
+              <legend>{{ t.interpretingType }}</legend>
+              @for (key of interpretingKeys; track key) {
+                <label class="qf-chip"><input type="radio" [value]="key" formControlName="interpreting_type" /><span>{{ t.interpretingTypes[key] }}</span></label>
+              }
+            </fieldset>
+          } @else {
+            <p class="qf-title">{{ t.detailsTitle }}</p>
+            <div class="row">
+              <label [for]="id('source')">
+                {{ t.sourceLanguage }}
+                <input [id]="id('source')" type="text" formControlName="source_language" [placeholder]="t.placeholderSource" />
+              </label>
+              <label [for]="id('target')">
+                {{ t.targetLanguage }}
+                <input [id]="id('target')" type="text" formControlName="target_language" [placeholder]="t.placeholderTarget" />
+              </label>
+            </div>
+            <fieldset class="qf-chips">
+              <legend>{{ t.deadline }}</legend>
+              @for (key of deadlineKeys; track key) {
+                <label class="qf-chip" [attr.data-deadline]="key"><input type="radio" [value]="key" formControlName="deadline" /><span>{{ t.deadlines[key] }}</span></label>
+              }
+            </fieldset>
+
+            <div class="qf-drop" [class.dragging]="dragging()" [class.has-error]="fileError() || serverErrors()['documents']"
+              (dragover)="$event.preventDefault(); dragging.set(true)" (dragleave)="dragging.set(false)" (drop)="onDrop($event)">
+              <input [id]="id('files')" class="qf-file-input" type="file" multiple [accept]="accept" (change)="onPick($event)" />
+              <label [for]="id('files')" class="qf-drop-label">
+                <span class="qf-drop-icon" aria-hidden="true">↑</span>
+                <b>{{ t.dropTitle }}</b> <span class="qf-browse">{{ t.dropBrowse }}</span>
+                <small>{{ t.dropHint(limits.files, limits.mb, limits.total) }}</small>
+              </label>
+            </div>
+            @if (fileError() || serverErrors()['documents']) {
+              <small class="error" role="alert">{{ fileError() || serverErrors()['documents'] }}</small>
+            }
+            @if (files().length) {
+              <ul class="qf-files">
+                @for (f of files(); track f.file.name + f.file.size; let i = $index) {
+                  <li>
+                    @if (f.preview) { <img [src]="f.preview" alt="" /> } @else { <span class="qf-ext">{{ f.ext }}</span> }
+                    <span class="qf-file-name">{{ f.file.name }}<small>{{ size(f.file.size) }}</small></span>
+                    <button type="button" class="qf-remove" (click)="removeFile(i)" [attr.aria-label]="t.remove + ': ' + f.file.name">×</button>
+                  </li>
+                }
+              </ul>
+            }
+          }
+        }
+        @case (2) {
+          <p class="qf-title">{{ t.contactTitle }}</p>
+          <div class="row">
+            <label [for]="id('name')" [class.has-error]="invalid('name')">
+              {{ t.name }}*
+              <input [id]="id('name')" type="text" formControlName="name" autocomplete="name" />
+              @if (invalid('name')) { <small class="error">{{ serverErrors()['name'] || t.errors.name }}</small> }
+            </label>
+            <label [for]="id('email')" [class.has-error]="invalid('email')">
+              {{ t.email }}*
+              <input [id]="id('email')" type="email" formControlName="email" autocomplete="email" />
+              @if (invalid('email')) { <small class="error">{{ serverErrors()['email'] || t.errors.email }}</small> }
+            </label>
+          </div>
+          <label [for]="id('phone')">
+            {{ t.phone }}
+            <input [id]="id('phone')" type="tel" formControlName="phone" autocomplete="tel" />
+          </label>
+          <label [for]="id('message')">
+            {{ t.message }}
+            <textarea [id]="id('message')" formControlName="message" rows="3" [placeholder]="t.placeholderMessage"></textarea>
+          </label>
+          <ng-container *ngTemplateOutlet="privacy" />
+        }
+        @case (3) {
+          <p class="qf-title">{{ t.summaryTitle }}</p>
+          <dl class="qf-summary">
+            @for (row of summary(); track row.label) {
+              <div>
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+                <button type="button" class="qf-edit" (click)="goTo(row.step)">{{ t.edit }}</button>
+              </div>
+            }
+          </dl>
+        }
+      }
+    </div>
+
+    @if (generalError()) { <p class="form-alert" role="alert">{{ generalError() }}</p> }
+
+    <div class="qf-nav">
+      @if (step() > 0) {
+        <button type="button" class="btn btn-ghost" (click)="goTo(step() - 1)">← {{ t.back }}</button>
+      }
+      @if (step() < stepCount - 1) {
+        <button type="submit" class="btn btn-arrow qf-next">{{ t.next }} <span class="btn-arrow-icon" aria-hidden="true">→</span></button>
+      } @else {
+        <button type="submit" class="btn btn-arrow qf-next" [disabled]="sending()">{{ sending() ? t.sending : t.submit }} <span class="btn-arrow-icon" aria-hidden="true">→</span></button>
+      }
+    </div>
+    <p class="form-note">{{ t.note }}</p>
+    <p class="form-note recaptcha-note">{{ t.recaptchaBefore }} <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ t.recaptchaPrivacy }}</a> {{ t.recaptchaAnd }} <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ t.recaptchaTerms }}</a>{{ t.recaptchaAfter }}</p>
   }
 
-  <label [for]="id('message')" [class.has-error]="mode() === 'spelling' && invalid('message')">
-    {{ mode() === 'spelling' ? t.question + '*' : t.message }}
-    <textarea [id]="id('message')" formControlName="message" rows="3"
-      [placeholder]="mode() === 'spelling' ? t.placeholderQuestion : t.placeholderMessage"></textarea>
-    @if (mode() === 'spelling' && invalid('message')) {
-      <small class="error">{{ serverErrors()['message'] || t.errors.question }}</small>
-    }
-  </label>
+  <ng-template #privacy>
+    <label class="check" [for]="id('privacy')" [class.has-error]="invalid('privacy_accepted')">
+      <input [id]="id('privacy')" type="checkbox" formControlName="privacy_accepted" />
+      <span>{{ t.privacyBefore }} <a [routerLink]="site.link('privacy')" target="_blank">{{ t.privacyLink }}</a>{{ t.privacyAfter }}*</span>
+    </label>
+    @if (invalid('privacy_accepted')) { <small class="error">{{ t.errors.privacy }}</small> }
+  </ng-template>
 
-  <label class="check" [for]="id('privacy')" [class.has-error]="invalid('privacy_accepted')">
-    <input [id]="id('privacy')" type="checkbox" formControlName="privacy_accepted" />
-    <span>{{ t.privacyBefore }} <a [routerLink]="site.link('privacy')" target="_blank">{{ t.privacyLink }}</a>{{ t.privacyAfter }}*</span>
-  </label>
-  @if (invalid('privacy_accepted')) {
-    <small class="error">{{ t.errors.privacy }}</small>
-  }
-
-  @if (generalError()) {
-    <p class="form-alert" role="alert">{{ generalError() }}</p>
-  }
-
-  <button type="submit" class="btn btn-lg btn-block" [disabled]="sending()">
-    {{ sending() ? t.sending : t.submit }}
-  </button>
-  <p class="form-note">{{ t.note }}</p>
-  <p class="form-note recaptcha-note">{{ t.recaptchaBefore }} <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ t.recaptchaPrivacy }}</a> {{ t.recaptchaAnd }} <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ t.recaptchaTerms }}</a>{{ t.recaptchaAfter }}</p>
+  <ng-template #footer>
+    @if (generalError()) { <p class="form-alert" role="alert">{{ generalError() }}</p> }
+    <button type="submit" class="btn btn-lg btn-block" [disabled]="sending()">{{ sending() ? t.sending : t.submit }}</button>
+    <p class="form-note">{{ t.note }}</p>
+    <p class="form-note recaptcha-note">{{ t.recaptchaBefore }} <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">{{ t.recaptchaPrivacy }}</a> {{ t.recaptchaAnd }} <a href="https://policies.google.com/terms" target="_blank" rel="noopener">{{ t.recaptchaTerms }}</a>{{ t.recaptchaAfter }}</p>
+  </ng-template>
 </form>

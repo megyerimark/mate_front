@@ -74,7 +74,7 @@
               <td>{{ q.service_label }}@if (q.locale === 'en') { <span class="adm-lang">EN</span> }</td>
               <td>{{ pair(q) }}</td>
               <td><span class="adm-deadline" [attr.data-deadline]="q.deadline">{{ q.deadline_label }}</span></td>
-              <td>@if (q.has_document) { <app-icon name="document" class="adm-doc" aria-label="Van csatolt dokumentum" /> }</td>
+              <td>@if (q.has_document) { <app-icon name="document" class="adm-doc" [attr.aria-label]="q.documents.length + ' csatolt dokumentum'" />@if (q.documents.length > 1) { <small>{{ q.documents.length }}</small> } }</td>
               <td>
                 <span class="adm-pill" [attr.data-status]="q.status">{{ q.status_label }}</span>
                 @if (q.needs_follow_up) { <small class="adm-flag">Utánkövetés</small> }
@@ -122,7 +122,7 @@
       <div class="adm-actions">
         <a class="btn btn-sm" [href]="replyLink(q)">Válasz e-mailben</a>
         @if (q.phone) { <a class="btn btn-ghost btn-sm" [href]="'tel:' + q.phone">Hívás</a> }
-        @if (q.has_document) { <button type="button" class="btn btn-ghost btn-sm" (click)="download()">Dokumentum letöltése</button> }
+
       </div>
 
       <dl class="adm-facts">
@@ -132,7 +132,16 @@
         <dt>Nyelv(ek)</dt><dd>{{ pair(q) }}</dd>
         <dt>Weboldal</dt><dd>{{ q.locale === 'en' ? 'angol oldalról (angolul kapott visszaigazolást)' : 'magyar oldalról' }}</dd>
         <dt>Határidő</dt><dd><span class="adm-deadline" [attr.data-deadline]="q.deadline">{{ q.deadline_label }}</span></dd>
-        <dt>Dokumentum</dt><dd>{{ q.document_name || 'nincs csatolva' }}</dd>
+        <dt>{{ q.documents.length > 1 ? 'Dokumentumok' : 'Dokumentum' }}</dt>
+        <dd>
+          @if (q.documents.length) {
+            <ul class="adm-docs">
+              @for (d of q.documents; track d.index) {
+                <li><button type="button" class="adm-link" (click)="download(d.index)">{{ d.name }}</button>@if (d.size) { <small>{{ fileSize(d.size) }}</small> }</li>
+              }
+            </ul>
+          } @else { nincs csatolva }
+        </dd>
         <dt>E-mailek</dt>
         <dd class="adm-mails">
           <span [class.bad]="!q.notified_at">{{ q.notified_at ? '✓' : '✗' }} értesítő az irodának</span>

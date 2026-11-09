@@ -1,0 +1,86 @@
+<div class="adm">
+  <app-admin-header />
+  <main class="adm-main adm-narrow">
+    <div class="adm-head">
+      <div>
+        <h1>Vélemények és partnerek</h1>
+        <p class="adm-sub">A weboldal „Ügyfeleink mondták” szakasza. Csak valódi, az ügyfél hozzájárulásával közölt véleményt és partnert vegyél fel. Ami nincs publikálva, az nem látszik; ha semmi sincs publikálva, a szakasz el van rejtve.</p>
+      </div>
+    </div>
+
+    <section class="adm-card">
+      <h2>Vélemények</h2>
+      <ul class="adm-users">
+        @for (t of testimonials(); track t.id) {
+          <li>
+            <div>
+              <b>{{ t.name }}</b>@if (t.company) { <span class="adm-sub"> · {{ t.company }}</span> }
+              <small>„{{ t.text.length > 110 ? t.text.slice(0, 110) + '…' : t.text }}” · {{ t.locale === 'all' ? 'mindkét nyelven' : t.locale === 'hu' ? 'magyar oldalon' : 'angol oldalon' }}</small>
+            </div>
+            <span class="adm-row">
+              <button type="button" class="adm-pub" [class.on]="t.is_published" (click)="togglePublished(t)">{{ t.is_published ? 'Publikálva' : 'Rejtett' }}</button>
+              <button type="button" class="adm-link" (click)="edit(t)">Szerkesztés</button>
+              <button type="button" class="adm-link danger" (click)="removeTestimonial(t)">Törlés</button>
+            </span>
+          </li>
+        } @empty { <li class="adm-sub">Még nincs vélemény.</li> }
+      </ul>
+
+      <h3 class="adm-subhead">{{ draft().id ? 'Vélemény szerkesztése' : 'Új vélemény' }}</h3>
+      <form class="adm-form" (ngSubmit)="saveTestimonial()">
+        <div class="adm-form-inline adm-form-3">
+          <label>Név*<input name="tname" [ngModel]="draft().name" (ngModelChange)="patchDraft('name', $event)" [attr.aria-invalid]="!!tErrors()['name']" />
+            @if (tErrors()['name']; as e) { <small class="adm-field-error">{{ e }}</small> }</label>
+          <label>Cég<input name="tcompany" [ngModel]="draft().company" (ngModelChange)="patchDraft('company', $event)" /></label>
+          <label>Beosztás<input name="trole" [ngModel]="draft().role" (ngModelChange)="patchDraft('role', $event)" /></label>
+        </div>
+        <label>Vélemény*<textarea name="ttext" rows="3" [ngModel]="draft().text" (ngModelChange)="patchDraft('text', $event)" [attr.aria-invalid]="!!tErrors()['text']"></textarea>
+          @if (tErrors()['text']; as e) { <small class="adm-field-error">{{ e }}</small> }</label>
+        <div class="adm-form-inline adm-form-3">
+          <label>Melyik oldalon
+            <select name="tlocale" [ngModel]="draft().locale" (ngModelChange)="patchDraft('locale', $event)">
+              <option value="all">Mindkét nyelven</option><option value="hu">Magyar oldalon</option><option value="en">Angol oldalon</option>
+            </select></label>
+          <label>Értékelés
+            <select name="trating" [ngModel]="draft().rating ?? 0" (ngModelChange)="patchDraft('rating', +$event || null)">
+              <option [value]="0">nincs</option>@for (n of [5, 4, 3, 2, 1]; track n) { <option [value]="n">{{ n }} ★</option> }
+            </select></label>
+          <label class="adm-check"><input type="checkbox" name="tpub" [ngModel]="draft().is_published" (ngModelChange)="patchDraft('is_published', $event)" /> Publikálva</label>
+        </div>
+        @if (tErrors()['general']; as e) { <p class="adm-error">{{ e }}</p> }
+        <div class="adm-row">
+          <button type="submit" class="btn btn-sm" [disabled]="saving()">{{ draft().id ? 'Mentés' : 'Hozzáadás' }}</button>
+          @if (draft().id) { <button type="button" class="btn btn-ghost btn-sm" (click)="cancel()">Mégse</button> }
+        </div>
+      </form>
+    </section>
+
+    <section class="adm-card">
+      <h2>Partnerek</h2>
+      <ul class="adm-partners">
+        @for (p of partners(); track p.id) {
+          <li>
+            @if (logos()[p.id]; as src) { <img [src]="src" [alt]="p.name" /> } @else { <span class="adm-logo-ph"></span> }
+            <div><b>{{ p.name }}</b>@if (p.url) { <small>{{ p.url }}</small> }</div>
+            <span class="adm-row">
+              <button type="button" class="adm-pub" [class.on]="p.is_published" (click)="togglePartner(p)">{{ p.is_published ? 'Publikálva' : 'Rejtett' }}</button>
+              <button type="button" class="adm-link danger" (click)="removePartner(p)">Törlés</button>
+            </span>
+          </li>
+        } @empty { <li class="adm-sub">Még nincs partner.</li> }
+      </ul>
+      <h3 class="adm-subhead">Új partner</h3>
+      <form #pf class="adm-form" (ngSubmit)="addPartner(pf)">
+        <div class="adm-form-inline adm-form-3">
+          <label>Név*<input name="pname" [ngModel]="pDraft().name" (ngModelChange)="pDraft.set({ name: $event, url: pDraft().url })" [attr.aria-invalid]="!!pErrors()['name']" />
+            @if (pErrors()['name']; as e) { <small class="adm-field-error">{{ e }}</small> }</label>
+          <label>Weboldal<input name="purl" placeholder="https://" [ngModel]="pDraft().url" (ngModelChange)="pDraft.set({ name: pDraft().name, url: $event })" [attr.aria-invalid]="!!pErrors()['url']" />
+            @if (pErrors()['url']; as e) { <small class="adm-field-error">{{ e }}</small> }</label>
+          <label>Logó* (PNG, SVG, JPG, WebP, max. 1 MB)<input type="file" accept=".png,.jpg,.jpeg,.svg,.webp" (change)="pickLogo($event)" [attr.aria-invalid]="!!pErrors()['logo']" />
+            @if (pErrors()['logo']; as e) { <small class="adm-field-error">{{ e }}</small> }</label>
+        </div>
+        <div class="adm-row"><button type="submit" class="btn btn-sm" [disabled]="saving()">Hozzáadás</button><span class="adm-sub">Felvétel után a „Rejtett” gombbal publikálható.</span></div>
+      </form>
+    </section>
+  </main>
+</div>

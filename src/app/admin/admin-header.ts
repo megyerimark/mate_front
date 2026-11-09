@@ -12,6 +12,7 @@ import { AdminAuthService } from './admin-auth.service';
       <nav class="adm-nav" aria-label="Admin menü">
         <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page">Ajánlatkérések</a>
         <a routerLink="/admin/statisztika" routerLinkActive="active" ariaCurrentWhenActive="page">Statisztika</a>
+        <a routerLink="/admin/velemenyek" routerLinkActive="active" ariaCurrentWhenActive="page">Vélemények</a>
         <a routerLink="/admin/fiok" routerLinkActive="active" ariaCurrentWhenActive="page">Fiók</a>
       </nav>
       <div class="adm-top-right">

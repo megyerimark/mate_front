@@ -33,6 +33,7 @@ export interface AdminQuote {
   events?: { type: 'status' | 'price' | 'note'; text: string; user: string | null; created_at: string }[];
   document_name: string | null;
   has_document: boolean;
+  documents: { index: number; name: string; size: number | null; mime: string | null }[];
   created_at: string;
   updated_at: string;
 }
@@ -70,6 +71,27 @@ export interface StatsOverview {
   by_locale: StatRow[];
   by_deadline: StatRow[];
   top_languages: StatRow[];
+}
+
+export interface Testimonial {
+  id: number;
+  name: string;
+  company: string | null;
+  role: string | null;
+  text: string;
+  locale: 'hu' | 'en' | 'all';
+  rating: number | null;
+  is_published: boolean;
+  sort: number;
+}
+
+export interface Partner {
+  id: number;
+  name: string;
+  url: string | null;
+  is_published: boolean;
+  sort: number;
+  logo: string | null;
 }
 
 export interface AdminUser {
@@ -163,7 +185,40 @@ export class AdminApiService {
     return this.http.delete(`${this.base}/quote-requests/${id}`);
   }
 
-  document(id: number): Observable<Blob> {
-    return this.http.get(`${this.base}/quote-requests/${id}/document`, { responseType: 'blob' });
+  document(id: number, index = 0): Observable<Blob> {
+    return this.http.get(`${this.base}/quote-requests/${id}/documents/${index}`, { responseType: 'blob' });
+  }
+
+  // ---------- Vélemények, partnerek ----------
+  testimonials(): Observable<Testimonial[]> {
+    return this.http.get<{ data: Testimonial[] }>(`${this.base}/testimonials`).pipe(map((r) => r.data));
+  }
+  saveTestimonial(t: Partial<Testimonial>): Observable<Testimonial> {
+    const req = t.id
+      ? this.http.patch<{ data: Testimonial }>(`${this.base}/testimonials/${t.id}`, t)
+      : this.http.post<{ data: Testimonial }>(`${this.base}/testimonials`, t);
+    return req.pipe(map((r) => r.data));
+  }
+  removeTestimonial(id: number): Observable<unknown> {
+    return this.http.delete(`${this.base}/testimonials/${id}`);
+  }
+  partners(): Observable<Partner[]> {
+    return this.http.get<{ data: Partner[] }>(`${this.base}/partners`).pipe(map((r) => r.data));
+  }
+  savePartner(p: Partial<Partner>, logo: File | null): Observable<Partner> {
+    const body = new FormData();
+    if (p.name !== undefined) body.append('name', p.name);
+    body.append('url', p.url ?? '');
+    if (p.is_published !== undefined) body.append('is_published', p.is_published ? '1' : '0');
+    if (p.sort !== undefined) body.append('sort', String(p.sort));
+    if (logo) body.append('logo', logo);
+    return this.http.post<{ data: Partner }>(`${this.base}/partners${p.id ? '/' + p.id : ''}`, body).pipe(map((r) => r.data));
+  }
+  removePartner(id: number): Observable<unknown> {
+    return this.http.delete(`${this.base}/partners/${id}`);
+  }
+  /** A logó Bearer tokennel töltődik be, ezért blobként. */
+  partnerLogo(url: string): Observable<Blob> {
+    return this.http.get(url, { responseType: 'blob' });
   }
 }

@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Icon } from '../components/icon';
 import { LanguageWorld } from '../components/language-world';
 import { QuoteSection } from '../components/quote-section';
+import { TrustSection } from '../components/trust-section';
 import { HOME, HOME_EXTRA, PAGES, UI } from '../content/ui';
 import { Hero } from '../hero/hero';
 import { Reveal } from '../motion/reveal.directive';
@@ -11,7 +12,7 @@ import { MARQUEE } from '../site.config';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, QuoteSection, Hero, Icon, Reveal, LanguageWorld],
+  imports: [RouterLink, QuoteSection, Hero, Icon, Reveal, LanguageWorld, TrustSection],
   templateUrl: './home.html',
 })
 export class Home {

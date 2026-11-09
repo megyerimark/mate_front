@@ -244,15 +244,16 @@ export class AdminDashboard implements OnInit {
     });
   }
 
-  protected download(): void {
+  protected download(index = 0): void {
     const quote = this.selected();
-    if (!quote?.has_document) return;
-    this.api.document(quote.id).subscribe({
+    const doc = quote?.documents?.[index];
+    if (!quote || !doc) return;
+    this.api.document(quote.id, index).subscribe({
       next: (blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = quote.document_name ?? 'dokumentum';
+        a.download = doc.name;
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       },
@@ -277,6 +278,11 @@ export class AdminDashboard implements OnInit {
     const subject = `Árajánlat${pair ? ' – ' + pair + ' fordítás' : ''}`;
     const body = `Kedves ${quote.name}!\n\nKöszönjük az ajánlatkérését.\n\n`;
     return `mailto:${quote.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  protected fileSize(bytes: number | null): string {
+    if (bytes === null) return '';
+    return bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1).replace('.', ',')} MB`;
   }
 
   protected date(iso: string): string {

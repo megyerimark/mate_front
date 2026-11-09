@@ -32,6 +32,12 @@ export default [
     loadComponent: () => import('./admin-stats').then((m) => m.AdminStats),
   },
   {
+    path: 'velemenyek',
+    canActivate: [requireLogin],
+    title: 'Vélemények és partnerek – Done Translations admin',
+    loadComponent: () => import('./admin-content').then((m) => m.AdminContent),
+  },
+  {
     path: 'fiok',
     canActivate: [requireLogin],
     title: 'Fiók és adminok – Done Translations admin',

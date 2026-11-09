@@ -29,13 +29,13 @@ export interface ValidationErrorResponse {
 export class QuoteService {
   private readonly http = inject(HttpClient);
 
-  send(payload: QuoteRequestPayload, file: File | null): Observable<{ message: string }> {
+  send(payload: QuoteRequestPayload, files: File[]): Observable<{ message: string }> {
     const body = new FormData();
     for (const [key, value] of Object.entries(payload)) {
       if (value === undefined) continue;
       body.append(key, typeof value === 'boolean' ? (value ? '1' : '0') : value);
     }
-    if (file) body.append('document', file);
+    for (const f of files) body.append('documents[]', f, f.name);
     return this.http.post<{ message: string }>(`${environment.apiUrl}/api/quote-requests`, body);
   }
 }
