@@ -35,6 +35,15 @@
       }
     </div>
 
+    @if (stats()?.follow_up; as n) {
+      <div class="adm-followup" [class.active]="followUp()">
+        <span><b>{{ n }} elküldött ajánlatra</b> legalább 3 napja nem jött válasz. Érdemes rákérdezni.</span>
+        <button type="button" class="btn btn-sm" [class.btn-ghost]="followUp()" (click)="toggleFollowUp()">
+          {{ followUp() ? 'Összes mutatása' : 'Mutasd őket' }}
+        </button>
+      </div>
+    }
+
     <div class="adm-toolbar">
       <input class="adm-search" type="search" placeholder="Keresés név, e-mail, telefon vagy megjegyzés alapján…"
         [ngModel]="search()" (ngModelChange)="onSearch($event)" aria-label="Keresés" />
@@ -63,12 +72,16 @@
               <td>{{ pair(q) }}</td>
               <td><span class="adm-deadline" [attr.data-deadline]="q.deadline">{{ q.deadline_label }}</span></td>
               <td>@if (q.has_document) { <app-icon name="document" class="adm-doc" aria-label="Van csatolt dokumentum" /> }</td>
-              <td><span class="adm-pill" [attr.data-status]="q.status">{{ q.status_label }}</span></td>
+              <td>
+                <span class="adm-pill" [attr.data-status]="q.status">{{ q.status_label }}</span>
+                @if (q.needs_follow_up) { <small class="adm-flag">Utánkövetés</small> }
+                @if (q.price !== null) { <small>{{ price(q.price) }}</small> }
+              </td>
             </tr>
           } @empty {
             @if (!loading()) {
               <tr class="adm-empty"><td colspan="7">
-                @if (search() || filterStatus() || from() || to()) { Nincs találat a szűrésre. } @else { Még nincs ajánlatkérés. Amint valaki kitölti az űrlapot a weboldalon, itt jelenik meg. }
+                @if (search() || filterStatus() || followUp() || from() || to()) { Nincs találat a szűrésre. } @else { Még nincs ajánlatkérés. Amint valaki kitölti az űrlapot a weboldalon, itt jelenik meg. }
               </td></tr>
             }
           }
@@ -100,6 +113,9 @@
         <button type="button" class="adm-close" (click)="close()" aria-label="Bezárás">×</button>
       </div>
 
+      @if (q.needs_follow_up) {
+        <p class="adm-followup-note">Az ajánlatot {{ ago(q.status_changed_at!) }} küldted el, azóta nem változott. Érdemes rákérdezni.</p>
+      }
       <div class="adm-actions">
         <a class="btn btn-sm" [href]="replyLink(q)">Válasz e-mailben</a>
         @if (q.phone) { <a class="btn btn-ghost btn-sm" [href]="'tel:' + q.phone">Hívás</a> }
@@ -124,6 +140,20 @@
       }
 
       <section class="adm-block">
+        <h3>Válaszsablonok <small>({{ q.locale === 'en' ? 'angolul' : 'magyarul' }})</small></h3>
+        <div class="adm-templates">
+          @for (item of templates(); track item.t.key) {
+            @if (item.missing) {
+              <span class="adm-template disabled" [title]="item.missing">{{ item.t.label }} <small>{{ item.missing }}</small></span>
+            } @else {
+              <a class="adm-template" [href]="item.href">{{ item.t.label }} <span aria-hidden="true">↗</span></a>
+            }
+          }
+        </div>
+        <p class="adm-hint">Előre kitöltött levelet nyit a levelezőben; küldés előtt átírható.</p>
+      </section>
+
+      <section class="adm-block">
         <h3>Állapot</h3>
         <div class="adm-status-pick" role="radiogroup" aria-label="Állapot">
           @for (s of statuses; track s.value) {
@@ -131,6 +161,17 @@
               [class.active]="q.status === s.value" [disabled]="saving()" (click)="setStatus(s.value)">{{ s.label }}</button>
           }
         </div>
+      </section>
+
+      <section class="adm-block">
+        <h3><label for="adm-price">Ár (Ft)</label></h3>
+        <div class="adm-row">
+          <input id="adm-price" class="adm-price" inputmode="numeric" placeholder="pl. 12 000" autocomplete="off"
+            [ngModel]="priceInput()" (ngModelChange)="priceInput.set($event)" (keydown.enter)="savePrice()" [attr.aria-invalid]="priceInvalid()" />
+          <button type="button" class="btn btn-sm" [disabled]="!priceChanged() || priceInvalid() || saving()" (click)="savePrice()">Ár mentése</button>
+        </div>
+        @if (priceInvalid()) { <p class="adm-hint danger">Csak számot írj be, pl. 12000.</p> }
+        <p class="adm-hint">Az ajánlott vagy megrendelt összeg. A statisztika ebből számolja a megrendelések értékét.</p>
       </section>
 
       <section class="adm-block">
@@ -144,6 +185,16 @@
       </section>
 
       @if (detailError()) { <p class="adm-error" role="alert">{{ detailError() }}</p> }
+
+      <section class="adm-block">
+        <h3>Előzmények</h3>
+        <ol class="adm-history">
+          @for (e of q.events ?? []; track $index) {
+            <li><span>{{ e.text }}</span><small>{{ date(e.created_at) }}@if (e.user) { · {{ e.user }} }</small></li>
+          }
+          <li><span>Beérkezett a weboldalról</span><small>{{ date(q.created_at) }}</small></li>
+        </ol>
+      </section>
 
       <section class="adm-block adm-danger">
         @if (!confirmDelete()) {

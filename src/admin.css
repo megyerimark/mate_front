@@ -136,7 +136,7 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
 .adm-seg { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
 .adm-seg button { font: inherit; font-size: .88rem; padding: .5em 1.1em; border-radius: 999px; border: 0; background: none; color: var(--muted); cursor: pointer; }
 .adm-seg button.active { background: var(--accent); color: #fff; }
-.adm-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; transition: opacity .2s; }
+.adm-kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; transition: opacity .2s; }
 .adm-kpi { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .adm-kpi span { font-size: .82rem; color: var(--muted); }
 .adm-kpi b { font-family: var(--display); font-weight: 300; font-size: 2.2rem; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--text); }
@@ -194,3 +194,25 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
   .adm-hbars .track { grid-area: track; }
   .adm-hbars .val { grid-area: val; }
 }
+
+/* Utánkövetés, ár, válaszsablonok, előzmények */
+.adm-followup { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 18px; border-radius: 14px; background: rgba(var(--warm-rgb), .14); border: 1px solid rgba(var(--warm-rgb), .4); color: var(--text); }
+.adm-followup b { color: var(--warm-ink); }
+.adm-followup.active { background: var(--surface); }
+.adm-flag { display: inline-block !important; margin-top: 6px; padding: .1em .55em; border-radius: 6px; background: rgba(var(--warm-rgb), .2); color: var(--warm-ink) !important; font-weight: 600; font-size: .72rem !important; }
+.adm-followup-note { margin: 0; padding: 10px 14px; border-radius: 12px; background: rgba(var(--warm-rgb), .14); color: var(--warm-ink); font-size: .9rem; }
+.adm-price { font: inherit; font-size: 1rem; color: var(--text); padding: .6em .9em; border-radius: 12px; width: 160px; background: rgba(var(--tint), .03); border: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+.adm-price:focus { outline: none; border-color: var(--accent); }
+.adm-price[aria-invalid="true"] { border-color: var(--danger); }
+.adm-hint.danger { color: var(--danger); margin: 0; }
+.adm-block .adm-hint { margin: 0; }
+.adm-block h3 small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.adm-templates { display: flex; flex-wrap: wrap; gap: 8px; }
+.adm-template { display: inline-flex; align-items: center; gap: .4em; padding: .5em 1em; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: .88rem; text-decoration: none; }
+.adm-template:hover { border-color: var(--accent); color: var(--accent); }
+.adm-template.disabled { color: var(--muted); background: var(--bg); cursor: not-allowed; }
+.adm-template small { font-size: .76rem; }
+.adm-history { list-style: none; margin: 0; padding: 0 0 0 16px; border-left: 2px solid var(--border); display: grid; gap: 12px; }
+.adm-history li { position: relative; display: grid; gap: 2px; font-size: .9rem; }
+.adm-history li::before { content: ""; position: absolute; left: -22px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
+.adm-history small { color: var(--muted); font-size: .8rem; }

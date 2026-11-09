@@ -5,6 +5,7 @@ import { Meta } from '@angular/platform-browser';
 import { Icon } from '../components/icon';
 import { AdminApiService, AdminQuote, AdminStats, QuotePage, QuoteStatus, STATUSES } from './admin-api.service';
 import { AdminHeader } from './admin-header';
+import { mailto, replyTemplates } from './reply-templates';
 
 const dateFmt = new Intl.DateTimeFormat('hu-HU', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -23,6 +24,7 @@ export class AdminDashboard implements OnInit {
   protected readonly listError = signal('');
 
   protected readonly filterStatus = signal<QuoteStatus | ''>('');
+  protected readonly followUp = signal(false);
   protected readonly search = signal('');
   protected readonly currentPage = signal(1);
   protected readonly from = signal('');
@@ -40,6 +42,14 @@ export class AdminDashboard implements OnInit {
   protected readonly saved = signal('');
   protected readonly detailError = signal('');
   protected readonly confirmDelete = signal(false);
+  /** Az ár szerkesztőmezője (szövegként, hogy üresen is hagyható legyen). */
+  protected readonly priceInput = signal('');
+  protected readonly priceChanged = computed(() => this.parsePrice(this.priceInput()) !== (this.selected()?.price ?? null));
+  protected readonly priceInvalid = computed(() => this.priceInput().trim() !== '' && this.parsePrice(this.priceInput()) === null);
+  protected readonly templates = computed(() => {
+    const q = this.selected();
+    return q ? replyTemplates(q).map((t) => ({ t, missing: t.needs?.(q) ?? null, href: mailto(q, t) })) : [];
+  });
 
   protected readonly noteChanged = computed(() => (this.selected()?.admin_note ?? '') !== this.note());
   protected readonly newCount = computed(() => this.stats()?.by_status.find((s) => s.status === 'new')?.total ?? 0);
@@ -76,7 +86,7 @@ export class AdminDashboard implements OnInit {
   }
 
   private filters() {
-    return { status: this.filterStatus(), search: this.search(), from: this.from(), to: this.to() };
+    return { status: this.filterStatus(), followUp: this.followUp(), search: this.search(), from: this.from(), to: this.to() };
   }
 
   protected setDate(which: 'from' | 'to', value: string): void {
@@ -112,7 +122,15 @@ export class AdminDashboard implements OnInit {
     });
   }
 
+  protected toggleFollowUp(): void {
+    this.followUp.set(!this.followUp());
+    if (this.followUp()) this.filterStatus.set('');
+    this.currentPage.set(1);
+    this.load();
+  }
+
   protected setStatusFilter(status: QuoteStatus | ''): void {
+    this.followUp.set(false);
     this.filterStatus.set(this.filterStatus() === status ? '' : status);
     this.currentPage.set(1);
     this.load();
@@ -135,6 +153,14 @@ export class AdminDashboard implements OnInit {
   protected open(quote: AdminQuote): void {
     this.selected.set(quote);
     this.note.set(quote.admin_note ?? '');
+    this.priceInput.set(quote.price === null ? '' : String(quote.price));
+    // Az előzmények csak az egyedi lekérésben vannak benne.
+    this.api.show(quote.id).subscribe({
+      next: (full) => {
+        if (this.selected()?.id === full.id) this.selected.set(full);
+      },
+      error: () => {},
+    });
     this.saved.set('');
     this.detailError.set('');
     this.confirmDelete.set(false);
@@ -156,7 +182,23 @@ export class AdminDashboard implements OnInit {
     this.persist(quote.id, { admin_note: this.note() || null }, 'Jegyzet mentve');
   }
 
-  private persist(id: number, changes: Partial<Pick<AdminQuote, 'status' | 'admin_note'>>, message: string): void {
+  protected savePrice(): void {
+    const quote = this.selected();
+    if (!quote || this.priceInvalid()) return;
+    this.persist(quote.id, { price: this.parsePrice(this.priceInput()) }, 'Ár mentve');
+  }
+
+  /** „12 000”, „12000 Ft”, „12.000” → 12000; üres → null; értelmetlen → null (és priceInvalid jelez). */
+  private parsePrice(value: string): number | null {
+    const digits = value.replace(/[\s.,]|ft|huf/gi, '');
+    return /^\d{1,9}$/.test(digits) ? Number(digits) : null;
+  }
+
+  protected price(n: number | null): string {
+    return n === null ? '' : new Intl.NumberFormat('hu-HU').format(n) + ' Ft';
+  }
+
+  private persist(id: number, changes: Partial<Pick<AdminQuote, 'status' | 'admin_note' | 'price'>>, message: string): void {
     this.saving.set(true);
     this.saved.set('');
     this.detailError.set('');
@@ -166,6 +208,7 @@ export class AdminDashboard implements OnInit {
         this.saved.set(message);
         this.selected.set(updated);
         this.note.set(updated.admin_note ?? '');
+        this.priceInput.set(updated.price === null ? '' : String(updated.price));
         this.page.update((p) => (p ? { ...p, data: p.data.map((q) => (q.id === id ? updated : q)) } : p));
         this.api.stats().subscribe({ next: (s) => this.stats.set(s), error: () => {} });
       },

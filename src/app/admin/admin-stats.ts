@@ -16,6 +16,7 @@ interface Column {
   label: string;
   total: number;
   won: number;
+  revenue: number;
   showTick: boolean;
 }
 
@@ -81,6 +82,7 @@ export class AdminStats {
         label: m.label,
         total: m.total,
         won: m.won,
+        revenue: m.revenue,
         showTick: (months.length - 1 - i) % every === 0,
       };
     });
@@ -142,6 +144,10 @@ export class AdminStats {
 
   protected tooltipLeft(col: Column): number {
     return Math.min(Math.max(col.x + col.slot / 2, 80), this.width() - 80);
+  }
+
+  protected huf(n: number | null): string {
+    return n === null ? '–' : new Intl.NumberFormat('hu-HU').format(n) + ' Ft';
   }
 
   protected rowsMax(rows: StatRow[]): number {

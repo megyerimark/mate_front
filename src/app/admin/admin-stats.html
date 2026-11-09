@@ -40,6 +40,13 @@
           <small>{{ monthDelta() }}</small>
         </div>
         <div class="adm-kpi">
+          <span>Megrendelések értéke</span><b>{{ d.totals.priced_orders ? huf(d.totals.revenue) : '–' }}</b>
+          <small>
+            @if (d.totals.priced_orders) { átlag {{ huf(d.totals.average_order) }}, {{ d.totals.priced_orders }} megrendelésből }
+            @else { Add meg az árat a megrendeléseknél }
+          </small>
+        </div>
+        <div class="adm-kpi">
           <span>Angol oldalról</span><b>{{ d.totals.english }}</b>
           <small>külföldi ügyfél vagy angolul író</small>
         </div>
@@ -83,6 +90,7 @@
                   <b>{{ c.label }}</b>
                   <span>{{ c.total }} ajánlatkérés</span>
                   <span>{{ c.won }} megrendelve</span>
+                  @if (c.revenue) { <span>{{ huf(c.revenue) }}</span> }
                 </div>
               }
             }
@@ -90,10 +98,10 @@
         } @else {
           <div class="adm-table-wrap">
             <table class="adm-table adm-table-compact">
-              <thead><tr><th>Hónap</th><th class="num">Ajánlatkérés</th><th class="num">Megrendelve</th></tr></thead>
+              <thead><tr><th>Hónap</th><th class="num">Ajánlatkérés</th><th class="num">Megrendelve</th><th class="num">Érték</th></tr></thead>
               <tbody>
                 @for (m of d.monthly; track m.month) {
-                  <tr><td>{{ m.label }}</td><td class="num">{{ m.total }}</td><td class="num">{{ m.won }}</td></tr>
+                  <tr><td>{{ m.label }}</td><td class="num">{{ m.total }}</td><td class="num">{{ m.won }}</td><td class="num">{{ m.revenue ? huf(m.revenue) : '–' }}</td></tr>
                 }
               </tbody>
             </table>

@@ -21,6 +21,12 @@ export interface AdminQuote {
   admin_note: string | null;
   status: QuoteStatus;
   status_label: string;
+  status_changed_at: string | null;
+  needs_follow_up: boolean;
+  /** Ajánlott / megrendelt ár forintban. */
+  price: number | null;
+  /** Előzmények; csak az egy ajánlatkérést lekérő válaszban van benne. */
+  events?: { type: 'status' | 'price' | 'note'; text: string; user: string | null; created_at: string }[];
   document_name: string | null;
   has_document: boolean;
   created_at: string;
@@ -34,6 +40,7 @@ export interface QuotePage {
 
 export interface AdminStats {
   total: number;
+  follow_up: number;
   this_month: number;
   by_status: { status: QuoteStatus; label: string; total: number }[];
 }
@@ -46,10 +53,14 @@ export interface StatsOverview {
   period: StatsPeriod;
   from: string;
   to: string;
-  totals: { total: number; won: number; lost: number; open: number; conversion: number | null; english: number };
+  totals: {
+    total: number; won: number; lost: number; open: number; conversion: number | null; english: number;
+    revenue: number; average_order: number | null; priced_orders: number;
+  };
+  follow_up: number;
   this_month: number;
   last_month: number;
-  monthly: { month: string; label: string; total: number; won: number }[];
+  monthly: { month: string; label: string; total: number; won: number; revenue: number }[];
   by_service: StatRow[];
   by_status: StatRow[];
   by_locale: StatRow[];
@@ -59,6 +70,7 @@ export interface StatsOverview {
 
 export interface QuoteFilters {
   status: QuoteStatus | '';
+  followUp: boolean;
   search: string;
   from: string;
   to: string;
@@ -95,6 +107,7 @@ export class AdminApiService {
   private filterParams(filters: QuoteFilters): HttpParams {
     let params = new HttpParams();
     if (filters.status) params = params.set('status', filters.status);
+    if (filters.followUp) params = params.set('follow_up', 1);
     if (filters.search.trim()) params = params.set('search', filters.search.trim());
     if (filters.from) params = params.set('from', filters.from);
     if (filters.to) params = params.set('to', filters.to);
@@ -105,7 +118,11 @@ export class AdminApiService {
     return this.http.get<AdminStats>(`${this.base}/stats`);
   }
 
-  update(id: number, changes: Partial<Pick<AdminQuote, 'status' | 'admin_note'>>): Observable<AdminQuote> {
+  show(id: number): Observable<AdminQuote> {
+    return this.http.get<{ data: AdminQuote }>(`${this.base}/quote-requests/${id}`).pipe(map((r) => r.data));
+  }
+
+  update(id: number, changes: Partial<Pick<AdminQuote, 'status' | 'admin_note' | 'price'>>): Observable<AdminQuote> {
     return this.http.patch<{ data: AdminQuote }>(`${this.base}/quote-requests/${id}`, changes).pipe(map((r) => r.data));
   }
 
