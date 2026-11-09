@@ -39,6 +39,13 @@ export const UI = {
       careers: 'Karrier',
       contact: 'Kapcsolat',
     },
+    hero: {
+      photoAlt: 'A DONE Translations fordítóiroda csapata',
+      badges: [
+        { mark: '2×', title: 'Két szakfordító', text: 'minden fordításon' },
+        { mark: '✓', title: 'Akár aznapra kész', text: 'garancia a határidőre' },
+      ],
+    },
     requestQuote: 'Ajánlatkérés',
     more: 'Tovább',
     call: 'Hívás',
@@ -149,6 +156,13 @@ export const UI = {
       languages: 'Languages',
       careers: 'Careers',
       contact: 'Contact',
+    },
+    hero: {
+      photoAlt: 'The DONE Translations team',
+      badges: [
+        { mark: '2×', title: 'Two translators', text: 'on every translation' },
+        { mark: '✓', title: 'Ready even the same day', text: 'deadlines guaranteed' },
+      ],
     },
     requestQuote: 'Request a quote',
     more: 'Read more',

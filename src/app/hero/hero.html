@@ -1,13 +1,7 @@
 @let h = home();
 @let ui = site.ui();
 <section class="hero">
-  <canvas #canvas class="hero-canvas" aria-hidden="true"></canvas>
-  @if (fallback()) {
-    <div class="hero-fallback" aria-hidden="true">{{ words()[0].text }}</div>
-  }
-  <div class="hero-vignette" aria-hidden="true"></div>
-
-  <div class="container hero-content">
+  <div class="container hero-grid">
     <div class="hero-text">
       <h1 class="hero-h1"><span class="pulse" aria-hidden="true"></span> {{ h.h1 }}</h1>
       <h2 class="hero-title">
@@ -22,9 +16,17 @@
       </div>
     </div>
 
-    <div class="hero-meta" aria-hidden="true">
-      <span class="hero-counter">{{ (index() + 1).toString().padStart(2, '0') }} / {{ words().length.toString().padStart(2, '0') }}</span>
-      <span class="hero-lang">{{ words()[index()].language }}</span>
-    </div>
+    <figure class="hero-photo">
+      <picture>
+        <source type="image/webp" srcset="/images/done-translations-csapat-640.webp 640w, /images/done-translations-csapat.webp 1000w" sizes="(max-width: 900px) 100vw, 600px" />
+        <img src="/images/done-translations-csapat.jpg" width="1000" height="667" [alt]="ui.hero.photoAlt" fetchpriority="high" decoding="async" />
+      </picture>
+      @for (b of ui.hero.badges; track b.title; let i = $index) {
+        <div class="hero-badge" [class.gold]="i === 1" [attr.data-pos]="i">
+          <i aria-hidden="true">{{ b.mark }}</i>
+          <div><b>{{ b.title }}</b><span>{{ b.text }}</span></div>
+        </div>
+      }
+    </figure>
   </div>
 </section>

@@ -91,13 +91,15 @@ a webszervernek kell kezelnie, ezért az A) változatot javasoljuk.
 
 ## Effektek
 
-- **Nyitóképernyő**: több ezer részecske (three.js / WebGL), amik sorban kirajzolják a „fordítás” szót különböző nyelveken, mögöttük lassan forgó ív. Görgetéskor szétrepülnek. Az egérre semmi nem reagál (se a részecskék, se a kurzor, se a gombok).
+- **Nyitóképernyő**: balra a régi oldal szövegei (SEO), jobbra a csapat fotója két kis kártyával
+  („Két szakfordító minden fordításon”, „Akár aznapra kész”). Az egérre semmi nem reagál.
+  A fotó: `public/images/done-translations-csapat.{jpg,webp}` (+ `-640.webp` mobilra). Ha lesz saját fotó,
+  ezeket a fájlokat kell lecserélni (fekvő, kb. 3:2, legalább 1000 px széles); a kártyák szövege a `src/app/content/ui.ts` `hero` részében van.
 - **Élő fordítás**: rögzített szakasz, ahol görgetésre betűnként fordítódik a szlogen („Fordítás akár aznapra”) angolra, majd németre (GSAP ScrollTrigger).
 - **Lépések**: asztali gépen vízszintesen görgetett panelek.
 - Felpörgő számlálók (a régi oldal számai), beúszó kártyák, nyelvi szalag.
 
-A 3D jelenet külön, késleltetve töltődik be, mobilon kevesebb részecskével fut, és leáll, ha nem látszik.
-Ha a látogató csökkentett mozgást kért, vagy a böngésző nem tud WebGL-t, statikus változatot kap.
+Ha a látogató csökkentett mozgást kért, a beúsztatások elmaradnak.
 
 ## További tippek több ügyfélhez
 
