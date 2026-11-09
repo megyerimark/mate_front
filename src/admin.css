@@ -136,7 +136,7 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
 .adm-seg { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
 .adm-seg button { font: inherit; font-size: .88rem; padding: .5em 1.1em; border-radius: 999px; border: 0; background: none; color: var(--muted); cursor: pointer; }
 .adm-seg button.active { background: var(--accent); color: #fff; }
-.adm-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; transition: opacity .2s; }
+.adm-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; transition: opacity .2s; }
 .adm-kpi { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .adm-kpi span { font-size: .82rem; color: var(--muted); }
 .adm-kpi b { font-family: var(--display); font-weight: 300; font-size: 2.2rem; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--text); }
@@ -286,3 +286,23 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
 .adm-client p { margin: 0; }
 .adm-seg-sm button { font-size: .8rem; padding: .35em .8em; }
 .adm-card-head { flex-wrap: wrap; }
+
+/* ================= Admin éjszakai témában ================= */
+html.theme-night [data-status="new"] { --st: #d6b366; --st-ink: #ecd29a; }
+html.theme-night [data-status="in_progress"] { --st: #4fae8a; --st-ink: #95dcbf; }
+html.theme-night [data-status="quoted"] { --st: #6f95d6; --st-ink: #aec8f2; }
+html.theme-night [data-status="won"] { --st: #3f8a6e; --st-ink: #eaf6f0; }
+html.theme-night [data-status="lost"] { --st: #8a8f8c; --st-ink: #c8ccc9; }
+html.theme-night .adm-status-pick button.active { color: #101215; }
+html.theme-night .adm-status-pick button.active[data-status="won"], html.theme-night .adm-status-pick button.active[data-status="quoted"] { color: #fff; }
+html.theme-night .adm-seg button.active { color: var(--on-accent); }
+html.theme-night .adm-backdrop { background: rgba(0, 0, 0, .55); }
+html.theme-night .adm-top { background: rgba(18, 20, 24, .92); backdrop-filter: blur(10px); }
+html.theme-night .adm-login { background: radial-gradient(ellipse at 50% 0%, rgba(var(--warm-rgb), .12), transparent 60%), var(--bg); }
+html.theme-night .adm-login-card { box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .8); }
+html.theme-night .adm-table tbody tr:hover, html.theme-night .adm-table tbody tr.selected { background: rgba(var(--warm-rgb), .06); }
+html.theme-night .adm-flag.danger { background: rgba(255, 107, 94, .14); }
+html.theme-night .adm-chart .grid.base { stroke: rgba(236, 232, 221, .3); }
+html.theme-night .adm-tick { background: transparent; border-color: rgba(var(--warm-rgb), .6); }
+html.theme-night .adm-created { background: rgba(var(--warm-rgb), .08); border-color: rgba(var(--warm-rgb), .3); }
+html.theme-night .adm-created code { background: var(--bg); }

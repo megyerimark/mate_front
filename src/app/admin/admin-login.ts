@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, isDevMode, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminAuthService } from './admin-auth.service';
@@ -56,7 +56,10 @@ export class AdminLogin {
         this.busy.set(false);
         if (err.status === 422) this.error.set(err.error?.errors?.email?.[0] ?? 'Hibás e-mail cím vagy jelszó.');
         else if (err.status === 429) this.error.set('Túl sok próbálkozás. Kérjük, várjon egy percet.');
-        else this.error.set('Nem sikerült kapcsolódni a szerverhez. Próbálja újra.');
+        else if (isDevMode() && [0, 404, 500, 502, 503, 504].includes(err.status) && !err.error?.message) {
+          // Fejlesztéskor a leggyakoribb ok: nem fut a Laravel (vagy más program foglalja a 8000-es portot).
+          this.error.set('A Laravel backend nem érhető el (127.0.0.1:8000). Indítsd el a mate_back mappában: php artisan serve – majd próbáld újra.');
+        } else this.error.set('Nem sikerült kapcsolódni a szerverhez. Próbálja újra.');
       },
     });
   }

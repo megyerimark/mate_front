@@ -5,14 +5,35 @@ A hozzá tartozó backend (Laravel): [mate_back](https://github.com/megyerimark/
 
 ## Fejlesztés
 
-Kell hozzá: Node.js 22 (legalább 22.12) vagy újabb, és a futó Laravel backend.
+Kell hozzá: Node.js 22 (legalább 22.12) vagy újabb, PHP 8.3+ és Composer. **Két terminál kell**: az egyikben a Laravel, a másikban az Angular fut.
+
+**1. terminál – backend** (`mate_back` mappa), első alkalommal:
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate
+php artisan admin:create admin@donetranslations.hu --generate   # kiírja a jelszót
+```
+
+Utána mindig csak:
+
+```bash
+php artisan serve        # http://127.0.0.1:8000
+```
+
+**2. terminál – frontend** (`mate_front` mappa):
 
 ```bash
 npm install
-npm start            # http://localhost:4200
+npm start                # http://localhost:4200, admin: http://localhost:4200/admin
 ```
 
-A `/api` hívásokat a fejlesztői szerver a `http://localhost:8000`-en futó Laravelhez továbbítja (`proxy.conf.json`).
+Az `/api` hívásokat a fejlesztői szerver a `127.0.0.1:8000`-en futó Laravelhez továbbítja (`proxy.conf.json`).
+Ha a bejelentkezésnél „A Laravel backend nem érhető el” üzenet (vagy a konzolban `404 /api/admin/login`) jelenik meg:
+nem fut a Laravel, vagy más program foglalja a 8000-es portot (`lsof -i :8000`). Indítsd el az 1. terminálban a `php artisan serve`-t.
 
 ## Tartalom és SEO
 
@@ -110,7 +131,7 @@ a webszervernek kell kezelnie, ezért az A) változatot javasoljuk.
   a városok listája: `src/app/hero/cities.ts`. Csökkentett mozgásnál álló kép. A korábbi prototípusok: `docs/hero-otletek/`.
 - **Prémium ígéret (110%)**: a hero alatti sáv és a hero infósora; a szövegek a `ui.ts` `HOME_EXTRA.premium` részében,
   csak a régi oldalon is szereplő tényekkel (két szakfordító, szakterületi és anyanyelvi szakember, határidő-garancia, bizalmas kezelés).
-- **Éjszakai téma**: a nyilvános oldal grafit–elefántcsont–arany (`html.theme-night`, a `styles.css` végén); az admin világos marad.
+- **Éjszakai téma**: az egész oldal és az admin is grafit–elefántcsont–arany (`html.theme-night`; `styles.css` és `admin.css` vége).
 - Nincs rögzített vagy a görgetéshez kötött effekt: a kártyák egyszer, finoman beúsznak, a számlálók felpörögnek,
   a nyelvi szalag lassan, magától úszik. (GSAP nélkül, saját ~40 sor kóddal.)
 
