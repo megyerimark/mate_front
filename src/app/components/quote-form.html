@@ -88,29 +88,30 @@
               }
             </fieldset>
 
-            <div class="qf-drop" [class.dragging]="dragging()" [class.has-error]="fileError() || serverErrors()['documents']"
-              (dragover)="$event.preventDefault(); dragging.set(true)" (dragleave)="dragging.set(false)" (drop)="onDrop($event)">
-              <input [id]="id('files')" class="qf-file-input" type="file" multiple [accept]="accept" (change)="onPick($event)" />
-              <label [for]="id('files')" class="qf-drop-label">
-                <span class="qf-drop-icon" aria-hidden="true">↑</span>
-                <b>{{ t.dropTitle }}</b> <span class="qf-browse">{{ t.dropBrowse }}</span>
-                <small>{{ t.dropHint(limits.files, limits.mb, limits.total) }}</small>
-              </label>
-            </div>
-            @if (fileError() || serverErrors()['documents']) {
-              <small class="error" role="alert">{{ fileError() || serverErrors()['documents'] }}</small>
-            }
-            @if (files().length) {
-              <ul class="qf-files">
-                @for (f of files(); track f.file.name + f.file.size; let i = $index) {
-                  <li>
-                    @if (f.preview) { <img [src]="f.preview" alt="" /> } @else { <span class="qf-ext">{{ f.ext }}</span> }
-                    <span class="qf-file-name">{{ f.file.name }}<small>{{ size(f.file.size) }}</small></span>
-                    <button type="button" class="qf-remove" (click)="removeFile(i)" [attr.aria-label]="t.remove + ': ' + f.file.name">×</button>
-                  </li>
-                }
-              </ul>
-            }
+          }
+          @if (interpreting()) { <p class="qf-hint">{{ t.interpretingFilesHint }}</p> }
+          <div class="qf-drop" [class.dragging]="dragging()" [class.has-error]="fileError() || serverErrors()['documents']"
+            (dragover)="$event.preventDefault(); dragging.set(true)" (dragleave)="dragging.set(false)" (drop)="onDrop($event)">
+            <input [id]="id('files')" class="qf-file-input" type="file" multiple [accept]="accept" (change)="onPick($event)" />
+            <label [for]="id('files')" class="qf-drop-label">
+              <span class="qf-drop-icon" aria-hidden="true">↑</span>
+              <b>{{ t.dropTitle }}</b> <span class="qf-browse">{{ t.dropBrowse }}</span>
+              <small>{{ t.dropHint(limits.files, limits.mb, limits.total) }}</small>
+            </label>
+          </div>
+          @if (fileError() || serverErrors()['documents']) {
+            <small class="error" role="alert">{{ fileError() || serverErrors()['documents'] }}</small>
+          }
+          @if (files().length) {
+            <ul class="qf-files">
+              @for (f of files(); track f.file.name + f.file.size; let i = $index) {
+                <li>
+                  @if (f.preview) { <img [src]="f.preview" alt="" /> } @else { <span class="qf-ext">{{ f.ext }}</span> }
+                  <span class="qf-file-name">{{ f.file.name }}<small>{{ size(f.file.size) }}</small></span>
+                  <button type="button" class="qf-remove" (click)="removeFile(i)" [attr.aria-label]="t.remove + ': ' + f.file.name">×</button>
+                </li>
+              }
+            </ul>
           }
         }
         @case (2) {

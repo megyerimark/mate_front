@@ -191,6 +191,7 @@ export class QuoteForm implements OnInit {
     if (v.service === 'interpreting') {
       rows.push({ label: t.interpretingType, value: t.interpretingTypes[v.interpreting_type as keyof typeof t.interpretingTypes], step: 1 });
       if (v.target_language) rows.push({ label: t.languagePairs, value: v.target_language, step: 1 });
+      rows.push({ label: t.files, value: this.files().map((f) => f.file.name).join(', ') || t.noFiles, step: 1 });
     } else {
       const langs = [v.source_language, v.target_language].filter(Boolean).join(' → ');
       if (langs) rows.push({ label: t.languages, value: langs, step: 1 });
@@ -231,12 +232,12 @@ export class QuoteForm implements OnInit {
           locale: this.site.lang(),
           ...(token ? { recaptcha_token: token } : {}),
         },
-        this.mode() === 'spelling' || interpreting ? [] : this.files().map((f) => f.file),
+        this.mode() === 'spelling' ? [] : this.files().map((f) => f.file),
       )
       .subscribe({
         next: () =>
           this.router.navigateByUrl(this.site.link('thanks'), {
-            state: { name: value.name.split(' ').slice(-1)[0] || value.name, service: value.service, files: interpreting ? 0 : this.files().length },
+            state: { name: value.name.split(' ').slice(-1)[0] || value.name, service: value.service, files: this.files().length },
           }),
         error: (err: HttpErrorResponse) => {
           this.sending.set(false);

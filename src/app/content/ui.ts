@@ -127,6 +127,7 @@ export const UI = {
       remove: 'Eltávolítás',
       noFiles: 'nincs csatolt fájl',
       files: 'Fájlok',
+      interpretingFilesHint: 'Ha van, csatolja a programot, a meghívót vagy az előzetes anyagot (pl. prezentációt): ez segít a tolmácsnak a felkészülésben.',
       languages: 'Nyelv(ek)',
       errors: {
         name: 'Kérjük, adja meg a nevét.',
@@ -280,6 +281,7 @@ export const UI = {
       remove: 'Remove',
       noFiles: 'no files attached',
       files: 'Files',
+      interpretingFilesHint: 'If you have them, attach the programme, the invitation or any preparatory material (e.g. slides): it helps the interpreter prepare.',
       languages: 'Language(s)',
       errors: {
         name: 'Please enter your name.',
