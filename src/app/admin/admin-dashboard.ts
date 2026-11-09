@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
 import { Icon } from '../components/icon';
-import { AdminApiService, AdminQuote, AdminStats, QuotePage, QuoteStatus, STATUSES } from './admin-api.service';
+import { AdminApiService, AdminQuote, AdminStats, AdminTask, ContactChannel, QuotePage, QuoteStatus, STATUSES } from './admin-api.service';
+import { AdminLiveService } from './admin-live.service';
+import { ActivatedRoute } from '@angular/router';
 import { AdminHeader } from './admin-header';
 import { mailto, replyTemplates } from './reply-templates';
 
@@ -56,12 +58,97 @@ export class AdminDashboard implements OnInit {
 
   private searchTimer?: ReturnType<typeof setTimeout>;
 
+  private readonly live = inject(AdminLiveService);
+  private readonly route = inject(ActivatedRoute);
+
+  // Teendők (nyitott feladatok), ügyféladatlap, kommunikációs napló
+  protected readonly tasks = signal<AdminTask[]>([]);
+  protected readonly newTask = signal({ title: '', due: '' });
+  protected readonly quoteTasks = computed(() => this.tasks().filter((t) => t.quote?.id === this.selected()?.id));
+  protected readonly client = signal<{ count: number; won: number; value: number; others: AdminQuote[] } | null>(null);
+  protected readonly contactChannel = signal<ContactChannel>('phone');
+  protected readonly contactNote = signal('');
+  protected readonly channels: { value: ContactChannel; label: string }[] = [
+    { value: 'phone', label: 'Telefon' }, { value: 'email', label: 'E-mail' }, { value: 'meeting', label: 'Találkozó' }, { value: 'other', label: 'Egyéb' },
+  ];
+  private lastLatest = 0;
+
   constructor() {
     inject(Meta).updateTag({ name: 'robots', content: 'noindex' });
+    // Új ajánlatkérés érkezett: frissül az összesítő és (az első oldalon, szűrés nélkül) a lista is.
+    effect(() => {
+      const s = this.live.stats();
+      if (!s) return;
+      this.stats.set(s);
+      const latest = s.latest?.id ?? 0;
+      if (this.lastLatest && latest > this.lastLatest && this.currentPage() === 1 && !this.filterStatus() && !this.search() && !this.followUp()) {
+        untracked(() => this.load());
+      }
+      this.lastLatest = latest;
+    });
   }
 
   ngOnInit(): void {
+    // A csengőről érkezve az új kéréseket mutatjuk.
+    if (this.route.snapshot.queryParamMap.get('uj')) this.filterStatus.set('new');
     this.load();
+    this.loadTasks();
+    this.live.acknowledge();
+  }
+
+  protected loadTasks(): void {
+    this.api.tasks({ status: 'open' }).subscribe({ next: (t) => this.tasks.set(t), error: () => {} });
+  }
+
+  protected addTask(quoteId: number | null = null): void {
+    const { title, due } = this.newTask();
+    if (!title.trim()) return;
+    this.api.addTask({ title: title.trim(), due_at: due ? new Date(due).toISOString() : null, quote_request_id: quoteId }).subscribe({
+      next: () => { this.newTask.set({ title: '', due: '' }); this.loadTasks(); this.live.refresh(); },
+      error: () => this.detailError.set('A feladat mentése nem sikerült.'),
+    });
+  }
+
+  protected completeTask(t: AdminTask): void {
+    this.api.updateTask(t.id, { done: true }).subscribe(() => { this.loadTasks(); this.live.refresh(); });
+  }
+
+  protected removeTask(t: AdminTask): void {
+    this.api.removeTask(t.id).subscribe(() => { this.loadTasks(); this.live.refresh(); });
+  }
+
+  protected openById(id: number): void {
+    const inPage = this.page()?.data.find((q) => q.id === id);
+    if (inPage) this.open(inPage);
+    else this.api.show(id).subscribe((q) => this.open(q));
+  }
+
+  protected logContact(): void {
+    const q = this.selected();
+    if (!q) return;
+    this.api.logContact(q.id, this.contactChannel(), this.contactNote().trim()).subscribe({
+      next: (updated) => { this.selected.set(updated); this.contactNote.set(''); this.saved.set('Bejegyzés rögzítve'); },
+      error: () => this.detailError.set('A bejegyzés mentése nem sikerült.'),
+    });
+  }
+
+  /** Válaszsablon megnyitásakor az előzményekbe is bekerül (kommunikációs napló). */
+  protected templateUsed(label: string): void {
+    const q = this.selected();
+    if (!q) return;
+    this.api.logContact(q.id, 'email', `${label} sablon megnyitva`).subscribe({ next: (u) => this.selected.set(u), error: () => {} });
+  }
+
+  private loadClient(q: AdminQuote): void {
+    this.client.set(null);
+    this.api.list({ page: 1, status: '', followUp: false, search: '', from: '', to: '', email: q.email }).subscribe({
+      next: (res) => {
+        const all = res.data;
+        const won = all.filter((x) => x.status === 'won');
+        this.client.set({ count: res.meta.total, won: won.length, value: won.reduce((s, x) => s + (x.price ?? 0), 0), others: all.filter((x) => x.id !== q.id) });
+      },
+      error: () => {},
+    });
   }
 
   protected load(): void {
@@ -77,7 +164,7 @@ export class AdminDashboard implements OnInit {
         if (err.status !== 401) this.listError.set('Nem sikerült betölteni az ajánlatkéréseket. Próbálja újra.');
       },
     });
-    this.api.stats().subscribe({ next: (s) => this.stats.set(s), error: () => {} });
+    this.live.refresh();
   }
 
   protected statTotal(status: QuoteStatus): string {
@@ -154,6 +241,7 @@ export class AdminDashboard implements OnInit {
     this.selected.set(quote);
     this.note.set(quote.admin_note ?? '');
     this.priceInput.set(quote.price === null ? '' : String(quote.price));
+    this.loadClient(quote);
     // Az előzmények csak az egyedi lekérésben vannak benne.
     this.api.show(quote.id).subscribe({
       next: (full) => {
@@ -235,7 +323,7 @@ export class AdminDashboard implements OnInit {
         this.note.set(updated.admin_note ?? '');
         this.priceInput.set(updated.price === null ? '' : String(updated.price));
         this.page.update((p) => (p ? { ...p, data: p.data.map((q) => (q.id === id ? updated : q)) } : p));
-        this.api.stats().subscribe({ next: (s) => this.stats.set(s), error: () => {} });
+        this.live.refresh();
       },
       error: (err: HttpErrorResponse) => {
         this.saving.set(false);

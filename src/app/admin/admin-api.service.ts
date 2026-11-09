@@ -30,7 +30,7 @@ export interface AdminQuote {
   confirmed_at: string | null;
   mail_error: string | null;
   /** Előzmények; csak az egy ajánlatkérést lekérő válaszban van benne. */
-  events?: { type: 'status' | 'price' | 'note'; text: string; user: string | null; created_at: string }[];
+  events?: { type: 'status' | 'price' | 'note' | 'contact'; channel: ContactChannel | null; text: string; user: string | null; created_at: string }[];
   document_name: string | null;
   has_document: boolean;
   documents: { index: number; name: string; size: number | null; mime: string | null }[];
@@ -46,11 +46,26 @@ export interface QuotePage {
 export interface AdminStats {
   total: number;
   follow_up: number;
+  latest: { id: number; name: string; created_at: string } | null;
+  tasks_due: number;
   this_month: number;
   by_status: { status: QuoteStatus; label: string; total: number }[];
 }
 
 export type StatsPeriod = '12m' | 'year' | 'all';
+export type StatsGroup = 'month' | 'week';
+
+export interface AdminTask {
+  id: number;
+  title: string;
+  due_at: string | null;
+  done_at: string | null;
+  overdue: boolean;
+  quote: { id: number; name: string } | null;
+  user: string | null;
+}
+
+export type ContactChannel = 'phone' | 'email' | 'meeting' | 'other';
 
 export interface StatRow { key?: string; label: string; total: number }
 
@@ -61,7 +76,10 @@ export interface StatsOverview {
   totals: {
     total: number; won: number; lost: number; open: number; conversion: number | null; english: number;
     revenue: number; average_order: number | null; priced_orders: number;
+    response_hours: number | null; responded: number;
   };
+  group: StatsGroup;
+  conversion_by_service: { key: string; label: string; total: number; won: number; rate: number | null }[];
   follow_up: number;
   this_month: number;
   last_month: number;
@@ -105,6 +123,8 @@ export interface AdminUser {
 export interface QuoteFilters {
   status: QuoteStatus | '';
   followUp: boolean;
+  /** Ügyféladatlaphoz: pontos e-mail-cím. */
+  email?: string;
   search: string;
   from: string;
   to: string;
@@ -134,8 +154,25 @@ export class AdminApiService {
     return this.http.get(`${this.base}/quote-requests/export`, { params: this.filterParams(filters), responseType: 'blob' });
   }
 
-  overview(period: StatsPeriod): Observable<StatsOverview> {
-    return this.http.get<StatsOverview>(`${this.base}/stats/overview`, { params: { period } });
+  overview(period: StatsPeriod, group: StatsGroup = 'month'): Observable<StatsOverview> {
+    return this.http.get<StatsOverview>(`${this.base}/stats/overview`, { params: { period, group } });
+  }
+
+  // ---------- Feladatok, kommunikációs napló ----------
+  tasks(params: { status?: 'open' | 'done' | 'all'; quote_request_id?: number } = {}): Observable<AdminTask[]> {
+    return this.http.get<{ data: AdminTask[] }>(`${this.base}/tasks`, { params: params as Record<string, string | number> }).pipe(map((r) => r.data));
+  }
+  addTask(task: { title: string; due_at?: string | null; quote_request_id?: number | null }): Observable<AdminTask> {
+    return this.http.post<{ data: AdminTask }>(`${this.base}/tasks`, task).pipe(map((r) => r.data));
+  }
+  updateTask(id: number, changes: { title?: string; due_at?: string | null; done?: boolean }): Observable<AdminTask> {
+    return this.http.patch<{ data: AdminTask }>(`${this.base}/tasks/${id}`, changes).pipe(map((r) => r.data));
+  }
+  removeTask(id: number): Observable<unknown> {
+    return this.http.delete(`${this.base}/tasks/${id}`);
+  }
+  logContact(id: number, channel: ContactChannel, note: string): Observable<AdminQuote> {
+    return this.http.post<{ data: AdminQuote }>(`${this.base}/quote-requests/${id}/contact`, { channel, note }).pipe(map((r) => r.data));
   }
 
   users(): Observable<AdminUser[]> {
@@ -159,6 +196,7 @@ export class AdminApiService {
     let params = new HttpParams();
     if (filters.status) params = params.set('status', filters.status);
     if (filters.followUp) params = params.set('follow_up', 1);
+    if (filters.email) params = params.set('email', filters.email);
     if (filters.search.trim()) params = params.set('search', filters.search.trim());
     if (filters.from) params = params.set('from', filters.from);
     if (filters.to) params = params.set('to', filters.to);

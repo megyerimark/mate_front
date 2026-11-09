@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, ElementRef, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
-import { AdminApiService, StatRow, StatsOverview, StatsPeriod } from './admin-api.service';
+import { AdminApiService, StatRow, StatsGroup, StatsOverview, StatsPeriod } from './admin-api.service';
 import { AdminHeader } from './admin-header';
 import { NgTemplateOutlet } from '@angular/common';
 
@@ -15,6 +15,7 @@ interface Column {
   path: string;
   label: string;
   total: number;
+  value: number;
   won: number;
   revenue: number;
   showTick: boolean;
@@ -37,6 +38,9 @@ export class AdminStats {
     { value: 'all', label: 'Teljes időszak' },
   ];
   protected readonly period = signal<StatsPeriod>('12m');
+  protected readonly group = signal<StatsGroup>('month');
+  /** Mit mutat a grafikon: darabszámot vagy a megrendelések értékét (Ft). */
+  protected readonly metric = signal<'count' | 'revenue'>('count');
   protected readonly data = signal<StatsOverview | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
@@ -50,7 +54,7 @@ export class AdminStats {
 
   /** Kerek léptékű y tengely: 0, és 3–4 osztás. */
   protected readonly yTicks = computed(() => {
-    const max = Math.max(1, ...(this.data()?.monthly.map((m) => m.total) ?? [0]));
+    const max = Math.max(1, ...(this.data()?.monthly.map((m) => this.valueOf(m)) ?? [0]));
     const raw = max / 4;
     const mag = 10 ** Math.floor(Math.log10(raw));
     const step = Math.max(1, [1, 2, 5, 10].map((f) => f * mag).find((s) => s >= raw) ?? mag * 10);
@@ -72,7 +76,7 @@ export class AdminStats {
     // Hány havonta fér ki a tengelyfelirat
     const every = Math.ceil(64 / slot);
     return months.map((m, i) => {
-      const h = (m.total / top) * plotH;
+      const h = (this.valueOf(m) / top) * plotH;
       const x = PAD.left + i * slot;
       const barX = x + (slot - barW) / 2;
       const y = PAD.top + plotH - h;
@@ -81,6 +85,7 @@ export class AdminStats {
         path: h > 0 ? roundedTop(barX, y, barW, h, Math.min(4, h, barW / 2)) : '',
         label: m.label,
         total: m.total,
+        value: this.valueOf(m),
         won: m.won,
         revenue: m.revenue,
         showTick: (months.length - 1 - i) % every === 0,
@@ -115,6 +120,22 @@ export class AdminStats {
     });
   }
 
+  protected valueOf(m: { total: number; revenue: number }): number {
+    return this.metric() === 'revenue' ? m.revenue : m.total;
+  }
+
+  /** Tengely- és oszlopfelirat: Ft-nál rövidítve (pl. 120 E, 1,2 M). */
+  protected fmt(v: number): string {
+    if (this.metric() === 'count') return String(v);
+    return new Intl.NumberFormat('hu-HU', { notation: 'compact', maximumFractionDigits: 1 }).format(v);
+  }
+
+  protected setGroup(group: StatsGroup): void {
+    if (group === this.group()) return;
+    this.group.set(group);
+    this.load();
+  }
+
   protected setPeriod(period: StatsPeriod): void {
     if (period === this.period()) return;
     this.period.set(period);
@@ -124,7 +145,7 @@ export class AdminStats {
   protected load(): void {
     this.loading.set(true);
     this.error.set('');
-    this.api.overview(this.period()).subscribe({
+    this.api.overview(this.period(), this.group()).subscribe({
       next: (d) => {
         this.data.set(d);
         this.loading.set(false);

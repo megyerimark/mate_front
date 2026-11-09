@@ -136,7 +136,7 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
 .adm-seg { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
 .adm-seg button { font: inherit; font-size: .88rem; padding: .5em 1.1em; border-radius: 999px; border: 0; background: none; color: var(--muted); cursor: pointer; }
 .adm-seg button.active { background: var(--accent); color: #fff; }
-.adm-kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; transition: opacity .2s; }
+.adm-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; transition: opacity .2s; }
 .adm-kpi { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 .adm-kpi span { font-size: .82rem; color: var(--muted); }
 .adm-kpi b { font-family: var(--display); font-weight: 300; font-size: 2.2rem; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--text); }
@@ -256,3 +256,33 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
 .adm-partners img, .adm-logo-ph { width: 96px; height: 48px; object-fit: contain; border-radius: 8px; background: var(--bg); }
 .adm-partners small { display: block; color: var(--muted); font-size: .85rem; }
 @media (max-width: 560px) { .adm-form-3 { grid-template-columns: 1fr; } .adm-partners li { grid-template-columns: 64px 1fr; } .adm-partners .adm-row { grid-column: 1 / -1; } }
+
+/* Valós idejű jelzés */
+.adm-bell { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 6px 8px; border-radius: 999px; text-decoration: none; font-size: 1rem; }
+.adm-bell:hover { background: rgba(var(--accent-rgb), .07); }
+.adm-bell.ring span[aria-hidden] { display: inline-block; animation: bell 1s ease 2; }
+@keyframes bell { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(14deg); } 75% { transform: rotate(-14deg); } }
+.adm-badge { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--danger); color: #fff; font-size: .72rem; font-weight: 700; font-style: normal; }
+.adm-badge.gold { background: var(--warm); color: var(--on-warm); }
+.adm-toast { position: fixed; z-index: 60; right: 20px; bottom: 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; max-width: min(520px, calc(100vw - 40px)); padding: 14px 16px 14px 20px; border-radius: 16px; background: var(--surface); border: 1px solid rgba(var(--accent-rgb), .3); box-shadow: var(--shadow-md); animation: fade-up .4s ease both; }
+.adm-toast .adm-close { width: 32px; height: 32px; font-size: 1.1rem; }
+@media (prefers-reduced-motion: reduce) { .adm-bell.ring span[aria-hidden] { animation: none; } }
+
+/* Teendők, ügyfél, napló */
+.adm-todo { padding: 18px 20px; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: grid; gap: 12px; }
+.adm-todo-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.adm-todo h2 { margin: 0; font-family: var(--body); font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.adm-todo-add { display: flex; gap: 8px; flex-wrap: wrap; }
+.adm-todo-add input, .adm-todo-add select { font: inherit; font-size: .9rem; color: var(--text); padding: .5em .8em; border-radius: 10px; background: rgba(var(--tint), .03); border: 1px solid var(--border); min-width: 0; }
+.adm-todo-add input:first-child, .adm-todo-add input[name=cnote] { flex: 1 1 220px; }
+.adm-tasks { list-style: none; margin: 0; padding: 0; display: grid; }
+.adm-tasks li, .adm-task-inline { display: grid; grid-template-columns: auto 1fr auto auto; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); }
+.adm-task-inline { grid-template-columns: auto 1fr auto; border: 0; padding: 4px 0; }
+.adm-task-title { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.adm-tasks small, .adm-task-inline small { color: var(--muted); font-size: .82rem; }
+.overdue small { color: var(--danger); font-weight: 600; }
+.adm-tick { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid rgba(var(--accent-rgb), .5); background: var(--surface); cursor: pointer; }
+.adm-tick:hover { background: rgba(var(--accent-rgb), .15); }
+.adm-client p { margin: 0; }
+.adm-seg-sm button { font-size: .8rem; padding: .35em .8em; }
+.adm-card-head { flex-wrap: wrap; }

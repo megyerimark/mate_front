@@ -50,14 +50,28 @@
           <span>Angol oldalról</span><b>{{ d.totals.english }}</b>
           <small>külföldi ügyfél vagy angolul író</small>
         </div>
+        <div class="adm-kpi">
+          <span>Válaszidő</span><b>{{ d.totals.response_hours === null ? '–' : (d.totals.response_hours < 1 ? '<1' : d.totals.response_hours) + ' ó' }}</b>
+          <small>medián, a beérkezéstől az első állapotváltásig ({{ d.totals.responded }} kérés)</small>
+        </div>
       </div>
 
       <section class="adm-card" [class.is-loading]="loading()">
         <div class="adm-card-head">
-          <h2>Ajánlatkérések havonta</h2>
+          <h2>{{ metric() === 'revenue' ? 'Megrendelések értéke' : 'Ajánlatkérések' }} {{ group() === 'week' ? 'hetente' : 'havonta' }}</h2>
+          <div class="adm-row">
+            <div class="adm-seg adm-seg-sm" role="radiogroup" aria-label="Mérték">
+              <button type="button" role="radio" [attr.aria-checked]="metric() === 'count'" [class.active]="metric() === 'count'" (click)="metric.set('count')">Darab</button>
+              <button type="button" role="radio" [attr.aria-checked]="metric() === 'revenue'" [class.active]="metric() === 'revenue'" (click)="metric.set('revenue')">Érték (Ft)</button>
+            </div>
+            <div class="adm-seg adm-seg-sm" role="radiogroup" aria-label="Bontás">
+              <button type="button" role="radio" [attr.aria-checked]="group() === 'month'" [class.active]="group() === 'month'" (click)="setGroup('month')">Havi</button>
+              <button type="button" role="radio" [attr.aria-checked]="group() === 'week'" [class.active]="group() === 'week'" (click)="setGroup('week')">Heti</button>
+            </div>
           <button type="button" class="adm-link" (click)="showTable.set(!showTable())" [attr.aria-pressed]="showTable()">
             {{ showTable() ? 'Grafikon' : 'Táblázat' }}
           </button>
+          </div>
         </div>
 
         @if (!showTable()) {
@@ -66,20 +80,20 @@
               [attr.aria-label]="'Havi ajánlatkérések oszlopdiagramja, ' + d.monthly.length + ' hónap'">
               @for (t of yTicks(); track t) {
                 <line class="grid" [attr.x1]="pad.left" [attr.x2]="width() - pad.right" [attr.y1]="yOf(t)" [attr.y2]="yOf(t)" [class.base]="t === 0" />
-                <text class="tick" [attr.x]="pad.left - 8" [attr.y]="yOf(t) + 4" text-anchor="end">{{ t }}</text>
+                <text class="tick" [attr.x]="pad.left - 8" [attr.y]="yOf(t) + 4" text-anchor="end">{{ fmt(t) }}</text>
               }
               @for (c of columns(); track c.label; let i = $index) {
                 <g class="col" [class.dim]="hover() !== null && hover() !== i">
                   @if (c.path) { <path class="bar" [attr.d]="c.path" /> }
-                  @if (showValueLabels() && c.total > 0) {
-                    <text class="val" [attr.x]="c.barX + c.barW / 2" [attr.y]="c.y - 6" text-anchor="middle">{{ c.total }}</text>
+                  @if (showValueLabels() && c.value > 0) {
+                    <text class="val" [attr.x]="c.barX + c.barW / 2" [attr.y]="c.y - 6" text-anchor="middle">{{ fmt(c.value) }}</text>
                   }
                   @if (c.showTick) {
                     <text class="tick" [attr.x]="c.x + c.slot / 2" [attr.y]="height - 10" text-anchor="middle">{{ c.label }}</text>
                   }
                   <rect class="hit" [attr.x]="c.x" [attr.y]="pad.top" [attr.width]="c.slot" [attr.height]="height - pad.top - pad.bottom"
                     tabindex="0" (mouseenter)="hover.set(i)" (focus)="hover.set(i)" (blur)="hover.set(null)">
-                    <title>{{ c.label }}: {{ c.total }} ajánlatkérés, {{ c.won }} megrendelve</title>
+                    <title>{{ c.label }}: {{ c.total }} ajánlatkérés, {{ c.won }} megrendelve, {{ huf(c.revenue) }}</title>
                   </rect>
                 </g>
               }
@@ -111,6 +125,23 @@
 
       <div class="adm-grid">
         <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Szolgáltatás', rows: d.by_service }" />
+        <section class="adm-card">
+          <h2>Megrendelési arány szolgáltatásonként</h2>
+          @if (!d.conversion_by_service.length) {
+            <p class="adm-sub">Ebben az időszakban nincs adat.</p>
+          } @else {
+            <ul class="adm-hbars">
+              @for (r of d.conversion_by_service; track r.key) {
+                <li [attr.title]="r.label + ': ' + r.won + ' megrendelés ' + r.total + ' kérésből'">
+                  <span class="lbl">{{ r.label }}</span>
+                  <span class="track"><span class="fill" [style.width.%]="r.rate ?? 0"></span></span>
+                  <span class="val">{{ r.rate === null ? '–' : r.rate + '%' }} <small>{{ r.won }}/{{ r.total }}</small></span>
+                </li>
+              }
+            </ul>
+            <p class="adm-hint">A lezárt (megrendelt vagy elmaradt) kérésekből; a „–” még nyitott kéréseket jelent.</p>
+          }
+        </section>
         <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Állapot', rows: d.by_status, status: true }" />
         <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Leggyakoribb célnyelvek', rows: d.top_languages }" />
         <ng-container *ngTemplateOutlet="breakdown; context: { title: 'Határidő', rows: d.by_deadline }" />

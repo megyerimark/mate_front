@@ -51,7 +51,15 @@ A **`/admin`** címen érhető el (pl. `https://donetranslations.hu/admin`). Adm
 - **Ár** minden ajánlatkéréshez (Ft); a statisztika ebből számolja a megrendelések értékét és az átlagos megrendelést
 - **Válaszsablonok** az ügyfél nyelvén (árajánlat, hiányzó adat, megrendelés visszaigazolása, utánkövetés): előre kitöltött
   levelet nyitnak a levelezőben. A szövegek: `src/app/admin/reply-templates.ts`
-- **Előzmények**: ki, mikor változtatta az állapotot, az árat vagy a jegyzetet
+- **Előzmények és kommunikációs napló**: állapot-, ár- és jegyzetváltozások, rögzített hívások/e-mailek/találkozók
+  (a válaszsablon megnyitása automatikusan bekerül)
+- **Valós idejű jelzés**: percenként ellenőriz; új kérésnél felugró jelzés, számláló a fül címében, csengő a fejlécben,
+  kérésre asztali értesítés
+- **Teendők**: feladatok határidővel (önállóan vagy ajánlatkéréshez kötve), a lejártak pirossal, kész-pipa
+- **Ügyféladatlap**: a részleteknél az ugyanattól az e-mail-címtől érkezett korábbi kérések és a megrendelések értéke
+- **Statisztika**: havi/heti bontás, darabszám vagy megrendelési érték, megrendelési arány szolgáltatásonként,
+  medián válaszidő
+- **Vélemények és partnerek** (`/admin/velemenyek`): a weboldal „Ügyfeleink mondták” szakaszát tölti; csak a publikált látszik
 - Szűrés dátum szerint (ettől–eddig), **Excel letöltése** a szűrésnek megfelelő összes ajánlatkéréssel
 - **Statisztika** (`/admin/statisztika`): utolsó 12 hónap / idén / teljes időszak; ajánlatkérések és megrendelések száma,
   megrendelési arány, havi oszlopdiagram (táblázatként is), bontás szolgáltatás, állapot, célnyelv, határidő és oldal szerint

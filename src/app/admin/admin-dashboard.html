@@ -35,6 +35,34 @@
       }
     </div>
 
+    <section class="adm-todo">
+      <div class="adm-todo-head">
+        <h2>Teendők</h2>
+        <form class="adm-todo-add" (ngSubmit)="addTask()">
+          <input name="ttitle" placeholder="Új feladat, pl. Kovács Annát visszahívni" [ngModel]="newTask().title" (ngModelChange)="newTask.set({ title: $event, due: newTask().due })" aria-label="Feladat" />
+          <input name="tdue" type="datetime-local" [ngModel]="newTask().due" (ngModelChange)="newTask.set({ title: newTask().title, due: $event })" aria-label="Határidő" />
+          <button type="submit" class="btn btn-sm" [disabled]="!newTask().title.trim()">Hozzáadás</button>
+        </form>
+      </div>
+      @if (tasks().length) {
+        <ul class="adm-tasks">
+          @for (t of tasks().slice(0, 6); track t.id) {
+            <li [class.overdue]="t.overdue">
+              <button type="button" class="adm-tick" (click)="completeTask(t)" [attr.aria-label]="'Kész: ' + t.title"></button>
+              <span class="adm-task-title">{{ t.title }}
+                @if (t.quote) { <button type="button" class="adm-link" (click)="openById(t.quote.id)">{{ t.quote.name }}</button> }
+              </span>
+              <small>{{ t.due_at ? (t.overdue ? 'Lejárt: ' : '') + date(t.due_at) : 'nincs határidő' }}</small>
+              <button type="button" class="adm-link danger" (click)="removeTask(t)" [attr.aria-label]="'Törlés: ' + t.title">×</button>
+            </li>
+          }
+        </ul>
+        @if (tasks().length > 6) { <p class="adm-hint">és még {{ tasks().length - 6 }} nyitott feladat</p> }
+      } @else {
+        <p class="adm-hint">Nincs nyitott feladat.</p>
+      }
+    </section>
+
     @if (stats()?.follow_up; as n) {
       <div class="adm-followup" [class.active]="followUp()">
         <span><b>{{ n }} elküldött ajánlatra</b> legalább 3 napja nem jött válasz. Érdemes rákérdezni.</span>
@@ -159,6 +187,46 @@
         </section>
       }
 
+      @if (client(); as c) {
+        @if (c.count > 1) {
+          <section class="adm-block adm-client">
+            <h3>Ügyfél</h3>
+            <p><b>{{ c.count }} ajánlatkérés</b> ettől a címtől, ebből {{ c.won }} megrendelés@if (c.value) {, összesen {{ price(c.value) }}}.</p>
+            <ul class="adm-docs">
+              @for (o of c.others.slice(0, 5); track o.id) {
+                <li><button type="button" class="adm-link" (click)="open(o)">{{ date(o.created_at) }} – {{ o.service_label }}</button> <span class="adm-pill" [attr.data-status]="o.status">{{ o.status_label }}</span></li>
+              }
+            </ul>
+          </section>
+        }
+      }
+
+      <section class="adm-block">
+        <h3>Feladatok</h3>
+        @for (t of quoteTasks(); track t.id) {
+          <div class="adm-task-inline" [class.overdue]="t.overdue">
+            <button type="button" class="adm-tick" (click)="completeTask(t)" [attr.aria-label]="'Kész: ' + t.title"></button>
+            <span>{{ t.title }}</span><small>{{ t.due_at ? date(t.due_at) : '' }}</small>
+          </div>
+        }
+        <form class="adm-todo-add" (ngSubmit)="addTask(q.id)">
+          <input name="qtitle" placeholder="pl. Ajánlat kiküldése" [ngModel]="newTask().title" (ngModelChange)="newTask.set({ title: $event, due: newTask().due })" aria-label="Feladat" />
+          <input name="qdue" type="datetime-local" [ngModel]="newTask().due" (ngModelChange)="newTask.set({ title: newTask().title, due: $event })" aria-label="Határidő" />
+          <button type="submit" class="btn btn-ghost btn-sm" [disabled]="!newTask().title.trim()">+</button>
+        </form>
+      </section>
+
+      <section class="adm-block">
+        <h3>Kapcsolatfelvétel rögzítése</h3>
+        <form class="adm-todo-add" (ngSubmit)="logContact()">
+          <select name="cch" [ngModel]="contactChannel()" (ngModelChange)="contactChannel.set($event)" aria-label="Csatorna">
+            @for (c of channels; track c.value) { <option [value]="c.value">{{ c.label }}</option> }
+          </select>
+          <input name="cnote" placeholder="pl. Holnap délig kéri az ajánlatot" [ngModel]="contactNote()" (ngModelChange)="contactNote.set($event)" aria-label="Megjegyzés" />
+          <button type="submit" class="btn btn-ghost btn-sm">Rögzítés</button>
+        </form>
+      </section>
+
       <section class="adm-block">
         <h3>Válaszsablonok <small>({{ q.locale === 'en' ? 'angolul' : 'magyarul' }})</small></h3>
         <div class="adm-templates">
@@ -166,7 +234,7 @@
             @if (item.missing) {
               <span class="adm-template disabled" [title]="item.missing">{{ item.t.label }} <small>{{ item.missing }}</small></span>
             } @else {
-              <a class="adm-template" [href]="item.href">{{ item.t.label }} <span aria-hidden="true">↗</span></a>
+              <a class="adm-template" [href]="item.href" (click)="templateUsed(item.t.label)">{{ item.t.label }} <span aria-hidden="true">↗</span></a>
             }
           }
         </div>
