@@ -4,12 +4,13 @@ import { Icon } from '../components/icon';
 import { QuoteSection } from '../components/quote-section';
 import { HOME, HOME_EXTRA, PAGES } from '../content/ui';
 import { Hero } from '../hero/hero';
+import { Reveal } from '../motion/reveal.directive';
 import { SiteService } from '../services/site.service';
 import { MARQUEE } from '../site.config';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, QuoteSection, Hero, Icon],
+  imports: [RouterLink, QuoteSection, Hero, Icon, Reveal],
   templateUrl: './home.html',
 })
 export class Home {
@@ -32,34 +33,19 @@ export class Home {
     });
   }
 
-  /**
-   * Visszafogott mozgás: a kártyák egyszer, finoman beúsznak, a számlálók felpörögnek.
-   * Semmi nem rögzül a képernyőn és semmi nem a görgetés ütemére mozog.
-   */
+  /** A számlálók akkor pörögnek fel, amikor a képernyőre érnek (a beúszást a közös Reveal direktíva végzi). */
   private animate(): () => void {
     const root: HTMLElement = this.host.nativeElement;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return () => {};
-
     const fmt = new Intl.NumberFormat(this.site.lang() === 'hu' ? 'hu-HU' : 'en-GB');
-    const reveal = Array.from(root.querySelectorAll<HTMLElement>('[data-reveal]'));
-    reveal.forEach((el) => el.classList.add('reveal'));
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const el = entry.target as HTMLElement;
-          io.unobserve(el);
-          // Az egy sorban lévő elemek kis késéssel egymás után jelennek meg.
-          const siblings = Array.from(el.parentElement?.children ?? []);
-          el.style.transitionDelay = `${Math.min(siblings.indexOf(el), 5) * 70}ms`;
-          el.classList.add('in');
-          el.querySelectorAll<HTMLElement>('[data-count]').forEach((counter) => this.count(counter, fmt));
-        }
-      },
-      { rootMargin: '0px 0px -10% 0px' },
-    );
-    reveal.forEach((el) => io.observe(el));
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        io.unobserve(entry.target);
+        this.count(entry.target as HTMLElement, fmt);
+      }
+    });
+    root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => io.observe(el));
     return () => io.disconnect();
   }
 

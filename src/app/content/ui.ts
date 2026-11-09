@@ -5,6 +5,9 @@ import { HomeContent, Lang, PageContent, PageKey } from './types';
 export const HOME: Record<Lang, HomeContent> = { hu: HOME_HU, en: HOME_EN };
 export const PAGES: Record<Lang, Record<Exclude<PageKey, 'home' | 'thanks'>, PageContent>> = { hu: PAGES_HU, en: PAGES_EN };
 
+/** A nyitóképernyő címének egy sora: szövegrészek, a kiemelt rész arany aláhúzást kap. */
+type TitleLine = { t: string; accent?: boolean }[];
+
 export const CONTACT = {
   email: 'info@donetranslations.hu',
   phone: '+36 30 857 6652',
@@ -40,6 +43,9 @@ export const UI = {
       contact: 'Kapcsolat',
     },
     hero: {
+      /** A „Fordítás akár aznapra” cím sorokra bontva; a szöveg együtt pontosan a régi oldalé (SEO). */
+      titleLines: [[{ t: 'Fordítás' }], [{ t: 'akár ' }, { t: 'aznapra', accent: true }]] as TitleLine[],
+      facts: ['2018 óta', '86 nyelven', '1200+ projekt évente'],
       photoAlt: 'A DONE Translations fordítóiroda csapata',
       badges: [
         { mark: '2×', title: 'Két szakfordító', text: 'minden fordításon' },
@@ -163,6 +169,8 @@ export const UI = {
       contact: 'Contact',
     },
     hero: {
+      titleLines: [[{ t: 'Translation' }], [{ t: 'even on the ' }, { t: 'same day', accent: true }]] as TitleLine[],
+      facts: ['Since 2018', '86 languages', '1,200+ projects a year'],
       photoAlt: 'The DONE Translations team',
       badges: [
         { mark: '2×', title: 'Two translators', text: 'on every translation' },

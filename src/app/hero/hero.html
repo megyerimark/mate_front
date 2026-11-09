@@ -1,31 +1,48 @@
 @let h = home();
 @let ui = site.ui();
 <section class="hero">
+  <div class="hero-grain" aria-hidden="true"></div>
   <div class="container hero-grid">
     <div class="hero-text">
       <h1 class="hero-h1"><span class="pulse" aria-hidden="true"></span> {{ h.h1 }}</h1>
+      <!-- A cím sorokra bontva; együtt pontosan a régi oldal szövege (SEO). -->
       <h2 class="hero-title">
-        <span class="line"><span class="accent">{{ h.subtitle }}</span></span>
+        @for (line of ui.hero.titleLines; track $index; let i = $index) {
+          <span class="line" [style.--i]="i"><span>@for (part of line; track $index) {@if (part.accent) {<em class="hero-accent">{{ part.t }}<svg class="hero-underline" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true"><path d="M3 11 C 70 3, 150 3, 297 9" /></svg></em>} @else {{{ part.t }}}}</span> </span>
+        }
       </h2>
-      <p class="lead">
+      <p class="lead hero-lead">
         @for (p of h.lead; track $index) { {{ p }} }
       </p>
       <div class="hero-cta">
-        <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg">{{ ui.requestQuote }} <span aria-hidden="true">→</span></a>
-        <a [routerLink]="site.link('proofreading')" [fragment]="ui.spellingAnchor" class="btn btn-lg btn-ghost">{{ h.spellingButton }}</a>
+        <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg btn-arrow">
+          {{ ui.requestQuote }} <span class="btn-arrow-icon" aria-hidden="true">→</span>
+        </a>
+        <a [routerLink]="site.link('proofreading')" [fragment]="ui.spellingAnchor" class="link-cta">{{ h.spellingButton }}</a>
       </div>
+      <ul class="hero-facts">
+        @for (f of ui.hero.facts; track f) { <li>{{ f }}</li> }
+      </ul>
     </div>
 
-    <figure class="hero-photo">
-      <picture>
-        <!-- A kép kitölti a keretet (object-fit: cover), ezért szélesebben jelenik meg, mint a keret: 600 px magas × 1,5 = kb. 900 px. -->
-        <source type="image/webp"
-          srcset="/images/done-translations-csapat-800.webp 800w, /images/done-translations-csapat-1400.webp 1400w, /images/done-translations-csapat-2000.webp 2000w"
-          sizes="(max-width: 960px) 100vw, 900px" />
-        <img src="/images/done-translations-csapat.jpg" width="1400" height="934" [alt]="ui.hero.photoAlt" fetchpriority="high" decoding="async" />
-      </picture>
+    <figure class="hero-visual">
+      <!-- A logó buborék-gyűrűje, vékony arany vonallal (arculati elem a háttérben) -->
+      <svg class="hero-ring" viewBox="0 0 200 200" aria-hidden="true" appParallax="-0.06">
+        <path d="M150 35 A82 82 0 1 0 172 70" pathLength="1" />
+        <circle class="hero-ring-dot" cx="150" cy="35" r="3.2" />
+      </svg>
+      <div class="hero-frame" aria-hidden="true" appParallax="0.03"></div>
+      <div class="hero-photo" appParallax="0.07">
+        <picture>
+          <!-- A kép kitölti a keretet (object-fit: cover), ezért szélesebben jelenik meg, mint a keret: 600 px magas × 1,5 = kb. 900 px. -->
+          <source type="image/webp"
+            srcset="/images/done-translations-csapat-800.webp 800w, /images/done-translations-csapat-1400.webp 1400w, /images/done-translations-csapat-2000.webp 2000w"
+            sizes="(max-width: 960px) 100vw, 900px" />
+          <img src="/images/done-translations-csapat.jpg" width="1400" height="934" [alt]="ui.hero.photoAlt" fetchpriority="high" decoding="async" />
+        </picture>
+      </div>
       @for (b of ui.hero.badges; track b.title; let i = $index) {
-        <div class="hero-badge" [class.gold]="i === 1" [attr.data-pos]="i">
+        <div class="hero-badge" [class.gold]="i === 1" [attr.data-pos]="i" [appParallax]="i === 0 ? 0.12 : 0.02">
           <i aria-hidden="true">{{ b.mark }}</i>
           <div><b>{{ b.title }}</b><span>{{ b.text }}</span></div>
         </div>

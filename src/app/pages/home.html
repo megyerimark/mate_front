@@ -20,7 +20,7 @@
     <h2 class="display">{{ h.servicesHeading }}</h2>
     <div class="grid cards">
       @for (s of h.services; track s.key) {
-        <article class="card" data-reveal>
+        <article class="card" appReveal [revealDelay]="$index * 80">
           <div class="icon"><app-icon [name]="s.icon" /></div>
           <h3>{{ s.title }}</h3>
           <p>{{ s.text }}</p>
@@ -40,7 +40,7 @@
     </div>
     <div class="fields">
       @for (f of x.fields; track f.key) {
-        <a class="field" [routerLink]="site.link(f.key)" data-reveal>
+        <a class="field" [routerLink]="site.link(f.key)" appReveal [revealDelay]="$index * 80">
           <span class="icon"><app-icon [name]="f.icon" /></span>
           <b>{{ f.title }}</b>
           <span class="field-langs">{{ x.languagesLabel(f.languages) }}</span>
@@ -57,7 +57,7 @@
     <h2 class="display">{{ h.stepsHeading }}</h2>
     <ol class="steps">
       @for (step of h.steps; track $index) {
-        <li class="step" data-reveal>
+        <li class="step" appReveal [revealDelay]="$index * 80">
           <span class="step-num">{{ $index + 1 }}</span>
           <div>
             @for (p of step.text; track $index) { <p>{{ p }}</p> }
@@ -65,7 +65,7 @@
         </li>
       }
     </ol>
-    <div class="steps-cta" data-reveal>
+    <div class="steps-cta" appReveal>
       <p>{{ h.subtitle }}</p>
       <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg">{{ ui.requestQuote }} <span aria-hidden="true">→</span></a>
     </div>
@@ -74,7 +74,7 @@
 
 <!-- RÓLUNK + SZÁMOK -->
 <section class="stats">
-  <div class="container about-band" data-reveal>
+  <div class="container about-band" appReveal>
     <p class="about-kicker">{{ x.aboutKicker }}</p>
     <div>
       <p class="about-text">{{ x.aboutText }}</p>
@@ -83,7 +83,7 @@
   </div>
   <div class="container stats-inner">
     @for (s of h.stats; track s.label) {
-      <div data-reveal>
+      <div appReveal [revealDelay]="$index * 80">
         <strong><span [attr.data-count]="s.value">{{ format(s.value) }}</span>{{ s.suffix }}</strong>
         <span>{{ s.label }}</span>
       </div>
@@ -97,7 +97,7 @@
     <h2 class="display">{{ h.whyHeading }}</h2>
     <div class="grid features">
       @for (f of h.why; track f.title) {
-        <div class="feature" data-reveal>
+        <div class="feature" appReveal [revealDelay]="$index * 80">
           <div class="icon"><app-icon [name]="f.icon" /></div>
           <h3>{{ f.title }}</h3>
           @for (p of f.text; track $index) { <p>{{ p }}</p> }
@@ -110,7 +110,7 @@
 <!-- ÁRAK + GYIK -->
 <section class="section faq-section">
   <div class="container faq-grid">
-    <aside class="price-teaser" data-reveal>
+    <aside class="price-teaser" appReveal>
       <p class="about-kicker">{{ x.pricesKicker }}</p>
       <p class="teaser-highlight">{{ priceHighlight() }}</p>
       <p>{{ x.pricesText }}</p>

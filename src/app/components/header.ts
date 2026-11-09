@@ -1,7 +1,9 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, HostListener, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { PageKey } from '../content/types';
 import { CONTACT, UI } from '../content/ui';
+import { ScrollService } from '../motion/scroll.service';
 import { SiteService } from '../services/site.service';
 
 type NavKey = keyof typeof UI.hu.nav;
@@ -41,11 +43,16 @@ type NavKey = keyof typeof UI.hu.nav;
           <a class="lang-switch" [routerLink]="site.alternate()" [attr.hreflang]="site.lang() === 'hu' ? 'en' : 'hu'"
             [attr.lang]="site.lang() === 'hu' ? 'en' : 'hu'" (click)="close()">{{ ui.otherLangLabel }}</a>
           <a class="btn btn-sm" [routerLink]="site.link('quote')" (click)="close()">{{ ui.nav.contact }}</a>
+          <div class="menu-contact">
+            <a [href]="contact.phoneHref">{{ contact.phone }}</a>
+            <a [href]="'mailto:' + contact.email">{{ contact.email }}</a>
+          </div>
         </nav>
         <button class="nav-toggle" [attr.aria-label]="ui.menu" aria-controls="nav" [attr.aria-expanded]="open()" (click)="open.set(!open())">
           <span></span><span></span><span></span>
         </button>
       </div>
+      <div class="scroll-progress" aria-hidden="true" [style.--p]="scroll.progress()"></div>
     </header>
   `,
 })
@@ -54,7 +61,8 @@ export class Header {
   protected readonly contact = CONTACT;
   protected readonly open = signal(false);
   protected readonly openGroup = signal<string | null>(null);
-  protected readonly scrolled = signal(false);
+  protected readonly scroll = inject(ScrollService);
+  protected readonly scrolled = computed(() => this.scroll.y() > 40);
 
   // A régi oldal menüje: Szolgáltatások, Szakterületek, majd Árak, Rólunk, Nyelvek, Karrier.
   protected readonly groups: { label: NavKey; items: (PageKey & NavKey)[] }[] = [
@@ -63,9 +71,10 @@ export class Header {
   ];
   protected readonly links: (PageKey & NavKey)[] = ['prices', 'about', 'languages', 'careers'];
 
-  @HostListener('window:scroll')
-  protected onScroll(): void {
-    this.scrolled.set(window.scrollY > 40);
+  constructor() {
+    // Nyitott mobilmenünél a háttér ne görögjön.
+    const body = inject(DOCUMENT).body;
+    effect(() => body.classList.toggle('no-scroll', this.open()));
   }
 
   @HostListener('document:keydown.escape')
