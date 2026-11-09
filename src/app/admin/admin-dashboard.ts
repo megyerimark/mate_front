@@ -189,6 +189,7 @@ export class AdminDashboard implements OnInit {
 
   protected pair(quote: AdminQuote): string {
     if (!quote.source_language && !quote.target_language) return '–';
-    return `${quote.source_language || '?'} → ${quote.target_language || '?'}`;
+    if (!quote.source_language) return quote.target_language ?? '–';
+    return `${quote.source_language} → ${quote.target_language || '?'}`;
   }
 }

@@ -1,15 +1,13 @@
-import { Component, DestroyRef, ElementRef, afterNextRender, inject } from '@angular/core';
+import { Component, DestroyRef, ElementRef, afterNextRender, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Icon } from '../components/icon';
-import { QuoteForm } from '../components/quote-form';
-import { MagneticDirective } from '../directives/magnetic.directive';
-import { TiltDirective } from '../directives/tilt.directive';
+import { QuoteSection } from '../components/quote-section';
+import { HOME } from '../content/ui';
 import { Hero } from '../hero/hero';
-import {
-  FAQ, LANGUAGES, LIVE_TRANSLATION, PRICES, REASONS, SERVICES, SITE, STATS, STEPS, TESTIMONIALS,
-} from '../site.config';
+import { SiteService } from '../services/site.service';
+import { MARQUEE } from '../site.config';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,22 +28,21 @@ function scramble(from: string, to: string, t: number): string {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, QuoteForm, Hero, TiltDirective, MagneticDirective, Icon],
+  imports: [RouterLink, QuoteSection, Hero, Icon],
   templateUrl: './home.html',
 })
 export class Home {
   private readonly host = inject(ElementRef<HTMLElement>);
-
-  protected readonly site = SITE;
-  protected readonly stats = STATS;
-  protected readonly services = SERVICES;
-  protected readonly languages = LANGUAGES;
-  protected readonly live = LIVE_TRANSLATION;
-  protected readonly steps = STEPS;
-  protected readonly prices = PRICES;
-  protected readonly reasons = REASONS;
-  protected readonly testimonials = TESTIMONIALS;
-  protected readonly faq = FAQ;
+  protected readonly site = inject(SiteService);
+  protected readonly home = computed(() => HOME[this.site.lang()]);
+  protected readonly marquee = computed(() => MARQUEE[this.site.lang()]);
+  /** A szlogen három nyelven; a fejléc mindig az épp látható nyelv neve. */
+  protected readonly live = computed(() => {
+    const names = this.site.lang() === 'hu' ? ['Magyar', 'English', 'Deutsch'] : ['English', 'Magyar', 'Deutsch'];
+    return this.home().slogan.map((text, i) => ({ text, language: names[i] }));
+  });
+  /** A „Minőség” bekezdés első mondata (a régi oldal szövege). */
+  protected readonly liveCaption = computed(() => this.home().why[1].text[0].split('. ')[0] + '.');
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -61,7 +58,7 @@ export class Home {
           if (motion) this.animate(wide);
         },
       );
-      // A képek, betűtípusok betöltése után újramérjük a pozíciókat.
+      // A betűtípusok betöltése után újramérjük a pozíciókat.
       document.fonts.ready.then(() => ScrollTrigger.refresh());
       destroyRef.onDestroy(() => mm.revert());
     });
@@ -70,35 +67,23 @@ export class Home {
   private animate(wide: boolean): void {
     const root: HTMLElement = this.host.nativeElement;
 
-    // Címsorok soronként csúsznak be.
-    root.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
-      gsap.from(el.querySelectorAll('.line > span'), {
-        yPercent: 110,
-        rotate: 3,
-        duration: 1.1,
-        ease: 'power4.out',
-        stagger: 0.08,
-        scrollTrigger: { trigger: el, start: 'top 85%' },
-      });
-    });
-
     gsap.set(root.querySelectorAll('[data-reveal]'), { opacity: 0 });
     ScrollTrigger.batch(root.querySelectorAll('[data-reveal]'), {
       start: 'top 88%',
       onEnter: (els) =>
-        gsap.fromTo(els, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1, overwrite: true }),
+        gsap.fromTo(els, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.1, overwrite: true }),
     });
 
-    // Élő fordítás: rögzített szakasz, görgetésre fordítódik a mondat.
+    // Élő fordítás: rögzített szakasz, görgetésre fordítódik a szlogen.
     const liveText = root.querySelector<HTMLElement>('.live-text');
     const liveLang = root.querySelector<HTMLElement>('.live-lang');
     const liveBar = root.querySelector<HTMLElement>('.live-progress span');
     if (liveText && liveLang && liveBar) {
-      const phrases = this.live;
+      const phrases = this.live();
       ScrollTrigger.create({
         trigger: root.querySelector('.live'),
         start: 'top top',
-        end: '+=220%',
+        end: '+=180%',
         pin: true,
         scrub: true,
         onUpdate: (self) => {
@@ -131,6 +116,7 @@ export class Home {
     }
 
     // Számlálók.
+    const fmt = new Intl.NumberFormat(this.site.lang() === 'hu' ? 'hu-HU' : 'en-GB');
     root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
       const target = Number(el.dataset['count']);
       const counter = { v: 0 };
@@ -139,7 +125,7 @@ export class Home {
         duration: 2,
         ease: 'power2.out',
         scrollTrigger: { trigger: el, start: 'top 90%' },
-        onUpdate: () => (el.textContent = Math.round(counter.v).toLocaleString('hu-HU')),
+        onUpdate: () => (el.textContent = fmt.format(Math.round(counter.v))),
       });
     });
 
@@ -151,13 +137,9 @@ export class Home {
         scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: true },
       });
     });
+  }
 
-    // Záró felhívás: a nagy szöveg kinagyítódik.
-    gsap.from(root.querySelector('.final-cta h2'), {
-      scale: 0.7,
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: { trigger: root.querySelector('.final-cta'), start: 'top 90%', end: 'center center', scrub: true },
-    });
+  protected format(n: number): string {
+    return new Intl.NumberFormat(this.site.lang() === 'hu' ? 'hu-HU' : 'en-GB').format(n);
   }
 }

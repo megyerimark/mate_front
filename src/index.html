@@ -6,18 +6,17 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f5ef">
-  <meta name="description" content="Szakfordítás, záradékolt fordítás, lektorálás és tolmácsolás magánszemélyeknek és cégeknek. Küldje el a dokumentumot, és 1 órán belül ingyenes árajánlatot kap.">
-  <link rel="canonical" href="https://donetranslations.hu/">
+  <meta name="description" content="Gyors és precíz fordítás akár aznapra. Egyszerű árajánlatkérés. Garanciát vállalunk a minőségre.">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Done Translations Fordítóiroda - Fordítás akár aznapra">
-  <meta property="og:description" content="Küldje el a dokumentumot, és 1 órán belül ingyenes árajánlatot kap.">
+  <meta property="og:description" content="Gyors és precíz fordítás akár aznapra. Egyszerű árajánlatkérés. Garanciát vállalunk a minőségre.">
   <meta property="og:url" content="https://donetranslations.hu/">
   <meta property="og:locale" content="hu_HU">
   <meta property="og:image" content="https://donetranslations.hu/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Done Translations – Minden nyelven. Határidőre.">
+  <meta property="og:image:alt" content="DONE Translations Fordítóiroda – Fordítás akár aznapra">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -25,20 +24,59 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Inter+Tight:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Keresőknek: helyi vállalkozás adatai (cserélje ki a [ ] részeket) -->
+  <!-- Keresőknek: a vállalkozás adatai (Google) -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "name": "Done Translations",
-    "url": "https://donetranslations.hu/",
-    "telephone": "[TELEFONSZÁM]",
-    "email": "[EMAIL]",
-    "address": { "@type": "PostalAddress", "addressLocality": "[VÁROS]", "addressCountry": "HU" },
-    "areaServed": "HU",
-    "priceRange": "$$",
-    "description": "Szakfordítás, záradékolt fordítás, lektorálás és tolmácsolás."
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": [
+        "Organization",
+        "ProfessionalService"
+      ],
+      "@id": "https://donetranslations.hu/#organization",
+      "name": "DONE Translations",
+      "alternateName": "DONE Translations Fordítóiroda",
+      "url": "https://donetranslations.hu/",
+      "logo": "https://donetranslations.hu/favicon.svg",
+      "image": "https://donetranslations.hu/og-image.png",
+      "telephone": "+36 30 857 6652",
+      "email": "info@donetranslations.hu",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Gyula u. 20/D.",
+        "postalCode": "3532",
+        "addressLocality": "Miskolc",
+        "addressCountry": "HU"
+      },
+      "areaServed": "HU",
+      "priceRange": "$$",
+      "knowsLanguage": [
+        "hu",
+        "en",
+        "de",
+        "fr",
+        "es",
+        "ru",
+        "it"
+      ],
+      "description": "Fordítás, lektorálás, utószerkesztés és tolmácsolás 86 nyelven, cégeknek és magánszemélyeknek."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://donetranslations.hu/#website",
+      "url": "https://donetranslations.hu/",
+      "name": "DONE Translations",
+      "publisher": {
+        "@id": "https://donetranslations.hu/#organization"
+      },
+      "inLanguage": [
+        "hu",
+        "en"
+      ]
+    }
+  ]
+}
   </script>
 </head>
 <body>

@@ -1,4 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://donetranslations.hu/</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://donetranslations.hu/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/forditas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/translation/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/lektoralas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/lektoralas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/proofreading/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/lektoralas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/proofreading/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/lektoralas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/proofreading/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/lektoralas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/utoszerkesztes/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/utoszerkesztes/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/post-editing/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/utoszerkesztes/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/post-editing/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/utoszerkesztes/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/post-editing/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/utoszerkesztes/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/tolmacsolas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/tolmacsolas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/interpreting/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/tolmacsolas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/interpreting/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/tolmacsolas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/interpreting/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/tolmacsolas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/muszaki-forditas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/muszaki-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/technical-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/muszaki-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/technical-translation/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/muszaki-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/technical-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/muszaki-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/gazdasagi-forditas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/gazdasagi-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/financial-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/gazdasagi-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/financial-translation/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/gazdasagi-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/financial-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/gazdasagi-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/jogi-forditas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/jogi-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/legal-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/jogi-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/legal-translation/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/jogi-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/legal-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/jogi-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/egeszsegugyi-forditas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/egeszsegugyi-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/medical-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/egeszsegugyi-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/medical-translation/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/egeszsegugyi-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/medical-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/egeszsegugyi-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/marketing-forditas/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/marketing-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/marketing-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/marketing-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/marketing-translation/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/marketing-forditas/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/marketing-translation/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/marketing-forditas/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/nyelvek/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/nyelvek/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/languages/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/nyelvek/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/languages/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/nyelvek/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/languages/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/nyelvek/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/arak/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/arak/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/prices/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/arak/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/prices/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/arak/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/prices/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/arak/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/ajanlatkeres/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/ajanlatkeres/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/request-a-quote/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/ajanlatkeres/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/request-a-quote/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/ajanlatkeres/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/request-a-quote/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/ajanlatkeres/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/rolunk/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/rolunk/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/about-us/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/rolunk/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/about-us/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/rolunk/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/about-us/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/rolunk/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/karrier/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/karrier/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/careers/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/karrier/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/careers/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/karrier/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/careers/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/karrier/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/impresszum/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/impresszum/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/imprint/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/impresszum/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/imprint/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/impresszum/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/imprint/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/impresszum/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/adatvedelmi-nyilatkozat/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/adatvedelmi-nyilatkozat/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/privacy-policy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/adatvedelmi-nyilatkozat/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/privacy-policy/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/adatvedelmi-nyilatkozat/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/privacy-policy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/adatvedelmi-nyilatkozat/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/cookie-nyilatkozat/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/cookie-nyilatkozat/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/cookie-policy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/cookie-nyilatkozat/"/>
+  </url>
+  <url>
+    <loc>https://donetranslations.hu/en/cookie-policy/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="hu" href="https://donetranslations.hu/cookie-nyilatkozat/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://donetranslations.hu/en/cookie-policy/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://donetranslations.hu/cookie-nyilatkozat/"/>
+  </url>
 </urlset>

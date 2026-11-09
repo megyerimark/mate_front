@@ -10,6 +10,9 @@ export interface AdminQuote {
   name: string;
   email: string;
   phone: string | null;
+  service: string;
+  service_label: string;
+  locale: 'hu' | 'en';
   deadline: string;
   deadline_label: string;
   source_language: string | null;

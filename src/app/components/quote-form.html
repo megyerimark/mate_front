@@ -1,83 +1,108 @@
+@let t = ui();
 <form class="quote-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
   <p class="hidden" aria-hidden="true">
-    <label>Ne töltse ki: <input formControlName="website" tabindex="-1" autocomplete="off" /></label>
+    <label>Website <input formControlName="website" tabindex="-1" autocomplete="off" /></label>
   </p>
 
   <div class="row">
-    <label [class.has-error]="invalid('name')">
-      Név*
-      <input type="text" formControlName="name" autocomplete="name" />
+    <label [for]="id('name')" [class.has-error]="invalid('name')">
+      {{ t.name }}*
+      <input [id]="id('name')" type="text" formControlName="name" autocomplete="name" />
       @if (invalid('name')) {
-        <small class="error">{{ serverErrors()['name'] || 'Kérjük, adja meg a nevét.' }}</small>
+        <small class="error">{{ serverErrors()['name'] || t.errors.name }}</small>
       }
     </label>
-    <label [class.has-error]="invalid('email')">
-      E-mail*
-      <input type="email" formControlName="email" autocomplete="email" />
+    <label [for]="id('email')" [class.has-error]="invalid('email')">
+      {{ t.email }}*
+      <input [id]="id('email')" type="email" formControlName="email" autocomplete="email" />
       @if (invalid('email')) {
-        <small class="error">{{ serverErrors()['email'] || 'Kérjük, adjon meg egy érvényes e-mail címet.' }}</small>
+        <small class="error">{{ serverErrors()['email'] || t.errors.email }}</small>
       }
     </label>
   </div>
 
-  <div class="row">
-    <label>
-      Telefon
-      <input type="tel" formControlName="phone" autocomplete="tel" />
-    </label>
-    <label>
-      Határidő
-      <select formControlName="deadline">
-        @for (d of deadlines; track d.value) {
-          <option [value]="d.value">{{ d.label }}</option>
-        }
-      </select>
-    </label>
-  </div>
+  @if (mode() !== 'spelling') {
+    <div class="row">
+      <label [for]="id('phone')">
+        {{ t.phone }}
+        <input [id]="id('phone')" type="tel" formControlName="phone" autocomplete="tel" />
+      </label>
+      <label [for]="id('service')">
+        {{ t.service }}
+        <select [id]="id('service')" formControlName="service">
+          @for (key of serviceKeys; track key) {
+            <option [value]="key">{{ t.services[key] }}</option>
+          }
+        </select>
+      </label>
+    </div>
 
-  <div class="row">
-    <label>
-      Forrásnyelv
-      <input type="text" formControlName="source_language" placeholder="pl. magyar" list="nyelvek" />
-    </label>
-    <label>
-      Célnyelv
-      <input type="text" formControlName="target_language" placeholder="pl. angol" list="nyelvek" />
-    </label>
-  </div>
-  <datalist id="nyelvek">
-    <option value="magyar"></option>
-    @for (l of languages; track l.name) {
-      <option [value]="l.name"></option>
-    }
-  </datalist>
-
-  <label [class.has-error]="fileError() || serverErrors()['document']">
-    Dokumentum feltöltése
-    <input type="file" [accept]="accept" (change)="onFile($event)" />
-    @if (fileError() || serverErrors()['document']) {
-      <small class="error">{{ fileError() || serverErrors()['document'] }}</small>
+    @if (selectedService() === 'interpreting') {
+      <div class="row">
+        <label [for]="id('pairs')">
+          {{ t.languagePairs }}
+          <input [id]="id('pairs')" type="text" formControlName="target_language" [placeholder]="t.placeholderPairs" />
+        </label>
+        <label [for]="id('itype')">
+          {{ t.interpretingType }}
+          <select [id]="id('itype')" formControlName="interpreting_type">
+            @for (key of interpretingKeys; track key) {
+              <option [value]="key">{{ t.interpretingTypes[key] }}</option>
+            }
+          </select>
+        </label>
+      </div>
     } @else {
-      <small>PDF, Word, kép (telefonos fotó is jó). Max. {{ maxMb }} MB.</small>
+      <div class="row">
+        <label [for]="id('target')">
+          {{ t.targetLanguage }}
+          <input [id]="id('target')" type="text" formControlName="target_language" [placeholder]="t.placeholderTarget" />
+        </label>
+        <label [for]="id('deadline')">
+          {{ t.deadline }}
+          <select [id]="id('deadline')" formControlName="deadline">
+            @for (key of deadlineKeys; track key) {
+              <option [value]="key">{{ t.deadlines[key] }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <label [for]="id('file')" [class.has-error]="fileError() || serverErrors()['document']">
+        {{ t.document }}
+        <input [id]="id('file')" type="file" [accept]="accept" (change)="onFile($event)" />
+        @if (fileError() || serverErrors()['document']) {
+          <small class="error">{{ fileError() || serverErrors()['document'] }}</small>
+        } @else {
+          <small>{{ t.documentHint(maxMb) }}</small>
+        }
+      </label>
+    }
+  }
+
+  <label [for]="id('message')" [class.has-error]="mode() === 'spelling' && invalid('message')">
+    {{ mode() === 'spelling' ? t.question + '*' : t.message }}
+    <textarea [id]="id('message')" formControlName="message" rows="3"
+      [placeholder]="mode() === 'spelling' ? t.placeholderQuestion : t.placeholderMessage"></textarea>
+    @if (mode() === 'spelling' && invalid('message')) {
+      <small class="error">{{ serverErrors()['message'] || t.errors.question }}</small>
     }
   </label>
 
-  <label>
-    Megjegyzés
-    <textarea formControlName="message" rows="3" placeholder="Pl. mire kell a fordítás, kell-e záradék vagy postai példány?"></textarea>
+  <label class="check" [for]="id('privacy')" [class.has-error]="invalid('privacy_accepted')">
+    <input [id]="id('privacy')" type="checkbox" formControlName="privacy_accepted" />
+    <span>{{ t.privacyBefore }} <a [routerLink]="site.link('privacy')" target="_blank">{{ t.privacyLink }}</a>{{ t.privacyAfter }}*</span>
   </label>
-
-  <label class="check" [class.has-error]="invalid('privacy_accepted')">
-    <input type="checkbox" formControlName="privacy_accepted" />
-    <span>Elfogadom az <a href="#" target="_blank">adatkezelési tájékoztatót</a>.*</span>
-  </label>
+  @if (invalid('privacy_accepted')) {
+    <small class="error">{{ t.errors.privacy }}</small>
+  }
 
   @if (generalError()) {
     <p class="form-alert" role="alert">{{ generalError() }}</p>
   }
 
   <button type="submit" class="btn btn-lg btn-block" [disabled]="sending()">
-    {{ sending() ? 'Küldés…' : 'Ingyenes ajánlatot kérek' }}
+    {{ sending() ? t.sending : t.submit }}
   </button>
-  <p class="form-note">🔒 Dokumentumait bizalmasan kezeljük, harmadik félnek nem adjuk ki.</p>
+  <p class="form-note">{{ t.note }}</p>
 </form>

@@ -117,3 +117,4 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
   .adm-drawer { animation: none; }
   .adm-stat { transition: none; }
 }
+.adm-lang { margin-left: 6px; padding: .1em .5em; border-radius: 6px; font-size: .7rem; font-weight: 600; background: rgba(var(--warm-rgb), .2); color: var(--warm-ink); }

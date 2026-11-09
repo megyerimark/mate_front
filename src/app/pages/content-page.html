@@ -1,0 +1,131 @@
+@let p = page();
+@let ui = site.ui();
+<article class="page" [class.page-legal]="p.blocks[0]?.kind === 'legal'">
+  <header class="page-hero">
+    <div class="container">
+      <h1 class="page-title">{{ p.h1 }}</h1>
+      @for (para of p.lead; track $index) {
+        <p class="page-lead">{{ para }}</p>
+      }
+      @if (p.cta) {
+        <a class="btn btn-lg" [routerLink]="p.quote ? site.link($any(site.key())) : site.link('quote')" [fragment]="p.quote ? ui.quoteAnchor : undefined">{{ ui.requestQuote }}</a>
+      }
+    </div>
+  </header>
+
+  @for (block of p.blocks; track $index) {
+    @switch (block.kind) {
+      @case ('text') {
+        <section class="page-section">
+          <div class="container narrow">
+            @if (block.heading) { <h2>{{ block.heading }}</h2> }
+            @for (para of block.paragraphs; track $index) { <p>{{ para }}</p> }
+          </div>
+        </section>
+      }
+      @case ('features') {
+        <section class="page-section section-alt">
+          <div class="container">
+            @if (block.heading) { <h2 class="section-heading">{{ block.heading }}</h2> }
+            <div class="grid features" [class.features-4]="block.items.length === 4">
+              @for (f of block.items; track f.title) {
+                <div class="feature">
+                  <div class="icon"><app-icon [name]="f.icon" /></div>
+                  <h3>{{ f.title }}</h3>
+                  @for (para of f.text; track $index) { <p>{{ para }}</p> }
+                </div>
+              }
+            </div>
+            @for (para of block.after ?? []; track $index) { <p class="after narrow-text">{{ para }}</p> }
+          </div>
+        </section>
+      }
+      @case ('list') {
+        <section class="page-section">
+          <div class="container narrow">
+            <h2>{{ block.heading }}</h2>
+            <ul class="check-list" [class.columns]="block.items.length > 8">
+              @for (item of block.items; track item) { <li>{{ item }}</li> }
+            </ul>
+            @for (para of block.after ?? []; track $index) { <p class="after">{{ para }}</p> }
+          </div>
+        </section>
+      }
+      @case ('steps') {
+        <section class="page-section section-alt">
+          <div class="container">
+            <h2 class="section-heading">{{ block.heading }}</h2>
+            <ol class="step-list">
+              @for (s of block.steps; track $index) {
+                <li class="feature">
+                  <div class="icon"><app-icon [name]="s.icon" /></div>
+                  <h3>{{ s.title }}</h3>
+                  @for (para of s.text; track $index) { <p>{{ para }}</p> }
+                </li>
+              }
+            </ol>
+            @for (para of block.after ?? []; track $index) { <p class="after narrow-text">{{ para }}</p> }
+          </div>
+        </section>
+      }
+      @case ('languages') {
+        <section class="page-section">
+          <div class="container">
+            @for (group of block.groups; track $index) {
+              <ul class="lang-chips" [attr.data-tier]="$index">
+                @for (l of group; track l) { <li>{{ l }}</li> }
+              </ul>
+            }
+          </div>
+        </section>
+      }
+      @case ('price') {
+        <section class="page-section">
+          <div class="container narrow">
+            <p class="price-highlight">{{ block.highlight }}</p>
+            @for (para of block.paragraphs; track $index) { <p>{{ para }}</p> }
+          </div>
+        </section>
+      }
+      @case ('contact') {
+        <section class="page-section">
+          <div class="container narrow">
+            <ul class="contact-cards">
+              <li><app-icon name="mail" /><a [href]="'mailto:' + contact.email">{{ contact.email }}</a></li>
+              <li><app-icon name="phone" /><a [href]="contact.phoneHref">{{ contact.phone }}</a></li>
+            </ul>
+          </div>
+        </section>
+      }
+      @case ('spelling') {
+        <section class="page-section section-alt" [id]="ui.spellingAnchor">
+          <div class="container form-wrap">
+            <div class="form-intro">
+              <h2 class="display">{{ block.heading }}</h2>
+              <p>{{ block.text }}</p>
+            </div>
+            <app-quote-form mode="spelling" idPrefix="spelling" />
+          </div>
+        </section>
+      }
+      @case ('legal') {
+        <section class="page-section">
+          <div class="container narrow legal">
+            @for (item of block.items; track $index) {
+              @switch (item.tag) {
+                @case ('h2') { <h2>{{ item.text }}</h2> }
+                @case ('h3') { <h3>{{ item.text }}</h3> }
+                @case ('li') { <p class="legal-li">{{ item.text }}</p> }
+                @default { <p>{{ item.text }}</p> }
+              }
+            }
+          </div>
+        </section>
+      }
+    }
+  }
+</article>
+
+@if (p.quote) {
+  <app-quote-section [mode]="p.quote === 'interpreting' ? 'interpreting' : 'quote'" [service]="p.service" />
+}

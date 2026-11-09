@@ -1,29 +1,48 @@
-import { Component, HostListener, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, HostListener, inject, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { PageKey } from '../content/types';
+import { CONTACT, UI } from '../content/ui';
+import { SiteService } from '../services/site.service';
+
+type NavKey = keyof typeof UI.hu.nav;
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   template: `
-    <header class="site-header" [class.scrolled]="scrolled()">
+    @let ui = site.ui();
+    <header class="site-header" [class.scrolled]="scrolled()" [class.menu-open]="open()">
+      <div class="topbar">
+        <div class="container topbar-inner">
+          <a [href]="'mailto:' + contact.email">{{ contact.email }}</a>
+          <a [href]="contact.phoneHref">{{ contact.phone }}</a>
+        </div>
+      </div>
       <div class="container header-inner">
-        <a routerLink="/" fragment="top" class="logo" aria-label="Done Translations – főoldal">
+        <a [routerLink]="site.link('home')" class="logo" [attr.aria-label]="'DONE Translations – ' + ui.nav.services" (click)="close()">
           <span class="logo-mark" aria-hidden="true">✓</span>
           <span>Done<strong>Translations</strong></span>
         </a>
-        <nav class="nav" id="nav" [class.open]="open()" aria-label="Fő navigáció">
-          @for (link of links; track link.fragment) {
-            <a routerLink="/" [fragment]="link.fragment" (click)="open.set(false)">{{ link.label }}</a>
+        <nav class="nav" id="nav" [class.open]="open()" [attr.aria-label]="ui.menu">
+          @for (group of groups; track group.label) {
+            <div class="nav-group">
+              <button type="button" class="nav-group-btn" [attr.aria-expanded]="openGroup() === group.label"
+                (click)="toggleGroup(group.label)">{{ ui.nav[group.label] }} <span aria-hidden="true">▾</span></button>
+              <div class="nav-dropdown" [class.show]="openGroup() === group.label">
+                @for (key of group.items; track key) {
+                  <a [routerLink]="site.link(key)" routerLinkActive="active" (click)="close()">{{ ui.nav[key] }}</a>
+                }
+              </div>
+            </div>
           }
-          <a routerLink="/" fragment="ajanlat" class="btn btn-sm" (click)="open.set(false)">Árajánlat kérése</a>
+          @for (key of links; track key) {
+            <a class="nav-link" [routerLink]="site.link(key)" routerLinkActive="active" (click)="close()">{{ ui.nav[key] }}</a>
+          }
+          <a class="lang-switch" [routerLink]="site.alternate()" [attr.hreflang]="site.lang() === 'hu' ? 'en' : 'hu'"
+            [attr.lang]="site.lang() === 'hu' ? 'en' : 'hu'" (click)="close()">{{ ui.otherLangLabel }}</a>
+          <a class="btn btn-sm" [routerLink]="site.link('quote')" (click)="close()">{{ ui.nav.contact }}</a>
         </nav>
-        <button
-          class="nav-toggle"
-          aria-label="Menü"
-          aria-controls="nav"
-          [attr.aria-expanded]="open()"
-          (click)="open.set(!open())"
-        >
+        <button class="nav-toggle" [attr.aria-label]="ui.menu" aria-controls="nav" [attr.aria-expanded]="open()" (click)="open.set(!open())">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -31,18 +50,31 @@ import { RouterLink } from '@angular/router';
   `,
 })
 export class Header {
+  protected readonly site = inject(SiteService);
+  protected readonly contact = CONTACT;
   protected readonly open = signal(false);
+  protected readonly openGroup = signal<string | null>(null);
   protected readonly scrolled = signal(false);
+
+  // A régi oldal menüje: Szolgáltatások, Szakterületek, majd Árak, Rólunk, Nyelvek, Karrier.
+  protected readonly groups: { label: NavKey; items: (PageKey & NavKey)[] }[] = [
+    { label: 'services', items: ['translation', 'proofreading', 'postEditing', 'interpreting'] },
+    { label: 'fields', items: ['technical', 'financial', 'legal', 'medical', 'marketing'] },
+  ];
+  protected readonly links: (PageKey & NavKey)[] = ['prices', 'about', 'languages', 'careers'];
 
   @HostListener('window:scroll')
   protected onScroll(): void {
     this.scrolled.set(window.scrollY > 40);
   }
-  protected readonly links = [
-    { fragment: 'szolgaltatasok', label: 'Szolgáltatások' },
-    { fragment: 'hogyan', label: 'Hogyan működik' },
-    { fragment: 'arak', label: 'Árak' },
-    { fragment: 'velemenyek', label: 'Vélemények' },
-    { fragment: 'gyik', label: 'GYIK' },
-  ];
+
+  @HostListener('document:keydown.escape')
+  protected close(): void {
+    this.open.set(false);
+    this.openGroup.set(null);
+  }
+
+  protected toggleGroup(label: string): void {
+    this.openGroup.set(this.openGroup() === label ? null : label);
+  }
 }

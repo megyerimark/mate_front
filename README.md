@@ -14,22 +14,28 @@ npm start            # http://localhost:4200
 
 A `/api` hívásokat a fejlesztői szerver a `http://localhost:8000`-en futó Laravelhez továbbítja (`proxy.conf.json`).
 
-## Mit kell kitölteni?
+## Tartalom és SEO
 
-Szinte minden szöveg és adat egy helyen van: **`src/app/site.config.ts`**.
+Az oldal **a régi donetranslations.hu (WordPress) oldalainak szövegét és címeit** használja, változtatás nélkül,
+hogy a Google-helyezés megmaradjon. Csak a dizájn új.
 
-- `[TELEFONSZÁM]`, `[EMAIL]`, cím, cégadatok
-- **`STATS`: most PÉLDA számok vannak benne (1200 ügyfél stb.), élesítés előtt valósra kell cserélni!**
-- `[X]`: árak
-- `HERO_WORDS`: a nyitóképernyőn a részecskékből kirajzolódó szavak (csak olyan nyelv legyen, amit valóban vállal)
-- `LIVE_TRANSLATION`: a görgetésre „élőben” lefordítódó mondat
-- Szolgáltatások, nyelvek, GYIK, vélemények (valódi véleményekre, pl. a Google Cégprofilból)
+- **`src/app/content/pages.hu.ts`**: a 18 régi oldal magyar szövege, címe (title) és leírása (description), szó szerint.
+  A régi oldalból generáltuk; ha szöveget módosítasz, itt tedd (de a SEO miatt gondold meg kétszer).
+- **`src/app/content/pages.en.ts`**: az angol változat (a magyar fordítása). **Élesítés előtt érdemes átnézni.**
+- **`src/app/content/ui.ts`**: a felület közös szövegei (menü, gombok, űrlap, lábléc) és az elérhetőségek.
+- **`src/app/content/paths.json`**: az oldalak címei. A magyarok **a régi WordPress címek, perjellel a végén**
+  (`/forditas/`, `/jogi-forditas/` …) – ezeket ne változtasd meg. Az angolok: `/en/translation/` stb.
 
-Továbbá:
+Amit a Google kap:
 
-- `src/index.html`: a keresőknek szóló cégadatok (JSON-LD blokk)
-- `src/app/pages/home.html`: a „Miért minket” részben a rövid bemutatkozás
-- Az adatkezelési tájékoztató, ÁSZF és impresszum oldalak (a láblécben és az űrlapon most `#` a link)
+- **Előrenderelés**: buildeléskor minden oldal (mindkét nyelven, 38 oldal) kész HTML-ként készül el, benne a teljes
+  szöveggel, a címmel, a leírással, a kanonikus címmel és a nyelvi párokkal (`hreflang`).
+- **`sitemap.xml`** és **`robots.txt`**: a buildeléskor generálódnak (`scripts/generate-sitemap.mjs`).
+- A régi Yoast sitemap címei (`/sitemap_index.xml`, `/page-sitemap.xml`) a backendben átirányítanak az újra.
+- Megosztási kép: `public/og-image.png`. A cég adatai a keresőknek: `src/index.html` (JSON-LD).
+
+Ellenőrzés: a régi oldal mind a 299 szövegrésze, és mind a 18 oldal címe és leírása szó szerint megvan az új oldalakon.
+Ami szándékosan kimaradt: a régi főoldal „Visszajelzések” és „Partnereink” része (sablonszöveg volt: „Lorem ipsum”, „John Doe”).
 
 ## Admin felület
 
@@ -37,6 +43,8 @@ A **`/admin`** címen érhető el (pl. `https://donetranslations.hu/admin`). Adm
 
 - Összesítő számok állapot szerint (kattintásra szűr), keresés név, e-mail, telefon vagy megjegyzés alapján
 - Részletek panel: válasz e-mailben egy kattintással, hívás, a feltöltött dokumentum letöltése
+- Látszik, melyik szolgáltatásra kérték (fordítás, lektorálás, utószerkesztés, tolmácsolás + típusa, helyesírási tanácsadás)
+  és hogy a magyar vagy az angol oldalról jött (EN jelölés; az ügyfél angolul kapta a visszaigazolást)
 - Állapotok: **Új → Folyamatban → Ajánlat elküldve → Megrendelve / Elmaradt**
 - Belső jegyzet (az ügyfél nem látja), törlés megerősítéssel
 - Külön töltődik be, a nyilvános oldalt nem lassítja. A bejelentkezés 12 óráig érvényes.
@@ -51,12 +59,13 @@ Kód: `src/app/admin/`, megjelenés: `src/admin.css`.
 npm run build:backend
 ```
 
-Lebuildeli az oldalt, és bemásolja a mellette lévő `mate_back` (vagy `backend`) mappa `public` könyvtárába.
+Lebuildeli és előrendereli az oldalt, majd átmásolja a mellette lévő `mate_back` (vagy `backend`) mappába:
+a statikus fájlokat (js, css, képek, sitemap) a `public`-ba, az oldalak HTML-jét a `resources/frontend`-be.
 Más helyen lévő backendhez: `BACKEND_DIR=/ut/a/mate_back npm run build:backend`. Utána csak a backendet kell feltölteni.
 
 **B) Külön domainen a backendtől:** a `src/environments/environment.ts`-ben az `apiUrl`-be írd a backend címét,
-majd `npm run build`, és a `dist/frontend/browser` mappát töltsd fel. A backendben a `CORS_ALLOWED_ORIGINS`-be
-írd a frontend címét.
+majd `npm run build`, és a `dist/frontend/browser` mappát töltsd fel. Ilyenkor a perjeles címeket és a 404-et
+a webszervernek kell kezelnie, ezért az A) változatot javasoljuk.
 
 ## Arculat
 
@@ -79,10 +88,10 @@ majd `npm run build`, és a `dist/frontend/browser` mappát töltsd fel. A backe
 
 ## Effektek
 
-- **Nyitóképernyő**: több ezer részecske (three.js / WebGL), amik sorban kirajzolják a „fordítás” szót különböző nyelveken, mögöttük lassan forgó ív. Görgetéskor szétrepülnek, az egérre nem reagálnak.
-- **Élő fordítás**: rögzített szakasz, ahol görgetésre betűnként fordítódik egy mondat magyarról angolra, majd németre (GSAP ScrollTrigger).
+- **Nyitóképernyő**: több ezer részecske (three.js / WebGL), amik sorban kirajzolják a „fordítás” szót különböző nyelveken, mögöttük lassan forgó ív. Görgetéskor szétrepülnek. Az egérre semmi nem reagál (se a részecskék, se a kurzor, se a gombok).
+- **Élő fordítás**: rögzített szakasz, ahol görgetésre betűnként fordítódik a szlogen („Fordítás akár aznapra”) angolra, majd németre (GSAP ScrollTrigger).
 - **Lépések**: asztali gépen vízszintesen görgetett panelek.
-- Soronként becsúszó címsorok, felpörgő számlálók, 3D-ben dönthető kártyák, mágneses gombok, egyedi kurzor, nyelvi szalag.
+- Felpörgő számlálók (a régi oldal számai), beúszó kártyák, nyelvi szalag.
 
 A 3D jelenet külön, késleltetve töltődik be, mobilon kevesebb részecskével fut, és leáll, ha nem látszik.
 Ha a látogató csökkentett mozgást kért, vagy a böngésző nem tud WebGL-t, statikus változatot kap.

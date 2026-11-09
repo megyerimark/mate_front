@@ -1,34 +1,30 @@
+@let h = home();
+@let ui = site.ui();
 <section class="hero">
   <canvas #canvas class="hero-canvas" aria-hidden="true"></canvas>
   @if (fallback()) {
-    <div class="hero-fallback" aria-hidden="true">{{ words[0].text }}</div>
+    <div class="hero-fallback" aria-hidden="true">{{ words()[0].text }}</div>
   }
   <div class="hero-vignette" aria-hidden="true"></div>
 
   <div class="container hero-content">
     <div class="hero-text">
-      <p class="eyebrow"><span class="pulse"></span> Fordítóiroda · ajánlat 1 órán belül</p>
-      <h1>
-        <span class="line"><span>Minden nyelven.</span></span>
-        <span class="line"><span class="accent">Határidőre.</span></span>
-      </h1>
+      <h1 class="hero-h1"><span class="pulse" aria-hidden="true"></span> {{ h.h1 }}</h1>
+      <h2 class="hero-title">
+        <span class="line"><span class="accent">{{ h.subtitle }}</span></span>
+      </h2>
       <p class="lead">
-        Hivatalos iratok, szerződések, műszaki és orvosi szövegek. Küldje el a dokumentumot,
-        és <strong>1 órán belül fix, ingyenes árajánlatot</strong> kap.
+        @for (p of h.lead; track $index) { {{ p }} }
       </p>
       <div class="hero-cta">
-        <a routerLink="/" fragment="ajanlat" class="btn btn-lg" appMagnetic>Ingyenes árajánlatot kérek <span aria-hidden="true">→</span></a>
-        <a [href]="site.phoneHref" class="btn btn-lg btn-ghost">Hívjon most</a>
+        <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg">{{ ui.requestQuote }} <span aria-hidden="true">→</span></a>
+        <a [routerLink]="site.link('proofreading')" [fragment]="ui.spellingAnchor" class="btn btn-lg btn-ghost">{{ h.spellingButton }}</a>
       </div>
     </div>
 
     <div class="hero-meta" aria-hidden="true">
-      <span class="hero-counter">{{ (index() + 1).toString().padStart(2, '0') }} / {{ words.length.toString().padStart(2, '0') }}</span>
-      <span class="hero-lang">{{ words[index()].language }}</span>
+      <span class="hero-counter">{{ (index() + 1).toString().padStart(2, '0') }} / {{ words().length.toString().padStart(2, '0') }}</span>
+      <span class="hero-lang">{{ words()[index()].language }}</span>
     </div>
   </div>
-
-  <a routerLink="/" fragment="szolgaltatasok" class="scroll-hint" aria-label="Tovább görgetés">
-    <span></span>
-  </a>
 </section>

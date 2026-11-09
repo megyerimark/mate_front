@@ -1,0 +1,21 @@
+{
+  "home": { "hu": "", "en": "en" },
+  "translation": { "hu": "forditas", "en": "en/translation" },
+  "proofreading": { "hu": "lektoralas", "en": "en/proofreading" },
+  "postEditing": { "hu": "utoszerkesztes", "en": "en/post-editing" },
+  "interpreting": { "hu": "tolmacsolas", "en": "en/interpreting" },
+  "technical": { "hu": "muszaki-forditas", "en": "en/technical-translation" },
+  "financial": { "hu": "gazdasagi-forditas", "en": "en/financial-translation" },
+  "legal": { "hu": "jogi-forditas", "en": "en/legal-translation" },
+  "medical": { "hu": "egeszsegugyi-forditas", "en": "en/medical-translation" },
+  "marketing": { "hu": "marketing-forditas", "en": "en/marketing-translation" },
+  "languages": { "hu": "nyelvek", "en": "en/languages" },
+  "prices": { "hu": "arak", "en": "en/prices" },
+  "quote": { "hu": "ajanlatkeres", "en": "en/request-a-quote" },
+  "about": { "hu": "rolunk", "en": "en/about-us" },
+  "careers": { "hu": "karrier", "en": "en/careers" },
+  "imprint": { "hu": "impresszum", "en": "en/imprint" },
+  "privacy": { "hu": "adatvedelmi-nyilatkozat", "en": "en/privacy-policy" },
+  "cookies": { "hu": "cookie-nyilatkozat", "en": "en/cookie-policy" },
+  "thanks": { "hu": "koszonjuk", "en": "en/thank-you" }
+}

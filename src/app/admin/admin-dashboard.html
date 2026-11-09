@@ -49,13 +49,14 @@
     <div class="adm-table-wrap" [class.is-loading]="loading()">
       <table class="adm-table">
         <thead>
-          <tr><th>Beérkezett</th><th>Ügyfél</th><th>Nyelvpár</th><th>Határidő</th><th>Dok.</th><th>Állapot</th></tr>
+          <tr><th>Beérkezett</th><th>Ügyfél</th><th>Szolgáltatás</th><th>Nyelv(ek)</th><th>Határidő</th><th>Dok.</th><th>Állapot</th></tr>
         </thead>
         <tbody>
           @for (q of page()?.data ?? []; track q.id) {
             <tr (click)="open(q)" (keydown.enter)="open(q)" tabindex="0" [class.selected]="selected()?.id === q.id" [class.unread]="q.status === 'new'">
               <td><span class="adm-date">{{ date(q.created_at) }}</span><small>{{ ago(q.created_at) }}</small></td>
               <td><b>{{ q.name }}</b><small>{{ q.email }}</small></td>
+              <td>{{ q.service_label }}@if (q.locale === 'en') { <span class="adm-lang">EN</span> }</td>
               <td>{{ pair(q) }}</td>
               <td><span class="adm-deadline" [attr.data-deadline]="q.deadline">{{ q.deadline_label }}</span></td>
               <td>@if (q.has_document) { <app-icon name="document" class="adm-doc" aria-label="Van csatolt dokumentum" /> }</td>
@@ -63,7 +64,7 @@
             </tr>
           } @empty {
             @if (!loading()) {
-              <tr class="adm-empty"><td colspan="6">
+              <tr class="adm-empty"><td colspan="7">
                 @if (search() || filterStatus()) { Nincs találat a szűrésre. } @else { Még nincs ajánlatkérés. Amint valaki kitölti az űrlapot a weboldalon, itt jelenik meg. }
               </td></tr>
             }
@@ -105,7 +106,9 @@
       <dl class="adm-facts">
         <dt>E-mail</dt><dd>{{ q.email }}</dd>
         <dt>Telefon</dt><dd>{{ q.phone || '–' }}</dd>
-        <dt>Nyelvpár</dt><dd>{{ pair(q) }}</dd>
+        <dt>Szolgáltatás</dt><dd>{{ q.service_label }}</dd>
+        <dt>Nyelv(ek)</dt><dd>{{ pair(q) }}</dd>
+        <dt>Weboldal</dt><dd>{{ q.locale === 'en' ? 'angol oldalról (angolul kapott visszaigazolást)' : 'magyar oldalról' }}</dd>
         <dt>Határidő</dt><dd><span class="adm-deadline" [attr.data-deadline]="q.deadline">{{ q.deadline_label }}</span></dd>
         <dt>Dokumentum</dt><dd>{{ q.document_name || 'nincs csatolva' }}</dd>
       </dl>

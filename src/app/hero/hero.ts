@@ -1,22 +1,24 @@
 import {
-  Component, DestroyRef, ElementRef, afterNextRender, inject, signal, viewChild,
+  Component, DestroyRef, ElementRef, afterNextRender, computed, inject, signal, viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MagneticDirective } from '../directives/magnetic.directive';
-import { HERO_WORDS, SITE } from '../site.config';
+import { HOME } from '../content/ui';
+import { SiteService } from '../services/site.service';
+import { HERO_WORDS } from '../site.config';
 import type { GlyphScene } from './glyph-scene';
 
 @Component({
   selector: 'app-hero',
-  imports: [RouterLink, MagneticDirective],
+  imports: [RouterLink],
   templateUrl: './hero.html',
 })
 export class Hero {
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
 
-  protected readonly site = SITE;
-  protected readonly words = HERO_WORDS;
+  protected readonly site = inject(SiteService);
+  protected readonly home = computed(() => HOME[this.site.lang()]);
+  protected readonly words = computed(() => HERO_WORDS[this.site.lang()]);
   protected readonly index = signal(0);
   /** WebGL nélkül (vagy csökkentett mozgásnál) statikus szó jelenik meg. */
   protected readonly fallback = signal(false);
@@ -38,7 +40,7 @@ export class Hero {
 
     const font = "'Inter Tight', 'Inter', sans-serif";
     const [, { GlyphScene }] = await Promise.all([
-      document.fonts.load(`600 100px 'Inter Tight'`, this.words.map((w) => w.text).join('')),
+      document.fonts.load(`600 100px 'Inter Tight'`, this.words().map((w) => w.text).join('')),
       import('./glyph-scene'),
     ]);
 
@@ -47,7 +49,7 @@ export class Hero {
     const theme = getComputedStyle(document.documentElement);
     const color = (name: string) => theme.getPropertyValue(name).trim();
     const scene: GlyphScene = new GlyphScene(canvas, {
-      words: this.words,
+      words: this.words(),
       font,
       colors: [color('--particle-a') || '#ffffff', color('--particle-b') || '#8d9bac'],
       additive: color('--particle-blend') !== 'normal',
