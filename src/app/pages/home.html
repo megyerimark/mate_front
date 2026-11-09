@@ -14,22 +14,39 @@
   </div>
 </section>
 
-<!-- SZOLGÁLTATÁSOK -->
-<section class="section" id="szolgaltatasok">
+<!-- SZOLGÁLTATÁSOK: bento elrendezés, minden kártya kicsit másképp viselkedik -->
+<section class="section services-section" id="szolgaltatasok">
   <div class="container">
-    <h2 class="display">{{ h.servicesHeading }}</h2>
-    <div class="grid cards">
-      @for (s of h.services; track s.key) {
-        <article class="card" appReveal [revealDelay]="$index * 80">
-          <div class="icon"><app-icon [name]="s.icon" /></div>
+    <div class="section-top">
+      <h2 class="display">{{ h.servicesHeading }}</h2>
+      <a class="link-cta" [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor">{{ ui.requestQuote }} →</a>
+    </div>
+    <div class="bento">
+      @for (s of h.services; track s.key; let i = $index) {
+        <article class="svc" [attr.data-svc]="s.key" appReveal="scale" [revealDelay]="i * 90">
+          <a class="svc-link" [routerLink]="site.link(s.key)" [attr.aria-label]="s.title + ' – ' + ui.more"></a>
+          <div class="svc-icon"><app-icon [name]="s.icon" /></div>
+          <span class="svc-index" aria-hidden="true">0{{ i + 1 }}</span>
+          @if (s.key === 'translation') {
+            <ul class="svc-facts">
+              @for (st of h.stats.slice(0, 2); track st.label) { <li><b>{{ format(st.value) }}{{ st.suffix }}</b><span>{{ st.label }}</span></li> }
+            </ul>
+          }
           <h3>{{ s.title }}</h3>
           <p>{{ s.text }}</p>
-          <a class="card-link" [routerLink]="site.link(s.key)">{{ ui.more }} <span aria-hidden="true">→</span></a>
+          @if (s.key === 'interpreting') {
+            <ul class="svc-types">
+              @for (t of interpretingTypes(); track t) { <li>{{ t }}</li> }
+            </ul>
+          }
+          <span class="svc-more">{{ ui.more }} <span class="svc-arrow" aria-hidden="true">→</span></span>
         </article>
       }
     </div>
   </div>
 </section>
+
+<app-language-world />
 
 <!-- SZAKTERÜLETEK -->
 <section class="section section-alt fields-section">
@@ -51,24 +68,25 @@
   </div>
 </section>
 
-<!-- LÉPÉSEK -->
+<!-- LÉPÉSEK: a bal oldal rögzül (position: sticky), a lépések mellette görögnek; a görgetést nem veszi át -->
 <section class="section steps-section">
-  <div class="container">
-    <h2 class="display">{{ h.stepsHeading }}</h2>
-    <ol class="steps">
-      @for (step of h.steps; track $index) {
-        <li class="step" appReveal [revealDelay]="$index * 80">
-          <span class="step-num">{{ $index + 1 }}</span>
+  <div class="container story">
+    <div class="story-aside">
+      <h2 class="display">{{ h.stepsHeading }}</h2>
+      <div class="story-progress" aria-hidden="true"><span [style.--s]="(activeStep() + 1) / h.steps.length"></span></div>
+      <p class="story-count" aria-hidden="true"><b>0{{ activeStep() + 1 }}</b> / 0{{ h.steps.length }}</p>
+      <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg btn-arrow">{{ ui.requestQuote }} <span class="btn-arrow-icon" aria-hidden="true">→</span></a>
+    </div>
+    <ol class="story-steps">
+      @for (step of h.steps; track $index; let i = $index) {
+        <li class="story-step" [class.active]="activeStep() === i" [attr.data-step]="i">
+          <span class="story-num">{{ i + 1 }}</span>
           <div>
             @for (p of step.text; track $index) { <p>{{ p }}</p> }
           </div>
         </li>
       }
     </ol>
-    <div class="steps-cta" appReveal>
-      <p>{{ h.subtitle }}</p>
-      <a [routerLink]="site.link('home')" [fragment]="ui.quoteAnchor" class="btn btn-lg">{{ ui.requestQuote }} <span aria-hidden="true">→</span></a>
-    </div>
   </div>
 </section>
 
@@ -91,16 +109,20 @@
   </div>
 </section>
 
-<!-- MIÉRT MI -->
-<section class="section section-alt">
+<!-- MIÉRT MI: szerkesztőségi, sorokba tördelt elrendezés -->
+<section class="section section-alt why-section">
   <div class="container">
     <h2 class="display">{{ h.whyHeading }}</h2>
-    <div class="grid features">
-      @for (f of h.why; track f.title) {
-        <div class="feature" appReveal [revealDelay]="$index * 80">
-          <div class="icon"><app-icon [name]="f.icon" /></div>
-          <h3>{{ f.title }}</h3>
-          @for (p of f.text; track $index) { <p>{{ p }}</p> }
+    <div class="why">
+      @for (f of h.why; track f.title; let i = $index) {
+        <div class="why-row" appReveal="clip" [revealDelay]="i * 120">
+          <div class="why-head">
+            <span class="why-icon"><app-icon [name]="f.icon" /></span>
+            <h3>{{ f.title }}</h3>
+          </div>
+          <div class="why-text">
+            @for (p of f.text; track $index) { <p>{{ p }}</p> }
+          </div>
         </div>
       }
     </div>

@@ -1,0 +1,53 @@
+@let c = copy();
+<section class="world" aria-labelledby="world-title">
+  <div class="container world-grid">
+    <div class="world-intro" appReveal>
+      <p class="world-kicker">{{ c.kicker }}</p>
+      <h2 id="world-title" class="world-title"><span class="world-num">{{ total }}</span><span>{{ c.title }}</span></h2>
+      <p class="world-text">{{ c.text }}</p>
+
+      <div class="world-regions" role="tablist" [attr.aria-label]="c.hint">
+        @for (r of regions; track r.key) {
+          <button type="button" role="tab" class="world-region" [class.active]="active() === r.key" [attr.aria-selected]="active() === r.key"
+            aria-controls="world-panel" (click)="select(r.key)" (mouseenter)="select(r.key)">
+            <span>{{ regionName(r.key) }}</span><b>{{ counts()[r.key] }}</b>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="world-map-wrap" appReveal="fade">
+      <svg class="world-map" viewBox="0 0 360 136" role="img" [attr.aria-label]="c.title">
+        <path class="world-land" [attr.d]="land" />
+        @for (p of points; track p.hu) {
+          <circle class="world-pt" [class.on]="p.region === active()" [attr.cx]="p.x" [attr.cy]="p.y" [attr.r]="p.region === active() ? 1.9 : 1.2"
+            (mouseenter)="hovered.set(p)" (mouseleave)="hovered.set(null)" (click)="select(p.region)" />
+        }
+        <!-- Az ívek a régió váltásakor újrarajzolódnak -->
+        @for (region of [active()]; track region) {
+          <g class="world-arcs">
+            @for (d of arcs(); track $index) { <path [attr.d]="d" [style.--d]="$index" /> }
+          </g>
+        }
+        <circle class="world-home" [attr.cx]="home.x" [attr.cy]="home.y" r="2.4" />
+        <circle class="world-home-ring" [attr.cx]="home.x" [attr.cy]="home.y" r="2.4" />
+      </svg>
+      @if (hovered(); as h) {
+        <div class="world-tip" aria-hidden="true" [style.left.%]="(h.x / 360) * 100" [style.top.%]="(h.y / 136) * 100">{{ site.lang() === 'hu' ? h.hu : h.en }}</div>
+      }
+
+      <div class="world-panel" id="world-panel" role="tabpanel" aria-live="polite">
+        @let langs = regionLangs();
+        <p class="world-panel-head"><b>{{ regionName(active()) }}</b> · {{ langs.count }} {{ c.languages }}</p>
+        <p class="world-list">
+          @for (n of langs.own; track n) { <span>{{ n }}</span> }
+          @if (langs.also.length) {
+            <span class="world-also-label">{{ c.also }}:</span>
+            @for (n of langs.also; track n) { <span class="also">{{ n }}</span> }
+          }
+        </p>
+        <a class="world-all" [routerLink]="site.link('languages')">{{ c.all }} <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
