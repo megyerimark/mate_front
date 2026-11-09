@@ -31,7 +31,8 @@ Az `npm start` megnézi, fut-e a Laravel (`http://127.0.0.1:8000/api/health`). H
 Az `/api` hívásokat az Angular fejlesztői szerver továbbítja a Laravelnek (`proxy.conf.mjs`).
 
 - Más helyen van a backend mappa: `BACKEND_DIR=/út/a/mate_back npm start`
-- Más porton fut a Laravel (pl. 8001, mert a 8000 foglalt): `API_TARGET=http://127.0.0.1:8001 npm start`
+- Ha a 8000-es portot más program foglalja, az `npm start` magától a következő szabad portot használja (8001, 8002…),
+  és oda irányítja a frontendet. Kézzel megadva: `API_TARGET=http://127.0.0.1:8001 npm start`
 - Csak az Angular: `npm run start:front`
 
 Ha a konzolban `404 /api/...` hibát látsz: nem fut a backend, vagy más program van a 8000-es porton (`lsof -i :8000`).
