@@ -31,4 +31,10 @@ export default [
     title: 'Statisztika – Done Translations admin',
     loadComponent: () => import('./admin-stats').then((m) => m.AdminStats),
   },
+  {
+    path: 'fiok',
+    canActivate: [requireLogin],
+    title: 'Fiók és adminok – Done Translations admin',
+    loadComponent: () => import('./admin-account').then((m) => m.AdminAccount),
+  },
 ] satisfies Routes;

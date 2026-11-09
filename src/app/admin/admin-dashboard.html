@@ -66,7 +66,10 @@
         <tbody>
           @for (q of page()?.data ?? []; track q.id) {
             <tr (click)="open(q)" (keydown.enter)="open(q)" tabindex="0" [class.selected]="selected()?.id === q.id" [class.unread]="q.status === 'new'">
-              <td><span class="adm-date">{{ date(q.created_at) }}</span><small>{{ ago(q.created_at) }}</small></td>
+              <td>
+                <span class="adm-date">{{ date(q.created_at) }}</span><small>{{ ago(q.created_at) }}</small>
+                @if (q.mail_error) { <small class="adm-flag danger">E-mail hiba</small> }
+              </td>
               <td><b>{{ q.name }}</b><small>{{ q.email }}</small></td>
               <td>{{ q.service_label }}@if (q.locale === 'en') { <span class="adm-lang">EN</span> }</td>
               <td>{{ pair(q) }}</td>
@@ -130,6 +133,14 @@
         <dt>Weboldal</dt><dd>{{ q.locale === 'en' ? 'angol oldalról (angolul kapott visszaigazolást)' : 'magyar oldalról' }}</dd>
         <dt>Határidő</dt><dd><span class="adm-deadline" [attr.data-deadline]="q.deadline">{{ q.deadline_label }}</span></dd>
         <dt>Dokumentum</dt><dd>{{ q.document_name || 'nincs csatolva' }}</dd>
+        <dt>E-mailek</dt>
+        <dd class="adm-mails">
+          <span [class.bad]="!q.notified_at">{{ q.notified_at ? '✓' : '✗' }} értesítő az irodának</span>
+          <span [class.bad]="!q.confirmed_at">{{ q.confirmed_at ? '✓' : '✗' }} visszaigazolás az ügyfélnek</span>
+          @if (!q.notified_at || !q.confirmed_at) {
+            <button type="button" class="btn btn-ghost btn-sm" [disabled]="resending()" (click)="resend()">{{ resending() ? 'Küldés…' : 'Újraküldés' }}</button>
+          }
+        </dd>
       </dl>
 
       @if (q.message) {

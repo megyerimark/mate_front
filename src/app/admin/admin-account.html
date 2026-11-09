@@ -1,0 +1,85 @@
+<div class="adm">
+  <app-admin-header />
+
+  <main class="adm-main adm-narrow">
+    <div class="adm-head">
+      <div>
+        <h1>Fiók</h1>
+        <p class="adm-sub">Bejelentkezve: {{ auth.user()?.email }}</p>
+      </div>
+    </div>
+
+    <section class="adm-card">
+      <h2>Jelszó módosítása</h2>
+      <form class="adm-form" (ngSubmit)="changePassword()">
+        <label>Jelenlegi jelszó
+          <input type="password" name="current" autocomplete="current-password" required
+            [ngModel]="pw.current()" (ngModelChange)="pw.current.set($event)" [attr.aria-invalid]="!!pwErrors()['current_password']" />
+          @if (pwErrors()['current_password']; as e) { <small class="adm-field-error">{{ e }}</small> }
+        </label>
+        <label><span>Új jelszó <span class="adm-sub">(legalább 10 karakter)</span></span>
+          <input type="password" name="next" autocomplete="new-password" required minlength="10"
+            [ngModel]="pw.next()" (ngModelChange)="pw.next.set($event)" [attr.aria-invalid]="!!pwErrors()['password']" />
+          @if (pwErrors()['password']; as e) { <small class="adm-field-error">{{ e }}</small> }
+        </label>
+        <label>Új jelszó újra
+          <input type="password" name="again" autocomplete="new-password" required
+            [ngModel]="pw.again()" (ngModelChange)="pw.again.set($event)" />
+        </label>
+        @if (pwErrors()['general']; as e) { <p class="adm-error" role="alert">{{ e }}</p> }
+        <div class="adm-row">
+          <button type="submit" class="btn btn-sm" [disabled]="pwSaving() || !pw.current() || !pw.next()">Jelszó mentése</button>
+          @if (pwDone()) { <span class="adm-ok" role="status">✓ Jelszó módosítva. A többi eszközön újra be kell lépni.</span> }
+        </div>
+      </form>
+    </section>
+
+    <section class="adm-card">
+      <h2>Adminok</h2>
+      <p class="adm-sub">Akik be tudnak lépni az admin felületre, és látják az ajánlatkéréseket.</p>
+      @if (listError()) { <p class="adm-error" role="alert">{{ listError() }}</p> }
+      <ul class="adm-users">
+        @for (u of users(); track u.id) {
+          <li>
+            <div><b>{{ u.name }}</b>@if (u.is_me) { <span class="adm-lang">TE</span> }<small>{{ u.email }}</small></div>
+            @if (!u.is_me) {
+              @if (confirmId() === u.id) {
+                <span class="adm-row">
+                  <button type="button" class="btn btn-sm btn-danger" (click)="remove(u)">Igen, törlöm</button>
+                  <button type="button" class="btn btn-ghost btn-sm" (click)="confirmId.set(null)">Mégse</button>
+                </span>
+              } @else {
+                <button type="button" class="adm-link danger" (click)="confirmId.set(u.id)">Törlés</button>
+              }
+            }
+          </li>
+        }
+      </ul>
+
+      <h3 class="adm-subhead">Új admin hozzáadása</h3>
+      <form class="adm-form adm-form-inline" (ngSubmit)="addUser()">
+        <label>Név
+          <input name="name" required autocomplete="off" [ngModel]="newName()" (ngModelChange)="newName.set($event)" [attr.aria-invalid]="!!addErrors()['name']" />
+          @if (addErrors()['name']; as e) { <small class="adm-field-error">{{ e }}</small> }
+        </label>
+        <label>E-mail-cím
+          <input name="email" type="email" required autocomplete="off" [ngModel]="newEmail()" (ngModelChange)="newEmail.set($event)" [attr.aria-invalid]="!!addErrors()['email']" />
+          @if (addErrors()['email']; as e) { <small class="adm-field-error">{{ e }}</small> }
+        </label>
+        <button type="submit" class="btn btn-sm" [disabled]="adding() || !newName() || !newEmail()">Hozzáadás</button>
+      </form>
+      @if (addErrors()['general']; as e) { <p class="adm-error" role="alert">{{ e }}</p> }
+
+      @if (created(); as c) {
+        <div class="adm-created" role="status">
+          <p><b>{{ c.email }}</b> létrehozva. A jelszava:</p>
+          <div class="adm-row">
+            <code>{{ c.password }}</code>
+            <button type="button" class="btn btn-ghost btn-sm" (click)="copy(c.password)">{{ copied() ? '✓ Másolva' : 'Másolás' }}</button>
+          </div>
+          <p class="adm-hint">Küldd el neki biztonságosan (pl. telefonon). Ez a jelszó később nem nézhető vissza; belépés után a Fiók oldalon megváltoztathatja.</p>
+        </div>
+      }
+    </section>
+  </main>
+</div>

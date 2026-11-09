@@ -18,8 +18,11 @@
 
     <figure class="hero-photo">
       <picture>
-        <source type="image/webp" srcset="/images/done-translations-csapat-640.webp 640w, /images/done-translations-csapat.webp 1000w" sizes="(max-width: 900px) 100vw, 600px" />
-        <img src="/images/done-translations-csapat.jpg" width="1000" height="667" [alt]="ui.hero.photoAlt" fetchpriority="high" decoding="async" />
+        <!-- A kép kitölti a keretet (object-fit: cover), ezért szélesebben jelenik meg, mint a keret: 600 px magas × 1,5 = kb. 900 px. -->
+        <source type="image/webp"
+          srcset="/images/done-translations-csapat-800.webp 800w, /images/done-translations-csapat-1400.webp 1400w, /images/done-translations-csapat-2000.webp 2000w"
+          sizes="(max-width: 960px) 100vw, 900px" />
+        <img src="/images/done-translations-csapat.jpg" width="1400" height="934" [alt]="ui.hero.photoAlt" fetchpriority="high" decoding="async" />
       </picture>
       @for (b of ui.hero.badges; track b.title; let i = $index) {
         <div class="hero-badge" [class.gold]="i === 1" [attr.data-pos]="i">

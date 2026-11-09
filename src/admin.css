@@ -216,3 +216,30 @@ body:has(.adm, .adm-login) { padding-bottom: 0; }
 .adm-history li { position: relative; display: grid; gap: 2px; font-size: .9rem; }
 .adm-history li::before { content: ""; position: absolute; left: -22px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
 .adm-history small { color: var(--muted); font-size: .8rem; }
+
+/* Fiók */
+.adm-narrow { width: min(760px, 100% - 32px); }
+.adm-form { display: grid; gap: 14px; }
+.adm-form label { display: grid; gap: 6px; font-size: .88rem; color: var(--muted); }
+.adm-form input { font: inherit; font-size: 1rem; color: var(--text); padding: .7em .9em; border-radius: 12px; background: rgba(var(--tint), .03); border: 1px solid var(--border); }
+.adm-form input:focus { outline: none; border-color: var(--accent); }
+.adm-form input[aria-invalid="true"] { border-color: var(--danger); }
+.adm-form-inline { grid-template-columns: 1fr 1fr auto; align-items: start; }
+.adm-form-inline .btn { margin-top: 26px; }
+.adm-field-error { color: var(--danger); }
+.adm-users { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--border); }
+.adm-users li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.adm-users small { display: block; color: var(--muted); font-size: .85rem; }
+.adm-subhead { margin: 8px 0 0; font-family: var(--body); font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.adm-created { padding: 16px 18px; border-radius: 14px; background: rgba(var(--accent-rgb), .07); border: 1px solid rgba(var(--accent-rgb), .25); display: grid; gap: 8px; }
+.adm-created p { margin: 0; }
+.adm-created code { font-size: 1.05rem; padding: .3em .7em; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); user-select: all; }
+@media (max-width: 560px) {
+  .adm-form-inline { grid-template-columns: 1fr; }
+  .adm-form-inline .btn { margin-top: 0; }
+}
+.adm-mails { display: grid; gap: 4px; justify-items: start; }
+.adm-mails span { color: var(--accent); }
+.adm-mails span.bad { color: var(--danger); font-weight: 500; }
+.adm-mails .btn { margin-top: 6px; }
+.adm-flag.danger { background: rgba(179, 38, 30, .1); color: var(--danger) !important; }

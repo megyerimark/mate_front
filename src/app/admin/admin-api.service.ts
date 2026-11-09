@@ -25,6 +25,10 @@ export interface AdminQuote {
   needs_follow_up: boolean;
   /** Ajánlott / megrendelt ár forintban. */
   price: number | null;
+  /** Mikor ment ki az értesítő (irodának) és a visszaigazolás (ügyfélnek); hiba esetén az üzenete. */
+  notified_at: string | null;
+  confirmed_at: string | null;
+  mail_error: string | null;
   /** Előzmények; csak az egy ajánlatkérést lekérő válaszban van benne. */
   events?: { type: 'status' | 'price' | 'note'; text: string; user: string | null; created_at: string }[];
   document_name: string | null;
@@ -68,6 +72,14 @@ export interface StatsOverview {
   top_languages: StatRow[];
 }
 
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  created_at?: string;
+  is_me: boolean;
+}
+
 export interface QuoteFilters {
   status: QuoteStatus | '';
   followUp: boolean;
@@ -104,6 +116,23 @@ export class AdminApiService {
     return this.http.get<StatsOverview>(`${this.base}/stats/overview`, { params: { period } });
   }
 
+  users(): Observable<AdminUser[]> {
+    return this.http.get<{ data: AdminUser[] }>(`${this.base}/users`).pipe(map((r) => r.data));
+  }
+
+  /** Új admin; a generált jelszó csak ebben a válaszban jön vissza. */
+  addUser(user: { name: string; email: string }): Observable<{ data: AdminUser; password: string }> {
+    return this.http.post<{ data: AdminUser; password: string }>(`${this.base}/users`, user);
+  }
+
+  removeUser(id: number): Observable<unknown> {
+    return this.http.delete(`${this.base}/users/${id}`);
+  }
+
+  changePassword(body: { current_password: string; password: string; password_confirmation: string }): Observable<unknown> {
+    return this.http.put(`${this.base}/password`, body);
+  }
+
   private filterParams(filters: QuoteFilters): HttpParams {
     let params = new HttpParams();
     if (filters.status) params = params.set('status', filters.status);
@@ -124,6 +153,10 @@ export class AdminApiService {
 
   update(id: number, changes: Partial<Pick<AdminQuote, 'status' | 'admin_note' | 'price'>>): Observable<AdminQuote> {
     return this.http.patch<{ data: AdminQuote }>(`${this.base}/quote-requests/${id}`, changes).pipe(map((r) => r.data));
+  }
+
+  resendMail(id: number, which: ('notify' | 'confirm')[]): Observable<AdminQuote> {
+    return this.http.post<{ data: AdminQuote }>(`${this.base}/quote-requests/${id}/resend-mail`, { which }).pipe(map((r) => r.data));
   }
 
   remove(id: number): Observable<unknown> {

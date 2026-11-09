@@ -182,6 +182,31 @@ export class AdminDashboard implements OnInit {
     this.persist(quote.id, { admin_note: this.note() || null }, 'Jegyzet mentve');
   }
 
+  protected readonly resending = signal(false);
+
+  protected resend(): void {
+    const quote = this.selected();
+    if (!quote) return;
+    const which: ('notify' | 'confirm')[] = [];
+    if (!quote.notified_at) which.push('notify');
+    if (!quote.confirmed_at) which.push('confirm');
+    if (!which.length) return;
+    this.resending.set(true);
+    this.api.resendMail(quote.id, which).subscribe({
+      next: (updated) => {
+        this.resending.set(false);
+        this.selected.set(updated);
+        this.page.update((p) => (p ? { ...p, data: p.data.map((q) => (q.id === updated.id ? updated : q)) } : p));
+        if (updated.mail_error) this.detailError.set('Most sem ment ki: ' + updated.mail_error);
+        else this.saved.set('E-mail elküldve');
+      },
+      error: () => {
+        this.resending.set(false);
+        this.detailError.set('Az újraküldés nem sikerült.');
+      },
+    });
+  }
+
   protected savePrice(): void {
     const quote = this.selected();
     if (!quote || this.priceInvalid()) return;
