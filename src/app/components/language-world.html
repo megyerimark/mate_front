@@ -18,7 +18,7 @@
 
     <div class="world-map-wrap" appReveal="fade">
       <svg class="world-map" viewBox="0 0 360 136" role="img" [attr.aria-label]="c.title">
-        <path class="world-land" [attr.d]="land" />
+        <path class="world-land" [attr.d]="land()" />
         @for (p of points; track p.hu) {
           <circle class="world-pt" [class.on]="p.region === active()" [attr.cx]="p.x" [attr.cy]="p.y" [attr.r]="p.region === active() ? 1.9 : 1.2"
             (mouseenter)="hovered.set(p)" (mouseleave)="hovered.set(null)" (click)="select(p.region)" />

@@ -10,4 +10,9 @@ export const environment = {
    * A párja, a titkos kulcs a backend .env-jébe kerül (RECAPTCHA_SECRET_KEY). Üresen hagyva kikapcsol.
    */
   recaptchaSiteKey: '6LfjKkgmAAAAAOJHyQVeVfuKWI-mdF9LuBUGEch9',
+  /**
+   * Google Search Console ellenőrző kód (a „HTML-címke” módszer content értéke). Üresen nem kerül az oldalba.
+   * Egyszerűbb a DNS TXT rekordos ellenőrzés: akkor itt nincs teendő.
+   */
+  googleSiteVerification: '',
 };

@@ -40,6 +40,7 @@
       }
     </ol>
     <div class="qf-bar" aria-hidden="true"><span [style.--p]="(step() + 1) / stepCount"></span></div>
+    <p class="qf-step-now" aria-hidden="true">{{ t.stepOf(step() + 1, stepCount) }}: {{ t.steps[step()] }}</p>
 
     <div class="qf-panel" tabindex="-1" [attr.aria-label]="t.stepOf(step() + 1, stepCount) + ': ' + t.steps[step()]">
       @switch (step()) {

@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, computed, inject, isDevMode, signal } from '@angular/core';
+import { Component, PLATFORM_ID, afterNextRender, computed, inject, isDevMode, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LAND, REGIONS, Region, WORLD_LANGUAGES, WorldLanguage } from '../content/languages-world';
 import { PAGES } from '../content/ui';
@@ -57,7 +57,8 @@ export class LanguageWorld {
   protected readonly regions = REGIONS;
   protected readonly active = signal<Region>('europe');
   protected readonly hovered = signal<(WorldLanguage & { x: number; y: number }) | null>(null);
-  protected readonly land = (landPath ??= buildLand());
+  /** A szárazföld pontjai csak a böngészőben rajzolódnak ki (díszítés, a hajtás alatt): így az előrenderelt HTML 33 KB-tal kisebb. */
+  protected readonly land = signal('');
   protected readonly home = { x: x(HOME_POINT[0]), y: y(HOME_POINT[1]) };
   protected readonly total = WORLD_LANGUAGES.length;
 
@@ -91,6 +92,7 @@ export class LanguageWorld {
   });
 
   constructor() {
+    afterNextRender(() => this.land.set((landPath ??= buildLand())));
     if (isDevMode() && isPlatformBrowser(inject(PLATFORM_ID))) {
       const block = PAGES.hu.languages.blocks.find((b) => b.kind === 'languages');
       const listed = block?.kind === 'languages' ? block.groups.flat() : [];

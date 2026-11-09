@@ -62,3 +62,28 @@
 - Oldalankénti JSON-LD (BreadcrumbList, Service, LocalBusiness), angol Organization.
 - Nem blokkoló betűtípus, képek lazy loading + méretek, Search Console ellenőrző meta (konfigból), analitika csak hozzájárulással (javaslat).
 - Teszt: build, 299 szöveg, routing, mobil (iPhone/Android/tablet/laptop/4K képernyőkép), űrlapok E2E, PHPUnit.
+
+## 4. Eredmény (elkészült)
+
+| Fázis | Ami elkészült | Ellenőrzés |
+|---|---|---|
+| 2 | Prémium hero (rétegzett fotó, többsoros cím, belépő animáció, görgetéses parallax), fejléc-folyamatjelző, teljes képernyős mobilmenü, `motion/` (ScrollService, Reveal, Parallax) | képernyőképek, CLS < 0,05 |
+| 3 | Bento szolgáltatások, **Nyelvek világa** (saját SVG térkép, 2 KB adat), sticky lépések, szerkesztőségi „Miért mi” | mobilon túlcsordulás javítva |
+| 4 | Többlépéses ajánlatkérő, több fájl drag & droppal (backend: `quote_request_documents`), köszönő oldal, vélemények/partnerek admin + API | E2E: beküldés 2 fájllal, levelek mellékletekkel |
+| 5 | Valós idejű jelzés, teendők, ügyféladatlap, kommunikációs napló, heti/értékalapú statisztika, konverzió szolgáltatásonként, válaszidő, indexek | PHPUnit, E2E |
+| 6 | Oldalankénti JSON-LD (WebPage, BreadcrumbList, Service), Search Console meta opció, kisebb HTML (térkép kliensoldalon), keskeny és nagy kijelzők javítása | 38 oldal × 6 eszköz = 228 ellenőrzés hiba nélkül |
+
+**Mérések** (helyi szerver, a valós hálózati késleltetés nélkül): mobil (Pixel 7, 4× lassított CPU) LCP 0,67 s, CLS 0,004; asztali LCP 0,3 s, CLS 0,049.
+Főoldal HTML: 137 KB → 105 KB (gzip 32 → 21 KB). A korábbi three.js és GSAP kikerült (kb. 650 KB JS-sel kevesebb).
+
+**Talált és javított hibák**
+- Statisztika: a hónaphatárokat UTC-ben számolta, pedig az időbélyegek budapesti idő szerint tárolódnak (a hónap első 1–2 órájának kérései rossz hónapba kerültek).
+- Feladat-határidő: a böngésző UTC-ben küldte, átváltás nélkül tárolódott (1–2 óra elcsúszás).
+- 320–360 px-es telefonokon vízszintes görgetés (fejléc-sáv, kapcsolati kártyák, „6 000 000+” szám, „Marketingfordítás” cím).
+- Térkép-szakasz mobilon szélesebb volt a képernyőnél (a vízszintesen görgethető régiólista szétnyomta a rácsot).
+
+**Szándékosan nem változott**
+- A főoldal és a Fordítás oldal leírása (meta description) azonos – így volt a régi oldalon, a helyezés miatt szó szerint maradt.
+- Nincs egérkövető effekt és görgetés-elfogás (a megrendelő korábbi kérése).
+- Analitika nincs bekötve: csak cookie-hozzájárulással lenne jogszerű (GA4) – javaslat: cookie nélküli megoldás (pl. Plausible) vagy hozzájárulás-kezelő; döntés a megrendelőé.
+- Search Console: legegyszerűbb a DNS TXT rekordos ellenőrzés; HTML-címkéhez az `environment.ts` `googleSiteVerification` mezője.

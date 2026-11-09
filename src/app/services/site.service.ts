@@ -3,10 +3,14 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { HOME, PAGES, UI } from '../content/ui';
 import { Lang, PageKey, SITE_URL, pathFor } from '../content/types';
 
 export type RouteKey = PageKey | 'notFound' | 'admin';
+
+/** A Service strukturált adatot kapó oldalak (szolgáltatások és szakterületek). */
+const SERVICE_PAGES: RouteKey[] = ['translation', 'proofreading', 'postEditing', 'interpreting', 'technical', 'financial', 'legal', 'medical', 'marketing'];
 
 /**
  * Az aktuális oldal és nyelv, és a hozzá tartozó SEO címkék a <head>-ben.
@@ -31,6 +35,9 @@ export class SiteService {
   });
 
   constructor() {
+    if (environment.googleSiteVerification) {
+      this.meta.updateTag({ name: 'google-site-verification', content: environment.googleSiteVerification });
+    }
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
       let snap: ActivatedRouteSnapshot = this.router.routerState.snapshot.root;
       while (snap.firstChild) snap = snap.firstChild;
@@ -84,6 +91,8 @@ export class SiteService {
       content: noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
     });
 
+    this.structuredData(key, lang, title, description);
+
     // Kanonikus cím és nyelvi párok (hreflang)
     this.doc.head.querySelectorAll('link[rel="canonical"], link[rel="alternate"][hreflang]').forEach((el) => el.remove());
     if (key === 'notFound') return;
@@ -95,6 +104,45 @@ export class SiteService {
       this.addLink({ rel: 'alternate', hreflang: 'en', href: SITE_URL + pathFor(key, 'en') });
       this.addLink({ rel: 'alternate', hreflang: 'x-default', href: SITE_URL + pathFor(key, 'hu') });
     }
+  }
+
+  /**
+   * Oldalankénti strukturált adat (JSON-LD), az index.html közös Organization adata mellé:
+   * WebPage a saját nyelvén, morzsamenü (BreadcrumbList), és a szolgáltatás-/szakterület-oldalakon Service.
+   */
+  private structuredData(key: RouteKey, lang: Lang, title: string, description: string | null): void {
+    this.doc.getElementById('page-ld')?.remove();
+    if (key === 'notFound' || key === 'thanks' || key === 'admin') return;
+    const url = SITE_URL + pathFor(key, lang);
+    const org = { '@id': SITE_URL + '/#organization' };
+    const graph: Record<string, unknown>[] = [
+      {
+        '@type': 'WebPage', '@id': url + '#webpage', url, name: title, inLanguage: lang === 'hu' ? 'hu-HU' : 'en-GB',
+        isPartOf: { '@id': SITE_URL + '/#website' }, about: org, ...(description ? { description } : {}),
+      },
+    ];
+    if (key !== 'home') {
+      const page = PAGES[lang][key];
+      graph.push({
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: lang === 'hu' ? 'Főoldal' : 'Home', item: SITE_URL + pathFor('home', lang) },
+          { '@type': 'ListItem', position: 2, name: page.h1, item: url },
+        ],
+      });
+      if (SERVICE_PAGES.includes(key)) {
+        graph.push({
+          '@type': 'Service', '@id': url + '#service', name: page.h1, serviceType: page.h1, url,
+          provider: org, areaServed: [{ '@type': 'Country', name: 'Hungary' }, 'Worldwide'],
+          ...(description ? { description } : {}),
+        });
+      }
+    }
+    const script = this.doc.createElement('script');
+    script.id = 'page-ld';
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+    this.doc.head.appendChild(script);
   }
 
   private addLink(attrs: Record<string, string>): void {
